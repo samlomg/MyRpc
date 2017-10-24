@@ -1,6 +1,7 @@
 package com.dglbc.core;
 
-import com.dglbc.api.HelloServiceImpl;
+import com.dglbc.impl.HelloServiceImpl;
+import com.dglbc.serializer.FastjsonSerializer;
 import net.sf.cglib.reflect.FastClass;
 import net.sf.cglib.reflect.FastMethod;
 
@@ -48,13 +49,6 @@ public class Receive implements  Runnable {
                 byte[] bufs = fastjsonSerializer.serialize(response);
                 DatagramPacket dp2 =new DatagramPacket(bufs, bufs.length, InetAddress.getByName(ip), port);
                 ds.send(dp2);
-                System.out.println("OK");
-//                String data = new String(dp.getData(), 0, dp.getLength());
-//                if ("886".equals(data)) {
-//                    System.out.println(ip + "....离开聊天室");
-//                    break;
-//                }
-//                System.out.println(ip + ":" + data);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,17 +61,12 @@ public class Receive implements  Runnable {
 
     private Object handle(RpcRequest request) throws Throwable {
         String className = request.getClassName();
-        System.out.println("className:"+className);
         Object serviceBean = handlerMap.get(className);
 
         Class<?> serviceClass = serviceBean.getClass();
         String methodName = request.getMethodName();
         Class<?>[] parameterTypes = request.getParameterTypes();
         Object[] parameters = request.getParameters();
-
-//         Method method = serviceClass.getMethod(methodName, parameterTypes);
-//         method.setAccessible(true);
-//         return method.invoke(serviceBean, parameters);
 
         FastClass serviceFastClass = FastClass.create(serviceClass);
         FastMethod serviceFastMethod = serviceFastClass.getMethod(methodName, parameterTypes);

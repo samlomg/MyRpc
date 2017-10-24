@@ -1,4 +1,4 @@
-package com.dglbc.core;
+package com.dglbc.serializer;
 
 import com.alibaba.fastjson.JSON;
 

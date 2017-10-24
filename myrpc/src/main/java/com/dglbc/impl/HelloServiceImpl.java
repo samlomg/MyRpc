@@ -1,4 +1,6 @@
-package com.dglbc.api;
+package com.dglbc.impl;
+
+import com.dglbc.api.HelloService;
 
 public class HelloServiceImpl implements HelloService {
 

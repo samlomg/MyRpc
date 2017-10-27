@@ -1,4 +1,4 @@
-package com.dglbc.net;
+package com.dglbc.transport;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -15,7 +15,7 @@ public class WriteHandler implements CompletionHandler<Integer, ByteBuffer> {
 
     @Override
     public void completed(Integer result, ByteBuffer buffer) {
-//如果没有发送完，就继续发送直到完成
+        //如果没有发送完，就继续发送直到完成
         if (buffer.hasRemaining())
             channel.write(buffer, buffer, this);
         else{

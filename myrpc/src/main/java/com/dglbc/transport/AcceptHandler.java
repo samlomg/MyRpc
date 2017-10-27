@@ -1,4 +1,4 @@
-package com.dglbc.net;
+package com.dglbc.transport;
 
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
@@ -10,11 +10,11 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
         //继续接受其他客户端的请求
         Server.clientCount++;
         System.out.println("连接的客户端数：" + Server.clientCount);
-        serverHandler.channel.accept(serverHandler, this);
+//        serverHandler.channel.accept(serverHandler, this);
         //创建新的Buffer
-        ByteBuffer buffer = ByteBuffer.allocate(1024);
+        ByteBuffer buffer = ByteBuffer.allocate(Server.DEFAULT_BUFF_SIZE);
         //异步读  第三个参数为接收消息回调的业务Handler
-        channel.read(buffer, buffer, new ReadHandler(channel));
+        channel.read(buffer, buffer, new ReadHandler(channel,new byte[]{}));
     }
 
     @Override

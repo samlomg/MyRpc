@@ -1,7 +1,8 @@
-package com.dglbc.net;
+package com.dglbc.transport;
 
 public class Server {
     private static int DEFAULT_PORT = 12345;
+    public static int DEFAULT_BUFF_SIZE = 2;
     private static AsyncServerHandler serverHandle;
     public volatile static long clientCount = 0;
 

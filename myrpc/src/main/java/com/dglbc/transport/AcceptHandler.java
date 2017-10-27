@@ -1,5 +1,6 @@
 package com.dglbc.transport;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -20,6 +21,10 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
     @Override
     public void failed(Throwable exc, AsyncServerHandler serverHandler) {
         exc.printStackTrace();
-        serverHandler.latch.countDown();
+        try {
+            serverHandler.channel.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

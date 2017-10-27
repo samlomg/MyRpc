@@ -1,5 +1,6 @@
 package com.dglbc.core;
 
+import com.dglbc.transport.Client;
 import net.sf.cglib.proxy.InvocationHandler;
 import net.sf.cglib.proxy.Proxy;
 
@@ -11,6 +12,7 @@ public class RpcProxy {
     private String ip;
     private Integer port;
     private SendWithoutRunable send = new SendWithoutRunable();
+    private Client client=new Client();
     public RpcProxy(String ip, Integer port) {
         this.ip = ip;
         this.port = port;
@@ -30,7 +32,8 @@ public class RpcProxy {
                         request.setMethodName(method.getName());
                         request.setParameterTypes(method.getParameterTypes());
                         request.setParameters(args);
-                        RpcResponse response=send.send(new DatagramSocket(), request, ip, port);
+//                        RpcResponse response=send.send(new DatagramSocket(), request, ip, port);
+                        RpcResponse response = client.sendrpc(request);
                         if (response.getError() != null) {
                             throw response.getError();
                         } else {

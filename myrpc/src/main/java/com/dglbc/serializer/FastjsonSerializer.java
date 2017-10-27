@@ -12,7 +12,7 @@ import java.io.IOException;
 public class FastjsonSerializer implements Serializer {
 
     @Override
-    public byte[] serialize(Object msg) throws IOException {
+    public  byte[] serialize(Object msg) throws IOException {
         String jsonString = JSON.toJSONString(msg);
         return StringUtils.getBytes(jsonString);
     }

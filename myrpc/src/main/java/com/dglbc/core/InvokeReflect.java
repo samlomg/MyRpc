@@ -16,7 +16,7 @@ public class InvokeReflect {
         put("com.dglbc.api.HelloService", new HelloServiceImpl());
     }};
 
-    private static Object handle(RpcRequest request) throws Throwable {
+    public static Object handle(RpcRequest request) throws Throwable {
         String className = request.getClassName();
         Object serviceBean = handlerMap.get(className);
 

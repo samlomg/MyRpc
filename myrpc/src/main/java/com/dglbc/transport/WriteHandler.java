@@ -31,7 +31,6 @@ public class WriteHandler implements CompletionHandler<Integer, ByteBuffer> {
         System.err.println("数据发送失败...");
         try {
             channel.close();
-
         } catch (IOException e) {
         }
     }

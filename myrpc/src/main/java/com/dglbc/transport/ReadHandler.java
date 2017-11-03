@@ -32,6 +32,13 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
     @Override
     public void completed(Integer result, ByteBuffer attachment) {
         System.out.println(result);
+
+        tobyteArray(attachment);
+
+        ByteBuffer buffer = ByteBuffer.allocate(Server.DEFAULT_BUFF_SIZE);
+        channel.read(buffer, buffer, new ReadHandler(channel,messages));
+        attachment.compact();
+
         if (result < Server.DEFAULT_BUFF_SIZE){
             try {
                 RpcRequest request= (RpcRequest) fastjsonSerializer.deserialize(messages,RpcRequest.class);
@@ -53,11 +60,7 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
                 e.printStackTrace();
             }
         }
-        tobyteArray(attachment);
 
-        ByteBuffer buffer = ByteBuffer.allocate(Server.DEFAULT_BUFF_SIZE);
-        channel.read(buffer, buffer, new ReadHandler(channel,messages));
-        attachment.compact();
     }
 
     @Override

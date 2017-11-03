@@ -35,10 +35,10 @@ public class AsyncServerHandler implements Runnable {
         latch = new CountDownLatch(1);
         //用于接收客户端的连接
         channel.accept(this, new AcceptHandler());
-//        try {
-//            latch.await();
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -10,8 +10,8 @@ import java.net.SocketException;
  */
 public class App {
     public static void main(String[] args) throws SocketException {
-        RpcProxy rpcProxy = new RpcProxy("192.168.22.223", 10002);
+        RpcProxy rpcProxy = new RpcProxy("192.168.22.223", 12345);
         HelloService helloService = rpcProxy.create(HelloService.class);
-        helloService.hello("LBC");
+        System.err.println(helloService.hello("LBC"));
     }
 }

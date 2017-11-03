@@ -5,7 +5,6 @@ import net.sf.cglib.proxy.InvocationHandler;
 import net.sf.cglib.proxy.Proxy;
 
 import java.lang.reflect.Method;
-import java.net.DatagramSocket;
 import java.util.UUID;
 
 public class RpcProxy {

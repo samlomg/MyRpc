@@ -37,7 +37,10 @@ public class AsyncServerHandler implements Runnable {
         channel.accept(this, new AcceptHandler());
         try {
             latch.await();
+            channel.close();
         } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

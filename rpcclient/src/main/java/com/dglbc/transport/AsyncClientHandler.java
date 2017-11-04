@@ -3,7 +3,6 @@ package com.dglbc.transport;
 import com.dglbc.core.FastjsonSerializer;
 import com.dglbc.core.RpcRequest;
 import com.dglbc.core.RpcResponse;
-import com.dglbc.transport.back.WriteHandler;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
@@ -72,7 +71,7 @@ public class AsyncClientHandler implements CompletionHandler<Void, AsyncClientHa
         writeBuffer.put(req);
         writeBuffer.flip();
         //异步写
-        clientChannel.write(writeBuffer, writeBuffer, new WriteHandler(clientChannel, latch));
+//        clientChannel.write(writeBuffer, writeBuffer, new WriteHandler(clientChannel, latch));
     }
 
     //向服务器发送消息

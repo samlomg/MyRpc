@@ -71,6 +71,7 @@ public class RpcAioSession {
 
         @Override
         public void failed(Throwable exc, ByteBuffer attachment) {
+            System.out.println("RPCSESSION.Write:"+exc.toString());
             System.err.println("数据发送失败...");
             try {
                 asynchronousSocketChannel.close();
@@ -83,7 +84,6 @@ public class RpcAioSession {
 
     }
 
-    @SuppressWarnings("Duplicates")
     public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
 
         @Override
@@ -110,7 +110,8 @@ public class RpcAioSession {
 
         @Override
         public void failed(Throwable exc, ByteBuffer attachment) {
-            System.out.println("数据读取失败...");
+            System.out.println("RPCSESSION.Read:"+exc.toString());
+            System.err.println("数据读取失败...");
             try {
                 asynchronousSocketChannel.close();
                 countDownLatch.countDown();

@@ -1,9 +1,8 @@
 package com.dglbc;
 
-import com.dglbc.core.Receive;
+import com.dglbc.transport.Server;
 
-import java.net.DatagramSocket;
-import java.net.SocketException;
+import java.io.IOException;
 
 /**
  * Hello world!
@@ -11,8 +10,10 @@ import java.net.SocketException;
  */
 public class App 
 {
-    public static void main( String[] args ) throws SocketException {
-        DatagramSocket receSocket = new DatagramSocket(10002);
-        new Thread(new Receive(receSocket)).start();
+    public static void main( String[] args ) throws IOException, InterruptedException {
+        Server.start(Server.DEFAULT_PORT);
+        while(true){
+            Thread.sleep(1000);
+        }
     }
 }

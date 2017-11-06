@@ -72,7 +72,6 @@ public class RpcAioSession {
         @Override
         public void failed(Throwable exc, ByteBuffer attachment) {
             System.out.println("RPCSESSION.Write:"+exc.toString());
-            System.err.println("数据发送失败...");
             try {
                 asynchronousSocketChannel.close();
                 countDownLatch.countDown();
@@ -91,12 +90,10 @@ public class RpcAioSession {
 
             tobyteArray(attachment);
 
-            ByteBuffer buffer = ByteBuffer.allocate(DEFAULT_BUFF_SIZE);
-            asynchronousSocketChannel.read(buffer, buffer, new ReadHandler());
-            attachment.compact();
-
             if (result < DEFAULT_BUFF_SIZE){
+                attachment.clear();
                 try {
+                    asynchronousSocketChannel.close();
                     rpcResponse = fastjsonSerializer.deserialize(messages,RpcResponse.class);
                     countDownLatch.countDown();
                 } catch (UnsupportedEncodingException e) {
@@ -104,13 +101,17 @@ public class RpcAioSession {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+            }else {
+                attachment.compact();
+                asynchronousSocketChannel.read(attachment, attachment, new ReadHandler());
             }
 
         }
 
         @Override
         public void failed(Throwable exc, ByteBuffer attachment) {
-            System.out.println("RPCSESSION.Read:"+exc.toString());
+            System.out.println("RPCSESSION.Read:"+attachment.toString());
+            exc.printStackTrace();
             System.err.println("数据读取失败...");
             try {
                 asynchronousSocketChannel.close();

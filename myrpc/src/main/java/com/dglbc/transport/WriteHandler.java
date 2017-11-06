@@ -16,13 +16,16 @@ public class WriteHandler implements CompletionHandler<Integer, ByteBuffer> {
     @Override
     public void completed(Integer result, ByteBuffer buffer) {
         //如果没有发送完，就继续发送直到完成
-        if (buffer.hasRemaining())
+        if (result < Server.DEFAULT_BUFF_SIZE){
+            try {
+                channel.shutdownInput();
+                channel.shutdownOutput();
+                channel.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else {
             channel.write(buffer, buffer, this);
-        else{
-            //创建新的Buffer
-            ByteBuffer readBuffer = ByteBuffer.allocate(1024);
-            //异步读  第三个参数为接收消息回调的业务Handler
-            channel.read(readBuffer, readBuffer, new ReadHandler(channel));
         }
     }
 

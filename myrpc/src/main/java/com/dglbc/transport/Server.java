@@ -3,7 +3,7 @@ package com.dglbc.transport;
 import java.io.IOException;
 
 public class Server {
-    private static int DEFAULT_PORT = 12345;
+    public static int DEFAULT_PORT = 12345;
     public static int DEFAULT_BUFF_SIZE = 2048;
     private static AsyncServerHandler serverHandle;
     public volatile static long clientCount = 0;
@@ -19,7 +19,11 @@ public class Server {
         new Thread(serverHandle, "Server").start();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
         Server.start(DEFAULT_PORT);
+        while(true){
+//            System.out.println(System.currentTimeMillis());
+            Thread.sleep(1000);
+        }
     }
 }

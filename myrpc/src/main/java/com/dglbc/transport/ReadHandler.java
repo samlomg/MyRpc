@@ -54,6 +54,7 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
 
                 //向客户端发送消息
                 doWrite(fastjsonSerializer.serialize(response));
+                Server.clientCount--;
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             } catch (IOException e) {

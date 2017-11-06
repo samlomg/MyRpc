@@ -11,7 +11,7 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
         //继续接受其他客户端的请求
         Server.clientCount++;
         System.out.println("连接的客户端数：" + Server.clientCount);
-        serverHandler.channel.accept(serverHandler, this);
+        serverHandler.asynchronousServerSocketChannel.accept(serverHandler, this);
         //创建新的Buffer
         ByteBuffer buffer = ByteBuffer.allocate(Server.DEFAULT_BUFF_SIZE);
         //异步读  第三个参数为接收消息回调的业务Handler
@@ -22,7 +22,7 @@ public class AcceptHandler implements CompletionHandler<AsynchronousSocketChanne
     public void failed(Throwable exc, AsyncServerHandler serverHandler) {
         exc.printStackTrace();
         try {
-            serverHandler.channel.close();
+            serverHandler.asynchronousServerSocketChannel.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

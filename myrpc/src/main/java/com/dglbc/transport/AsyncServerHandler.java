@@ -20,8 +20,9 @@ public class AsyncServerHandler implements Runnable {
             //创建服务端通道
             asynchronousServerSocketChannel = AsynchronousServerSocketChannel.open(asynchronousChannelGroup);
             asynchronousServerSocketChannel.setOption(StandardSocketOptions.SO_RCVBUF, 4 * 1024);
+            //重用端口
             asynchronousServerSocketChannel.setOption(StandardSocketOptions.SO_REUSEADDR, true);
-            //绑定端口
+            //绑定端口并设置连接请求队列长度
             asynchronousServerSocketChannel.bind(new InetSocketAddress(port), 1000);
             System.out.println("服务器已启动，端口号：" + port);
         } catch (IOException e) {

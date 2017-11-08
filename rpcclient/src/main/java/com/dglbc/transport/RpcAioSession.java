@@ -29,10 +29,7 @@ public class RpcAioSession {
     private AsynchronousSocketChannel asynchronousSocketChannel;
     private CountDownLatch countDownLatch;
     private RpcResponse rpcResponse;
-
     private boolean status = true;
-
-
     byte[] messages;
     FastjsonSerializer fastjsonSerializer = new FastjsonSerializer();
 

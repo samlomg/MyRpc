@@ -1,12 +1,10 @@
 package com.dglbc.transport;
 
-import com.dglbc.core.FastjsonSerializer;
 import com.dglbc.core.RpcRequest;
 import com.dglbc.core.RpcResponse;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousChannelGroup;
 import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
@@ -20,7 +18,6 @@ public class AsyncClientHandler implements CompletionHandler<Void, AsyncClientHa
     private CountDownLatch latch;
     private AsynchronousChannelGroup asynchronousChannelGroup ;
     private RpcAioSession rpcAioSession;
-    FastjsonSerializer fastjsonSerializer = new FastjsonSerializer();
 
     public AsyncClientHandler(String host, int port) throws IOException {
         this.asynchronousChannelGroup = AsynchronousChannelGroup.withCachedThreadPool(Executors.newCachedThreadPool(), 1);
@@ -62,16 +59,6 @@ public class AsyncClientHandler implements CompletionHandler<Void, AsyncClientHa
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    //向服务器发送消息
-    public void sendMsg(String msg) {
-        byte[] req = msg.getBytes();
-        ByteBuffer writeBuffer = ByteBuffer.allocate(req.length);
-        writeBuffer.put(req);
-        writeBuffer.flip();
-        //异步写
-//        clientChannel.write(writeBuffer, writeBuffer, new WriteHandler(clientChannel, latch));
     }
 
     //向服务器发送消息

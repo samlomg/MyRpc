@@ -19,11 +19,5 @@ public class Server {
         new Thread(serverHandle, "Server").start();
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
-        Server.start(DEFAULT_PORT);
-        while(true){
-//            System.out.println(System.currentTimeMillis());
-            Thread.sleep(1000);
-        }
-    }
+
 }

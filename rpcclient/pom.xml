@@ -16,6 +16,12 @@
   </properties>
 
   <dependencies>
+    <dependency>
+      <groupId>com.dglbc</groupId>
+      <artifactId>myapi</artifactId>
+      <version>1.0-SNAPSHOT</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/cglib/cglib -->
     <dependency>
       <groupId>com.alibaba</groupId>

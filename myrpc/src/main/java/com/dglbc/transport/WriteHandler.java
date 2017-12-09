@@ -6,7 +6,7 @@ import java.nio.channels.AsynchronousSocketChannel;
 import java.nio.channels.CompletionHandler;
 
 public class WriteHandler implements CompletionHandler<Integer, ByteBuffer> {
-    private AsynchronousSocketChannel channel;
+    private AsynchronousSocketChannel channel=null;
 
 
     public WriteHandler(AsynchronousSocketChannel channel) {

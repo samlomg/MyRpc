@@ -34,9 +34,6 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
         System.out.println(result);
 
         tobyteArray(attachment);
-
-        ByteBuffer buffer = ByteBuffer.allocate(Server.DEFAULT_BUFF_SIZE);
-        channel.read(buffer, buffer, new ReadHandler(channel,messages));
         attachment.compact();
 
         if (result < Server.DEFAULT_BUFF_SIZE){
@@ -60,6 +57,9 @@ public class ReadHandler implements CompletionHandler<Integer, ByteBuffer> {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }else {
+            ByteBuffer buffer = ByteBuffer.allocate(Server.DEFAULT_BUFF_SIZE);
+            channel.read(buffer, buffer, new ReadHandler(channel,messages));
         }
 
     }

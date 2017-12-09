@@ -17,13 +17,8 @@ public class WriteHandler implements CompletionHandler<Integer, ByteBuffer> {
     public void completed(Integer result, ByteBuffer buffer) {
         //如果没有发送完，就继续发送直到完成
         if (result < Server.DEFAULT_BUFF_SIZE){
-            try {
-                channel.shutdownInput();
-                channel.shutdownOutput();
-                channel.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            ByteBuffer buffer1 = ByteBuffer.allocate(Server.DEFAULT_BUFF_SIZE);
+            channel.read(buffer1, buffer1, new ReadHandler(channel,new byte[]{}));
         }else {
             channel.write(buffer, buffer, this);
         }

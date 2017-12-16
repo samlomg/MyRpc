@@ -68,7 +68,7 @@ public class RpcAioSession {
 
         @Override
         public void failed(Throwable exc, ByteBuffer attachment) {
-            System.out.println("RPCSESSION.Write:"+exc.toString());
+            System.out.println("RPCSESSION.Write:" + exc.toString());
             try {
                 asynchronousSocketChannel.close();
                 countDownLatch.countDown();
@@ -87,18 +87,18 @@ public class RpcAioSession {
 
             tobyteArray(attachment);
 
-            if (result < DEFAULT_BUFF_SIZE){
+            if (result < DEFAULT_BUFF_SIZE) {
                 attachment.clear();
                 try {
                     asynchronousSocketChannel.close();
-                    rpcResponse = fastjsonSerializer.deserialize(messages,RpcResponse.class);
+                    rpcResponse = fastjsonSerializer.deserialize(messages, RpcResponse.class);
                     countDownLatch.countDown();
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }else {
+            } else {
                 attachment.compact();
                 asynchronousSocketChannel.read(attachment, attachment, new ReadHandler());
             }
@@ -107,7 +107,7 @@ public class RpcAioSession {
 
         @Override
         public void failed(Throwable exc, ByteBuffer attachment) {
-            System.out.println("RPCSESSION.Read:"+attachment.toString());
+            System.out.println("RPCSESSION.Read:" + attachment.toString());
             exc.printStackTrace();
             System.err.println("数据读取失败...");
             try {
@@ -120,7 +120,7 @@ public class RpcAioSession {
         }
 
         //由buffer重组byte数组
-        private void tobyteArray(ByteBuffer attachment){
+        private void tobyteArray(ByteBuffer attachment) {
             //flip操作
             attachment.flip();
             //根据

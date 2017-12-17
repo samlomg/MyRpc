@@ -19,34 +19,34 @@ public class Conditions {
     }
 
     // 添加整数相等约束
-    public Conditions gt(String clause, int value) {
-        return appendArithmetic(clause, value, ">");
+    public static Conditions  gt(String name, int value) {
+        return add(name, value, ">");
 
     }
 
     // 添加整数相等约束
-    public Conditions ge(String clause, int value) {
-        return appendArithmetic(clause, value, ">=");
+    public static Conditions ge(String name, int value) {
+        return add(name, value, ">=");
     }
 
     // 添加整数相等约束
-    public Conditions lt(String clause, int value) {
-        return appendArithmetic(clause, value, "<");
+    public static Conditions lt(String name, int value) {
+        return add(name, value, "<");
     }
 
     // 添加整数相等约束
-    public Conditions le(String clause, int value) {
-        return appendArithmetic(clause, value, "<=");
+    public static Conditions le(String name, int value) {
+        return add(name, value, "<=");
     }
 
     // 添加整数相等约束
-    public Conditions eq(String clause, int value) {
-        return appendArithmetic(clause, value, "=");
+    public static Conditions eq(String name, int value) {
+        return add(name, value, "=");
     }
 
 
     // 运算
-    public Conditions appendArithmetic(String clause, int value, String opt) {
+    public static Conditions add(String name, int value, String opt) {
         return new Conditions(opt, name, value);
 
     }

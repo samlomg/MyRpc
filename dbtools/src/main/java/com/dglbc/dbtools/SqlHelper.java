@@ -28,7 +28,7 @@ public class SqlHelper implements Serializable {
     private List<String> selectContent;
     private List<Unit> insertContent;
     private List<Unit> updateContent;
-    private StringBuilder condition;
+    private List<Condition> condition;
     private String table;
     private List<Join> join;
 
@@ -59,38 +59,6 @@ public class SqlHelper implements Serializable {
     public SqlHelper uc(String name, Object value) {
         this.updateContent.add(new Unit(name, value));
         return this;
-    }
-
-
-
-    // 添加整数相等约束
-    public SqlHelper gt(String clause, int value) {
-        appendArithmetic(clause, value, ">");
-        return this;
-    }
-
-    // 添加整数相等约束
-    public SqlHelper ge(String clause, int value) {
-        appendArithmetic(clause, value, ">=");
-        return this;
-    }
-
-    // 添加整数相等约束
-    public SqlHelper lt(String clause, int value) {
-        appendArithmetic(clause, value, "<");
-        return this;
-    }
-
-    // 添加整数相等约束
-    public SqlHelper le(String clause, int value) {
-        appendArithmetic(clause, value, "<=");
-        return this;
-    }
-
-
-    // 运算
-    public void appendArithmetic(String clause, int value, String opt) {
-        condition.append(" and ").append(clause).append(opt+value);
     }
 
 }

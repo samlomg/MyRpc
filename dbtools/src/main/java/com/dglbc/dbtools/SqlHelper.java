@@ -1,5 +1,6 @@
 package com.dglbc.dbtools;
 
+import com.dglbc.dbtools.join.Join;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -45,7 +46,19 @@ public class SqlHelper implements Serializable {
 
     //查询语句
     public SqlHelper sc(String name) {
-        this.selectContent.add(name);
+        this.selectContent.add("A."+name+" AS "+name.toUpperCase());
+        return this;
+    }
+
+    //查询语句
+    public SqlHelper sc(Join alias,String name) {
+        this.selectContent.add(alias.getAlias()+"."+name +" AS "+name.toUpperCase());
+        return this;
+    }
+
+    //查询语句
+    public SqlHelper sc(Join alias,String name,String aname) {
+        this.selectContent.add(alias.getAlias()+"."+name +" AS "+aname);
         return this;
     }
 

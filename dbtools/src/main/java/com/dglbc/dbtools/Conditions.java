@@ -40,13 +40,13 @@ public class Conditions {
     }
 
     // 添加整数相等约束
-    public static Conditions eq(String name, int value) {
+    public static Conditions eq(String name, Object value) {
         return add(name, value, "=");
     }
 
 
     // 运算
-    public static Conditions add(String name, int value, String opt) {
+    public static Conditions add(String name, Object value, String opt) {
         return new Conditions(opt, name, value);
 
     }

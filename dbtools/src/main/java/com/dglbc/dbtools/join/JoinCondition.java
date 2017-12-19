@@ -18,4 +18,7 @@ public class JoinCondition implements Serializable {
     private String name;
     private String condition;
 
+    public String builder(){
+        return alias + "." + name + "=" + condition+" ";
+    }
 }

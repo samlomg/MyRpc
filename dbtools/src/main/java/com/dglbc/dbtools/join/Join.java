@@ -1,5 +1,7 @@
 package com.dglbc.dbtools.join;
 
+import com.dglbc.dbtools.ExecSql;
+import com.dglbc.dbtools.SqlKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,26 +17,58 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public abstract class Join implements Serializable {
+public class Join implements Serializable {
 
-    private String table;
+    private String join;//key world 1:left join,right join ...
+    private String table; //
     private String alias;
     private List<JoinCondition> condition;
+    private List<Object> parms;
+    private String joinSql;
 
-    public Join(String table, String alias,String aliasName, String name) {
+    public ExecSql builder(){
+        StringBuilder sql = new StringBuilder().append(join).append(table).append(" ").append(alias).append(SqlKey.ON);
+        for (JoinCondition jionCondition:condition){
+            sql.append(jionCondition.builder());
+        }
+        return new ExecSql(sql.toString(),parms);
+    }
+
+    public Join(String join,String table, String alias,String aliasName, String value) {
+        this.join = join;
         this.table = table;
         this.alias = alias;
         this.condition = new ArrayList<JoinCondition>(){{
-            new JoinCondition("A", name, alias + "." + aliasName);
+            add(new JoinCondition(alias, aliasName,"?"));
+        }};
+
+        this.parms=new ArrayList<Object>(){{
+            add(value);
         }};
     }
 
-    public Join(String table, String alias,String aliasName,String refences, String name) {
+    public Join(String join,String table, String alias,String aliasName,String refences, String name) {
+        this.join = join;
         this.table = table;
+        this.alias = alias;
+        this.condition = new ArrayList<JoinCondition>(){{
+            add(new JoinCondition(refences, name, alias + "." + aliasName));
+        }};
+        this.parms = new ArrayList<>();
+    }
+
+    public Join(String join, ExecSql table, String alias, String aliasName, String refences, String name) {
+        this.join = join;
+        this.table = " ( "+table.getSql()+" ) ";
         this.alias = alias;
         this.condition = new ArrayList<JoinCondition>(){{
             new JoinCondition(refences, name, alias + "." + aliasName);
         }};
+        this.parms = new ArrayList<>();
+        if (table.getValues().size() >0){
+                this.parms.add(table.getValues());
+        }
+
     }
 
     public Join addCondition(String alias,String aliasName, String name){

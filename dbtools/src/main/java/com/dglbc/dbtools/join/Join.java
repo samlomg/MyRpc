@@ -65,9 +65,7 @@ public class Join implements Serializable {
             new JoinCondition(refences, name, alias + "." + aliasName);
         }};
         this.parms = new ArrayList<>();
-        if (table.getValues().size() >0){
-                this.parms.add(table.getValues());
-        }
+        if (table.getValues().size() >0) this.parms.add(table.getValues());
 
     }
 

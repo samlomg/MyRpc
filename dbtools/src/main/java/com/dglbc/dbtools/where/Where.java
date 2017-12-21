@@ -33,6 +33,12 @@ public class Where implements Serializable {
         this.parms = new ArrayList();
     }
 
+    public Where() {
+        this.logic = SqlKey.AND;
+        this.sql = new StringBuilder();
+        this.parms = new ArrayList();
+    }
+
     public Where or(){
         sql.append(SqlKey.OR);
         return this;

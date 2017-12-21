@@ -7,7 +7,10 @@ package com.dglbc.dbtools;
 public class SqlKey {
 
 
-    public static String SELECT = " SELECT ";
+    public static String SELECT = "SELECT ";
+    public static String INSERT = "INSERT INTO ";
+    public static String UPDATE = "UPDATE ";
+    public static String DELETE = "DELETE FROM ";
     public static String WITH = " WITH(NOLOCK) ";
     public static String AND = " AND ";
     public static String OR = " OR ";
@@ -21,5 +24,8 @@ public class SqlKey {
     public static String BETWEEN = " BETWEEN ";
     public static String IN = " IN ";
     public static String FROM = " FROM ";
+    public static String HAVING  = " HAVING ";
+    public static String VALUES  = " VALUES ";
+    public static String SET  = " SET ";
 
 }

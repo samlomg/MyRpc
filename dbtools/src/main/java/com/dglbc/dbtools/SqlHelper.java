@@ -25,8 +25,12 @@ public class SqlHelper implements Serializable {
     private List<Where> conditions;
     private String table;
     private List<Join> joins;
-
-    private String order;
+    private boolean order = false;
+    private boolean group = false;
+    private boolean have = false;
+    private List<String> groupContent;
+    private String orderContent;
+    private String havingContent;
 
     public SqlHelper(String table) {
         this.table = table;
@@ -35,17 +39,26 @@ public class SqlHelper implements Serializable {
         this.updateContent = new ArrayList<>();
         this.conditions = new ArrayList<>();
         this.joins = new ArrayList<>();
+        this.groupContent = new ArrayList<>();
+    }
+
+    //查询语句,自定义
+    public SqlHelper scc(String name) {
+        this.selectContent.add(name.toUpperCase());
+        return this;
     }
 
     //查询语句
     public SqlHelper sc(String name) {
         this.selectContent.add("A." + name + " AS " + name.toUpperCase());
+        this.groupContent.add("A." + name);
         return this;
     }
 
     //查询语句
     public SqlHelper sc(Join alias, String name) {
         this.selectContent.add(alias.getAlias() + "." + name + " AS " + name.toUpperCase());
+        this.groupContent.add(alias.getAlias() + "." + name);
         return this;
     }
 
@@ -67,44 +80,126 @@ public class SqlHelper implements Serializable {
         return this;
     }
 
-    public SqlHelper addJoin(Join join){
+    public SqlHelper addJoin(Join join) {
         joins.add(join);
         return this;
     }
 
-    public SqlHelper addWhere(Where where){
+    public SqlHelper addWhere(Where where) {
         conditions.add(where);
         return this;
     }
 
-    //生成 查询语句 首先
-    // 1：把selectContent里面的内容生成出来
-    // 2：生成表信息
-    // 3：生成join的信息
-    // 4：生成where的信息
-    // 5：生成group by order by 信息
+    public SqlHelper having(String sql) {
+        this.group = true;
+        this.have = true;
+        this.havingContent = sql;
+        return this;
+    }
+
+    /*
+        Group by 是按select的内容，毕竟group by 和select 是要相同，对了自定义部分没有自动列入。
+     */
+    public SqlHelper groupBy() {
+        this.group = true;
+        return this;
+    }
+
+    public SqlHelper orderBy(String sql) {
+        this.order = true;
+        this.orderContent = sql;
+        return this;
+    }
+
+    /*
+    生成 查询语句 首先
+    1：把selectContent里面的内容生成出来
+    2：生成表信息
+    3：生成join的信息
+    4：生成where的信息
+    5：生成group by order by 信息
+     */
     public ExecSql selectBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.SELECT);
         sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
         sql.append(SqlKey.FROM).append(table).append(" A").append(SqlKey.WITH);
         if (joins.size() > 0) {
-            for (Join join : joins) {
+            joins.forEach(join -> {
                 ExecSql tempsql = join.builder();
                 sql.append(tempsql.getSql());
                 params.addAll(tempsql.getValues());
-            }
+            });
         }
         sql.append(SqlKey.WHERE);
-        if (conditions.size() > 0) {
-            for (Where where : conditions) {
-                ExecSql tempsql = where.builder();
-                sql.append(tempsql.getSql());
-                params.addAll(tempsql.getValues());
-            }
+        if (conditions.size() > 0) conditions.forEach(where -> {
+            ExecSql tempsql = where.builder();
+            sql.append(tempsql.getSql());
+            params.addAll(tempsql.getValues());
+        });
+
+        if (group) {
+            sql.append(SqlKey.GROUP).append(groupContent.toString().replaceAll("[\\[\\]]", " "));
+            if (have) sql.append(SqlKey.HAVING).append(havingContent);
         }
+
+        if (order) sql.append(SqlKey.ORDER).append(orderContent);
+
         return new ExecSql(sql.toString(), params);
     }
 
+    /*
+       插入语句生成器
+     */
+    public ExecSql insertBuilder() {
+        List<Object> params = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(SqlKey.INSERT).append(table).append(" ( ");
+        StringBuilder sql1 = new StringBuilder();
+        StringBuilder sql2 = new StringBuilder();
+        insertContent.forEach(unit -> {
+            sql2.append(",").append(unit.getName());
+            sql1.append(",?");
+            params.add(unit.getValue());
+        });
+        sql1.delete(0, 1);
+        sql2.delete(0, 1);
+        sql.append(sql2);
+        sql.append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1).append(" ) ");
+        return new ExecSql(sql.toString(), params);
+    }
+
+    /*
+        更新语句生成器
+    */
+    public ExecSql updateBuilder() {
+        List<Object> params = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(SqlKey.UPDATE).append(table).append(SqlKey.SET);
+        StringBuilder sql1 = new StringBuilder();
+        updateContent.forEach(unit -> {
+            sql1.append(",").append(unit.getName()).append(" =? ");
+            params.add(unit.getValue());
+        });
+        sql1.delete(0, 1);
+        sql.append(sql1).append(SqlKey.WHERE);
+        conditions.forEach(where -> {
+            ExecSql tempsql = where.builder();
+            sql.append(tempsql.getSql());
+            params.addAll(tempsql.getValues());
+        });
+        return new ExecSql(sql.toString(), params);
+    }
+    /*
+        删除语句生成器
+    */
+    public ExecSql deleteBulider() {
+        List<Object> params = new ArrayList<>();
+        StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(table).append(SqlKey.WHERE);
+        conditions.forEach(where -> {
+            ExecSql tempsql = where.builder();
+            sql.append(tempsql.getSql());
+            params.addAll(tempsql.getValues());
+        });
+        return new ExecSql(sql.toString(), params);
+    }
 
 }

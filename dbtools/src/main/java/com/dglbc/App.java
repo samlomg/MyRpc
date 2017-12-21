@@ -34,8 +34,8 @@ public class App {
         Join f4211 = new Join(SqlKey.LEFTJOIN, "F4211", "B", "Sequence", "A", "Sequence");
 
         sqlHelper.sc(f4211, "SDLITM").sc("SHDOCO");
-        sqlHelper.addJoin(f4211);
-        sqlHelper.addWhere(new Where(SqlKey.AND).eq(f4211,"Sequence", 236536));
+        sqlHelper.join(f4211);
+        sqlHelper.where(new Where(SqlKey.AND).eq(f4211,"Sequence", 236536));
         ExecSql execSql = sqlHelper.selectBuilder();
         System.out.println(execSql.getSql());
         List<String> a= JDBC.list(ds.getConnection(), execSql.getSql(), new IVo<String>() {
@@ -44,6 +44,6 @@ public class App {
                 return rs.getString(2);
             }
         },execSql.getValues().toArray());
-        a.forEach(in-> System.out.print(in+","));
+        System.out.println(a.toString());
     }
 }

@@ -62,10 +62,10 @@ public class Join implements Serializable {
         this.table = " ( "+table.getSql()+" ) ";
         this.alias = alias;
         this.condition = new ArrayList<JoinCondition>(){{
-            new JoinCondition(refences, name, alias + "." + aliasName);
+            add(new JoinCondition(refences, name, alias + "." + aliasName));
         }};
         this.parms = new ArrayList<>();
-        if (table.getValues().size() >0) this.parms.add(table.getValues());
+        if (table.getValues().size() >0) this.parms.addAll(table.getValues());
 
     }
 

@@ -80,12 +80,12 @@ public class SqlHelper implements Serializable {
         return this;
     }
 
-    public SqlHelper addJoin(Join join) {
+    public SqlHelper join(Join join) {
         joins.add(join);
         return this;
     }
 
-    public SqlHelper addWhere(Where where) {
+    public SqlHelper where(Where where) {
         conditions.add(where);
         return this;
     }
@@ -193,7 +193,7 @@ public class SqlHelper implements Serializable {
     */
     public ExecSql deleteBulider() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(table).append(SqlKey.WHERE);
+        StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(" A ").append(SqlKey.FROM).append(table).append(" A ").append(SqlKey.WHERE);
         conditions.forEach(where -> {
             ExecSql tempsql = where.builder();
             sql.append(tempsql.getSql());

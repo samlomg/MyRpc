@@ -3,18 +3,33 @@ package com.dglbc.dbtools.jdbc;
 import com.dglbc.dbtools.jdbc.exception.MultiRowExp;
 import com.dglbc.dbtools.jdbc.exception.SqlExp;
 import com.dglbc.dbtools.jdbc.face.IVo;
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LBC on 2017/12/19
  **/
 
 public class JDBC {
+    public static Connection getConnection() throws SQLException {
+        Map<String, String> map = System.getenv();
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl("jdbc:sqlserver://192.168.22.226:1433; DatabaseName=ZBERP");
+        config.setUsername("sa");
+        config.setPassword(map.get("test_db"));
 
+        config.addDataSourceProperty("cachePrepStmts", "true");
+        config.addDataSourceProperty("prepStmtCacheSize", "250");
+        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        HikariDataSource ds = new HikariDataSource(config);
+        return ds.getConnection();
+    }
 
     public static  <T> T get(Connection con, String sql, IVo<T> iQuery, Object... params) throws Exception {
         if (StringUtils.isEmpty(sql)) {

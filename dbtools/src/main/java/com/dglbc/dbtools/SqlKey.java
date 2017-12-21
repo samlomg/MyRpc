@@ -10,7 +10,7 @@ public class SqlKey {
     public static String SELECT = "SELECT ";
     public static String INSERT = "INSERT INTO ";
     public static String UPDATE = "UPDATE ";
-    public static String DELETE = "DELETE FROM ";
+    public static String DELETE = "DELETE ";
     public static String WITH = " WITH(NOLOCK) ";
     public static String AND = " AND ";
     public static String OR = " OR ";

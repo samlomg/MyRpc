@@ -54,6 +54,7 @@ public class SelectTest {
         sqlHelperT.sc("drrt").sc("drky").sc("drdl01");
         sqlHelperT.where(new Where().eq("drsy", "42")).where(new Where().eq("drrt", "ZY"));
 
+
         SqlHelper sqlHelper = new SqlHelper("F4201");
         Join f4211 = new Join(SqlKey.LEFTJOIN, "F4211", "B", "Sequence", "A", "Sequence");
         Join f0008 = new Join(SqlKey.LEFTJOIN, sqlHelperT.selectBuilder(), "C", "drky", "B", "SDZKYY");

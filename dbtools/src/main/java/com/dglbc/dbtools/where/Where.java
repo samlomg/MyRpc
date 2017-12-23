@@ -23,7 +23,7 @@ public class Where implements Serializable {
     private StringBuilder sql;
     private List parms;
 
-    public ExecSql builder(){
+    public ExecSql builder() {
         return new ExecSql(logic + sql, parms);
     }
 
@@ -39,12 +39,12 @@ public class Where implements Serializable {
         this.parms = new ArrayList();
     }
 
-    public Where or(){
+    public Where or() {
         sql.append(SqlKey.OR);
         return this;
     }
 
-    public Where and(){
+    public Where and() {
         sql.append(SqlKey.AND);
         return this;
     }
@@ -57,7 +57,7 @@ public class Where implements Serializable {
     }
 
     // 运算
-    public Where add(Join join,String name, Object value, String opt) {
+    public Where add(Join join, String name, Object value, String opt) {
         sql.append(join.getAlias()).append(".").append(name).append(opt).append("? ");
         parms.add(value);
         return this;
@@ -70,7 +70,7 @@ public class Where implements Serializable {
     }
 
     // 运算
-    public Where add(Join join,String name, String opt) {
+    public Where add(Join join, String name, String opt) {
         sql.append(join.getAlias()).append(".").append(name).append(opt);
         return this;
     }
@@ -153,58 +153,58 @@ public class Where implements Serializable {
 
 
     // like
-    public Where like(Join join,String name, String value) {
-        return add(join,name, value, " LIKE ");
+    public Where like(Join join, String name, String value) {
+        return add(join, name, value, " LIKE ");
     }
 
     // not like
-    public Where notLike(Join join,String name, String value) {
-        return add(join,name, value, "NOT LIKE ");
+    public Where notLike(Join join, String name, String value) {
+        return add(join, name, value, "NOT LIKE ");
     }
 
 
     // 大于
-    public Where gt(Join join,String name, int value) {
-        return add(join,name, value, ">");
+    public Where gt(Join join, String name, int value) {
+        return add(join, name, value, ">");
     }
 
     // 大于等于
-    public Where ge(Join join,String name, int value) {
-        return add(join,name, value, " >= ");
+    public Where ge(Join join, String name, int value) {
+        return add(join, name, value, " >= ");
     }
 
     // 小于
-    public Where lt(Join join,String name, int value) {
-        return add(join,name, value, " < ");
+    public Where lt(Join join, String name, int value) {
+        return add(join, name, value, " < ");
     }
 
     // 小于等于
-    public Where le(Join join,String name, int value) {
-        return add(join,name, value, " <= ");
+    public Where le(Join join, String name, int value) {
+        return add(join, name, value, " <= ");
     }
 
     // 等于
-    public Where eq(Join join,String name, Object value) {
-        return add(join,name, value, " = ");
+    public Where eq(Join join, String name, Object value) {
+        return add(join, name, value, " = ");
     }
 
     // 不等于
-    public Where neq(Join join,String name, Object value) {
-        return add(join,name, value, " <> ");
+    public Where neq(Join join, String name, Object value) {
+        return add(join, name, value, " <> ");
     }
 
     // 为空
-    public Where isNull(Join join,String name) {
-        return add(join,name, " IS NULL ");
+    public Where isNull(Join join, String name) {
+        return add(join, name, " IS NULL ");
     }
 
     // 为空
-    public Where isNotNull(Join join,String name) {
-        return add(join,name, " IS NOT NULL ");
+    public Where isNotNull(Join join, String name) {
+        return add(join, name, " IS NOT NULL ");
     }
 
     //between
-    public Where between(Join join,String name, Object value, Object value1) {
+    public Where between(Join join, String name, Object value, Object value1) {
         sql.append(join.getAlias()).append(".").append(name).append(SqlKey.BETWEEN).append("?").append(SqlKey.AND).append("?");
         parms.add(value);
         parms.add(value1);
@@ -212,7 +212,7 @@ public class Where implements Serializable {
     }
 
     //in
-    public Where in(Join join,String name, List values) {
+    public Where in(Join join, String name, List values) {
         sql.append(join.getAlias()).append(".").append(name).append(SqlKey.IN);
         String temp = new String();
         for (Object o : values) {
@@ -224,8 +224,8 @@ public class Where implements Serializable {
         return this;
     }
 
-    public Where in(Join join,String name, Object[] values) {
-        return in(join,name, Arrays.asList(values));
+    public Where in(Join join, String name, Object[] values) {
+        return in(join, name, Arrays.asList(values));
     }
 
 }

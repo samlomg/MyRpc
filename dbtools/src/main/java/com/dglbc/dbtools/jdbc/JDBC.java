@@ -17,16 +17,11 @@ import java.util.Map;
  **/
 
 public class JDBC {
+
     public static Connection getConnection() throws SQLException {
         Map<String, String> map = System.getenv();
-        HikariConfig config = new HikariConfig();
-        config.setJdbcUrl("jdbc:sqlserver://192.168.22.226:1433; DatabaseName=ZBERP");
-        config.setUsername("sa");
-        config.setPassword(map.get("test_db"));
-
-        config.addDataSourceProperty("cachePrepStmts", "true");
-        config.addDataSourceProperty("prepStmtCacheSize", "250");
-        config.addDataSourceProperty("prepStmtCacheSqlLimit", "2048");
+        HikariConfig config = new HikariConfig("/hikari.properties");
+        config.setPassword(map.get("db_mysql"));
         HikariDataSource ds = new HikariDataSource(config);
         return ds.getConnection();
     }

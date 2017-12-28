@@ -21,7 +21,7 @@ public class JDBC {
     public static Connection getConnection() throws SQLException {
         Map<String, String> map = System.getenv();
         HikariConfig config = new HikariConfig("/hikari.properties");
-        config.setPassword(map.get("db_mysql"));
+        config.setPassword(map.get("db_test"));
         HikariDataSource ds = new HikariDataSource(config);
         return ds.getConnection();
     }

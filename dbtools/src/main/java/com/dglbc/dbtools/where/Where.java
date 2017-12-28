@@ -1,6 +1,6 @@
 package com.dglbc.dbtools.where;
 
-import com.dglbc.dbtools.ExecSql;
+import com.dglbc.dbtools.Statement;
 import com.dglbc.dbtools.SqlKey;
 import com.dglbc.dbtools.join.Join;
 import lombok.Getter;
@@ -22,9 +22,24 @@ public class Where implements Serializable {
     private String logic;
     private StringBuilder sql;
     private List parms;
+    private List<Where> conditions=new ArrayList<>();
 
-    public ExecSql builder() {
-        return new ExecSql(logic + sql, parms);
+    public Statement builder() {
+        Statement statement = null;
+        StringBuilder nsql = new StringBuilder();
+        if (conditions.size() ==0){
+            nsql.append(logic).append(sql);
+        }else {
+            nsql.append(logic).append(LEFT).append(sql);
+            for (Where where : conditions) {
+                Statement temp = where.builder();
+                nsql.append(temp.getSql());
+                parms.addAll(temp.getValues());
+            }
+            nsql.append(RIGHT);
+        }
+        
+        return new Statement(nsql.toString(), parms);
     }
 
     public Where(String logic) {
@@ -39,13 +54,13 @@ public class Where implements Serializable {
         this.parms = new ArrayList();
     }
 
-    public Where or() {
-        sql.append(SqlKey.OR);
+    public Where or(Where where) {
+        conditions.add(where);
         return this;
     }
 
-    public Where and() {
-        sql.append(SqlKey.AND);
+    public Where and(Where where) {
+        conditions.add(where);
         return this;
     }
 
@@ -82,7 +97,7 @@ public class Where implements Serializable {
 
     // not like
     public Where notLike(String name, String value) {
-        return add(name, value, "NOT LIKE ");
+        return add(name, value, " NOT LIKE ");
     }
 
 

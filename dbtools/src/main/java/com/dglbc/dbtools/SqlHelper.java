@@ -50,21 +50,21 @@ public class SqlHelper implements Serializable {
 
     //查询语句
     public SqlHelper sc(String name) {
-        this.selectContent.add("A." + name + " AS " + name.toUpperCase());
+        this.selectContent.add("A." + name + SqlKey.AS + name.toUpperCase());
         this.groupContent.add("A." + name);
         return this;
     }
 
     //查询语句
     public SqlHelper sc(Join alias, String name) {
-        this.selectContent.add(alias.getAlias() + "." + name + " AS " + name.toUpperCase());
+        this.selectContent.add(alias.getAlias() + "." + name + SqlKey.AS + name.toUpperCase());
         this.groupContent.add(alias.getAlias() + "." + name);
         return this;
     }
 
     //查询语句
     public SqlHelper sc(Join alias, String name, String aname) {
-        this.selectContent.add(alias.getAlias() + "." + name + " AS " + aname);
+        this.selectContent.add(alias.getAlias() + "." + name + SqlKey.AS + aname);
         return this;
     }
 
@@ -119,24 +119,28 @@ public class SqlHelper implements Serializable {
     4：生成where的信息
     5：生成group by order by 信息
      */
-    public ExecSql selectBuilder() {
+    public Statement selectBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.SELECT);
         sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
         sql.append(SqlKey.FROM).append(table).append(" A").append(SqlKey.WITH);
         if (joins.size() > 0) {
-            joins.forEach(join -> {
-                ExecSql tempsql = join.builder();
+            for (Join join : joins) {
+                Statement tempsql = join.builder();
                 sql.append(tempsql.getSql());
                 params.addAll(tempsql.getValues());
-            });
+            }
+
         }
         sql.append(SqlKey.WHERE);
-        if (conditions.size() > 0) conditions.forEach(where -> {
-            ExecSql tempsql = where.builder();
-            sql.append(tempsql.getSql());
-            params.addAll(tempsql.getValues());
-        });
+
+        if (conditions.size() > 0) {
+            for (Where where : conditions) {
+                Statement tempsql = where.builder();
+                sql.append(tempsql.getSql());
+                params.addAll(tempsql.getValues());
+            }
+        }
 
         if (group) {
             sql.append(SqlKey.GROUP).append(groupContent.toString().replaceAll("[\\[\\]]", " "));
@@ -145,61 +149,61 @@ public class SqlHelper implements Serializable {
 
         if (order) sql.append(SqlKey.ORDER).append(orderContent);
 
-        return new ExecSql(sql.toString(), params);
+        return new Statement(sql.toString(), params);
     }
 
     /*
        插入语句生成器
      */
-    public ExecSql insertBuilder() {
+    public Statement insertBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.INSERT).append(table).append(" ( ");
         StringBuilder sql1 = new StringBuilder();
         StringBuilder sql2 = new StringBuilder();
-        insertContent.forEach(unit -> {
+        for (Unit unit : insertContent) {
             sql2.append(",").append(unit.getName());
             sql1.append(",?");
             params.add(unit.getValue());
-        });
-        sql1.delete(0, 1);
-        sql2.delete(0, 1);
-        sql.append(sql2);
-        sql.append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1).append(" ) ");
-        return new ExecSql(sql.toString(), params);
+        }
+        sql.append(sql2.delete(0, 1));
+        sql.append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
+        return new Statement(sql.toString(), params);
     }
 
     /*
         更新语句生成器
     */
-    public ExecSql updateBuilder() {
+    public Statement updateBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.UPDATE).append(table).append(SqlKey.SET);
         StringBuilder sql1 = new StringBuilder();
-        updateContent.forEach(unit -> {
+        for (Unit unit : updateContent) {
             sql1.append(",").append(unit.getName()).append(" =? ");
             params.add(unit.getValue());
-        });
+        }
+
         sql1.delete(0, 1);
         sql.append(sql1).append(SqlKey.WHERE);
-        conditions.forEach(where -> {
-            ExecSql tempsql = where.builder();
+        for (Where where : conditions) {
+            Statement tempsql = where.builder();
             sql.append(tempsql.getSql());
             params.addAll(tempsql.getValues());
-        });
-        return new ExecSql(sql.toString(), params);
+        }
+        return new Statement(sql.toString(), params);
     }
+
     /*
         删除语句生成器
     */
-    public ExecSql deleteBulider() {
+    public Statement deleteBulider() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(" A ").append(SqlKey.FROM).append(table).append(" A ").append(SqlKey.WHERE);
-        conditions.forEach(where -> {
-            ExecSql tempsql = where.builder();
+        for (Where where : conditions) {
+            Statement tempsql = where.builder();
             sql.append(tempsql.getSql());
             params.addAll(tempsql.getValues());
-        });
-        return new ExecSql(sql.toString(), params);
+        }
+        return new Statement(sql.toString(), params);
     }
 
 }

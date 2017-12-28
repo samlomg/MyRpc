@@ -1,6 +1,6 @@
 package com.dglbc;
 
-import com.dglbc.dbtools.ExecSql;
+import com.dglbc.dbtools.Statement;
 import com.dglbc.dbtools.SqlHelper;
 import org.junit.Test;
 
@@ -17,9 +17,9 @@ public class InsertTest {
         sqlHelper.ic("testName", "sam");
         sqlHelper.ic("testp", 101);
         sqlHelper.ic("XLSZ", "1111");
-        ExecSql execSql = sqlHelper.insertBuilder();
-        System.out.println(execSql.getSql());
-        execSql.getValues().forEach(o -> System.out.println(o.toString()+" , "));
+        Statement statement = sqlHelper.insertBuilder();
+        System.out.println(statement.getSql());
+        statement.getValues().forEach(o -> System.out.println(o.toString()+" , "));
 
     }
 }

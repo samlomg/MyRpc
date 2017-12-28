@@ -1,6 +1,6 @@
 package com.dglbc;
 
-import com.dglbc.dbtools.ExecSql;
+import com.dglbc.dbtools.Statement;
 import com.dglbc.dbtools.SqlHelper;
 import com.dglbc.dbtools.SqlKey;
 import com.dglbc.dbtools.where.Where;
@@ -17,8 +17,8 @@ public class UpdateTest {
         SqlHelper sqlHelper = new SqlHelper("TEST");
         sqlHelper.uc("testName", "SAMBC");
         sqlHelper.where(new Where(SqlKey.AND).eq("testId",1));
-        ExecSql execSql = sqlHelper.updateBuilder();
-        System.out.println(execSql.getSql());
-        execSql.getValues().forEach(o -> System.out.println(o.toString()+" , "));
+        Statement statement = sqlHelper.updateBuilder();
+        System.out.println(statement.getSql());
+        statement.getValues().forEach(o -> System.out.println(o.toString()+" , "));
     }
 }

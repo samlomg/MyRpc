@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ExecSql {
+public class Statement {
     private String sql;
     private List values;
 

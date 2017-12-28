@@ -1,6 +1,6 @@
 package com.dglbc.dbtools.join;
 
-import com.dglbc.dbtools.ExecSql;
+import com.dglbc.dbtools.Statement;
 import com.dglbc.dbtools.SqlKey;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,12 +26,17 @@ public class Join implements Serializable {
     private List<Object> parms;
     private String joinSql;
 
-    public ExecSql builder(){
+    public Statement builder(){
         StringBuilder sql = new StringBuilder().append(join).append(table).append(" ").append(alias).append(SqlKey.ON);
+        boolean init=false;
         for (JoinCondition jionCondition:condition){
+            if (init){
+                sql.append(SqlKey.AND);
+            }
             sql.append(jionCondition.builder());
+            init = true;
         }
-        return new ExecSql(sql.toString(),parms);
+        return new Statement(sql.toString(),parms);
     }
 
     public Join(String join,String table, String alias,String aliasName, String value) {
@@ -57,7 +62,7 @@ public class Join implements Serializable {
         this.parms = new ArrayList<>();
     }
 
-    public Join(String join, ExecSql table, String alias, String aliasName, String refences, String name) {
+    public Join(String join, Statement table, String alias, String aliasName, String refences, String name) {
         this.join = join;
         this.table = " ( "+table.getSql()+" ) ";
         this.alias = alias;
@@ -69,22 +74,22 @@ public class Join implements Serializable {
 
     }
 
-    public Join addCondition(String alias,String aliasName, String name){
+    public Join on(String alias,String aliasName, String name){
         this.condition.add(new JoinCondition("A", name, alias + "." + aliasName));
         return this;
     }
 
-    public Join addCondition(String alias,String aliasName,String refences, String name){
+    public Join onA(String alias,String aliasName,String refences, String name){
         this.condition.add(new JoinCondition(refences, name, alias + "." + aliasName));
         return this;
     }
 
-    public Join addConditionClause(String clause,String name){
+    public Join on(String clause,String name){
         this.condition.add(new JoinCondition("A", name, clause));
         return this;
     }
 
-    public Join addConditionClause(String clause,String refences, String name){
+    public Join onA(String clause,String refences, String name){
         this.condition.add(new JoinCondition(refences, name, clause));
         return this;
     }

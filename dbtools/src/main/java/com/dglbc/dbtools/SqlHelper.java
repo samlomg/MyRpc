@@ -119,14 +119,14 @@ public class SqlHelper implements Serializable {
     4：生成where的信息
     5：生成group by order by 信息
      */
-    public Statement selectBuilder() {
+    public Expression selectBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.SELECT);
         sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
         sql.append(SqlKey.FROM).append(table).append(" A").append(SqlKey.WITH);
         if (joins.size() > 0) {
             for (Join join : joins) {
-                Statement tempsql = join.builder();
+                Expression tempsql = join.builder();
                 sql.append(tempsql.getSql());
                 params.addAll(tempsql.getValues());
             }
@@ -136,7 +136,7 @@ public class SqlHelper implements Serializable {
 
         if (conditions.size() > 0) {
             for (Where where : conditions) {
-                Statement tempsql = where.builder();
+                Expression tempsql = where.builder();
                 sql.append(tempsql.getSql());
                 params.addAll(tempsql.getValues());
             }
@@ -149,13 +149,13 @@ public class SqlHelper implements Serializable {
 
         if (order) sql.append(SqlKey.ORDER).append(orderContent);
 
-        return new Statement(sql.toString(), params);
+        return new Expression(sql, params);
     }
 
     /*
        插入语句生成器
      */
-    public Statement insertBuilder() {
+    public Expression insertBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.INSERT).append(table).append(" ( ");
         StringBuilder sql1 = new StringBuilder();
@@ -167,13 +167,13 @@ public class SqlHelper implements Serializable {
         }
         sql.append(sql2.delete(0, 1));
         sql.append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
-        return new Statement(sql.toString(), params);
+        return new Expression(sql, params);
     }
 
     /*
         更新语句生成器
     */
-    public Statement updateBuilder() {
+    public Expression updateBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.UPDATE).append(table).append(SqlKey.SET);
         StringBuilder sql1 = new StringBuilder();
@@ -185,25 +185,25 @@ public class SqlHelper implements Serializable {
         sql1.delete(0, 1);
         sql.append(sql1).append(SqlKey.WHERE);
         for (Where where : conditions) {
-            Statement tempsql = where.builder();
+            Expression tempsql = where.builder();
             sql.append(tempsql.getSql());
             params.addAll(tempsql.getValues());
         }
-        return new Statement(sql.toString(), params);
+        return new Expression(sql, params);
     }
 
     /*
         删除语句生成器
     */
-    public Statement deleteBulider() {
+    public Expression deleteBulider() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(" A ").append(SqlKey.FROM).append(table).append(" A ").append(SqlKey.WHERE);
         for (Where where : conditions) {
-            Statement tempsql = where.builder();
+            Expression tempsql = where.builder();
             sql.append(tempsql.getSql());
             params.addAll(tempsql.getValues());
         }
-        return new Statement(sql.toString(), params);
+        return new Expression(sql, params);
     }
 
 }

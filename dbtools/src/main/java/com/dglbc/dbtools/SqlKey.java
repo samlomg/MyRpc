@@ -28,5 +28,9 @@ public class SqlKey {
     public static String VALUES  = " VALUES ";
     public static String SET  = " SET ";
     public static String AS  = " AS ";
+    public static String DATEADD  = " DATEADD ";
+    public static String LEFT = " ( ";
+    public static String RIGHT = " ) ";
+    public static String ISNULL = " ISNULL ";
 
 }

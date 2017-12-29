@@ -1,12 +1,15 @@
 package com.dglbc.dbtools.join;
 
-import com.dglbc.dbtools.Statement;
+import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.SqlKey;
+import com.dglbc.dbtools.table.Column;
+import com.dglbc.dbtools.table.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -20,79 +23,65 @@ import java.util.List;
 public class Join implements Serializable {
 
     private String join;//key world 1:left join,right join ...
-    private String table; //
-    private String alias;
-    private List<JoinCondition> condition;
-    private List<Object> parms;
-    private String joinSql;
+    private Expression table; //
+    private List<Expression> condition;
 
-    public Statement builder(){
-        StringBuilder sql = new StringBuilder().append(join).append(table).append(" ").append(alias).append(SqlKey.ON);
-        boolean init=false;
-        for (JoinCondition jionCondition:condition){
-            if (init){
+    private List parms;
+    private StringBuilder sql;
+
+    public Expression builder() {
+        StringBuilder sql = new StringBuilder().append(join).append(table).append(" ").append(SqlKey.ON);
+        boolean init = false;
+        for (Expression expression : condition) {
+            if (init) {
                 sql.append(SqlKey.AND);
             }
-            sql.append(jionCondition.builder());
+            sql.append(expression.getSql());
+            parms.addAll(expression.getValues());
             init = true;
         }
-        return new Statement(sql.toString(),parms);
+        return new Expression(sql, parms);
     }
 
-    public Join(String join,String table, String alias,String aliasName, String value) {
+    public Join(String join, Expression table) {
         this.join = join;
         this.table = table;
-        this.alias = alias;
-        this.condition = new ArrayList<JoinCondition>(){{
-            add(new JoinCondition(alias, aliasName,"?"));
-        }};
-
-        this.parms=new ArrayList<Object>(){{
-            add(value);
-        }};
     }
 
-    public Join(String join,String table, String alias,String aliasName,String refences, String name) {
+
+    public Join(String join, Table table, Column column, Column column2) {
         this.join = join;
-        this.table = table;
-        this.alias = alias;
-        this.condition = new ArrayList<JoinCondition>(){{
-            add(new JoinCondition(refences, name, alias + "." + aliasName));
+        this.table = StringUtils.isEmpty(table.getName()) ? new Expression(table, true) : new Expression(table, false);
+        this.condition = new ArrayList<Expression>() {{
+            add(new Expression(column.getTable().getAlias() + "." + column.getName() + " = " + column2.getTable().getAlias() + "." + column2.getName()));
         }};
-        this.parms = new ArrayList<>();
     }
 
-    public Join(String join, Statement table, String alias, String aliasName, String refences, String name) {
-        this.join = join;
-        this.table = " ( "+table.getSql()+" ) ";
-        this.alias = alias;
-        this.condition = new ArrayList<JoinCondition>(){{
-            add(new JoinCondition(refences, name, alias + "." + aliasName));
-        }};
-        this.parms = new ArrayList<>();
-        if (table.getValues().size() >0) this.parms.addAll(table.getValues());
-
-    }
-
-    public Join on(String alias,String aliasName, String name){
-        this.condition.add(new JoinCondition("A", name, alias + "." + aliasName));
+    public Join On(Expression expression, Expression expression2) {
+        List temp = new ArrayList();
+        temp.addAll(expression.getValues());
+        temp.addAll(expression2.getValues());
+        condition.add(new Expression(expression.getSql().append(" = ").append(expression2.getSql()), temp));
         return this;
     }
 
-    public Join onA(String alias,String aliasName,String refences, String name){
-        this.condition.add(new JoinCondition(refences, name, alias + "." + aliasName));
+    public Join on(Expression expression, Column column) {
+        Expression expression1 = new Expression(column, false);
+        condition.add(new Expression(expression.getSql().append(" = ").append(expression1.getSql()), expression.getValues()));
         return this;
     }
 
-    public Join on(String clause,String name){
-        this.condition.add(new JoinCondition("A", name, clause));
+    public Join on(Column column) {
+        StringBuilder temsb = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").
+                append(column.getName()).append(" =? ");
+        condition.add(new Expression().setSql(temsb).setValues(new ArrayList() {{
+            add(column.getValue());
+        }}));
         return this;
     }
 
-    public Join onA(String clause,String refences, String name){
-        this.condition.add(new JoinCondition(refences, name, clause));
+    public Join on(Expression expression) {
+        condition.add(expression);
         return this;
     }
-
-
 }

@@ -13,7 +13,7 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class JoinCondition implements Serializable {
+public class On implements Serializable {
     private String alias;
     private String name;
     private String condition;

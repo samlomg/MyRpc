@@ -1,15 +1,14 @@
 package com.dglbc.dbtools.where;
 
-import com.dglbc.dbtools.Statement;
+import com.dglbc.dbtools.table.Column;
+import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.SqlKey;
-import com.dglbc.dbtools.join.Join;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Accessors(chain = true)
@@ -17,29 +16,27 @@ import java.util.List;
 @Getter
 public class Where implements Serializable {
 
-    private static String LEFT = " ( ";
-    private static String RIGHT = " ) ";
+
     private String logic;
     private StringBuilder sql;
     private List parms;
-    private List<Where> conditions=new ArrayList<>();
+    private List<Where> conditions = new ArrayList<>();
 
-    public Statement builder() {
-        Statement statement = null;
+    public Expression builder() {
         StringBuilder nsql = new StringBuilder();
-        if (conditions.size() ==0){
+        if (conditions.size() == 0) {
             nsql.append(logic).append(sql);
-        }else {
-            nsql.append(logic).append(LEFT).append(sql);
+        } else {
+            nsql.append(logic).append(SqlKey.LEFT).append(sql);
             for (Where where : conditions) {
-                Statement temp = where.builder();
+                Expression temp = where.builder();
                 nsql.append(temp.getSql());
                 parms.addAll(temp.getValues());
             }
-            nsql.append(RIGHT);
+            nsql.append(SqlKey.RIGHT);
         }
-        
-        return new Statement(nsql.toString(), parms);
+
+        return new Expression(nsql, parms);
     }
 
     public Where(String logic) {
@@ -65,182 +62,99 @@ public class Where implements Serializable {
     }
 
     // 运算
-    public Where add(String name, Object value, String opt) {
-        sql.append("A.").append(name).append(opt).append("? ");
+    public Where add(Expression expression, Object value, String opt) {
+        sql.append(expression.getSql()).append(opt).append(" ? ");
+        parms.add(expression.getValues());
         parms.add(value);
         return this;
     }
 
     // 运算
-    public Where add(Join join, String name, Object value, String opt) {
-        sql.append(join.getAlias()).append(".").append(name).append(opt).append("? ");
-        parms.add(value);
-        return this;
-    }
-
-    // 运算
-    public Where add(String name, String opt) {
-        sql.append("A.").append(name).append(opt);
-        return this;
-    }
-
-    // 运算
-    public Where add(Join join, String name, String opt) {
-        sql.append(join.getAlias()).append(".").append(name).append(opt);
+    public Where add(String caulse) {
+        sql.append(caulse);
         return this;
     }
 
     // like
-    public Where like(String name, String value) {
-        return add(name, value, " LIKE ");
+    public Where like(Column column) {
+        return add(new Expression(column, false), column.getValue(), " LIKE ");
     }
 
     // not like
-    public Where notLike(String name, String value) {
-        return add(name, value, " NOT LIKE ");
+    public Where notLike(Column column) {
+        return add(new Expression(column, false), column.getValue(), " NOT LIKE ");
     }
 
-
     // 大于
-    public Where gt(String name, int value) {
-        return add(name, value, ">");
+    public Where gt(Column column) {
+        return add(new Expression(column, false), column.getValue(), ">");
     }
 
     // 大于等于
-    public Where ge(String name, int value) {
-        return add(name, value, " >= ");
+    public Where ge(Column column) {
+        return add(new Expression(column, false), column.getValue(), " >= ");
     }
 
     // 小于
-    public Where lt(String name, int value) {
-        return add(name, value, " < ");
+    public Where lt(Column column) {
+        return add(new Expression(column, false), column.getValue(), " < ");
     }
 
     // 小于等于
-    public Where le(String name, int value) {
-        return add(name, value, " <= ");
+    public Where le(Column column) {
+        return add(new Expression(column, false), column.getValue(), " <= ");
     }
 
     // 等于
-    public Where eq(String name, Object value) {
-        return add(name, value, " = ");
+    public Where eq(Column column) {
+        return add(new Expression(column, false), column.getValue(), " = ");
     }
 
     // 不等于
-    public Where neq(String name, Object value) {
-        return add(name, value, " <> ");
+    public Where neq(Column column) {
+        return add(new Expression(column, false), column.getValue(), " <> ");
     }
 
     // 为空
-    public Where isNull(String name) {
-        return add(name, " IS NULL ");
+    public Where isNull(Column column) {
+        return add(column.getTable().getAlias() + "." + column.getName() + " IS NULL ");
     }
 
     // 为空
-    public Where isNotNull(String name) {
-        return add(name, " IS NOT NULL ");
+    public Where isNotNull(Column column) {
+        return add(column.getTable().getAlias() + "." + column.getName() + " IS NOT NULL ");
     }
 
     //between
-    public Where between(String name, Object value, Object value1) {
-        sql.append("A.").append(name).append(SqlKey.BETWEEN).append("?").append(SqlKey.AND).append("?");
+    public Where between(Column column, Object value, Object value1) {
+        return between(new Expression(column, false), value, value1);
+    }
+
+    //between
+    public Where between(Expression expression, Object value, Object value1) {
+        sql.append(expression.getSql()).append(SqlKey.BETWEEN).append("?").append(SqlKey.AND).append("?");
+        parms.addAll(expression.getValues());
         parms.add(value);
         parms.add(value1);
         return this;
     }
 
     //in
-    public Where in(String name, List values) {
-        sql.append("A.").append(name).append(SqlKey.IN);
-        String temp = new String();
-        for (Object o : values) {
-            temp += ",?";
-        }
-        temp.replaceFirst(",", LEFT);
-        sql.append(temp).append(RIGHT);
-        parms.addAll(values);
-        return this;
-    }
-
-    public Where in(String name, Object[] values) {
-        return in(name, Arrays.asList(values));
-    }
-
-
-    // like
-    public Where like(Join join, String name, String value) {
-        return add(join, name, value, " LIKE ");
-    }
-
-    // not like
-    public Where notLike(Join join, String name, String value) {
-        return add(join, name, value, "NOT LIKE ");
-    }
-
-
-    // 大于
-    public Where gt(Join join, String name, int value) {
-        return add(join, name, value, ">");
-    }
-
-    // 大于等于
-    public Where ge(Join join, String name, int value) {
-        return add(join, name, value, " >= ");
-    }
-
-    // 小于
-    public Where lt(Join join, String name, int value) {
-        return add(join, name, value, " < ");
-    }
-
-    // 小于等于
-    public Where le(Join join, String name, int value) {
-        return add(join, name, value, " <= ");
-    }
-
-    // 等于
-    public Where eq(Join join, String name, Object value) {
-        return add(join, name, value, " = ");
-    }
-
-    // 不等于
-    public Where neq(Join join, String name, Object value) {
-        return add(join, name, value, " <> ");
-    }
-
-    // 为空
-    public Where isNull(Join join, String name) {
-        return add(join, name, " IS NULL ");
-    }
-
-    // 为空
-    public Where isNotNull(Join join, String name) {
-        return add(join, name, " IS NOT NULL ");
-    }
-
-    //between
-    public Where between(Join join, String name, Object value, Object value1) {
-        sql.append(join.getAlias()).append(".").append(name).append(SqlKey.BETWEEN).append("?").append(SqlKey.AND).append("?");
-        parms.add(value);
-        parms.add(value1);
-        return this;
+    public Where in(Column column, List values) {
+        return in(new Expression(column, false), values);
     }
 
     //in
-    public Where in(Join join, String name, List values) {
-        sql.append(join.getAlias()).append(".").append(name).append(SqlKey.IN);
+    public Where in(Expression expression, List values) {
+        sql.append(expression.getSql()).append(SqlKey.IN);
         String temp = new String();
         for (Object o : values) {
             temp += ",?";
         }
-        temp.replaceFirst(",", LEFT);
-        sql.append(temp).append(RIGHT);
+        temp.replaceFirst(",", SqlKey.LEFT);
+        sql.append(temp).append(SqlKey.RIGHT);
         parms.addAll(values);
         return this;
-    }
-
-    public Where in(Join join, String name, Object[] values) {
-        return in(join, name, Arrays.asList(values));
     }
 
 }

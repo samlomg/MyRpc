@@ -1,6 +1,8 @@
 package com.dglbc.dbtools;
 
 import com.dglbc.dbtools.join.Join;
+import com.dglbc.dbtools.table.Column;
+import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,20 +21,20 @@ import java.util.List;
 @Getter
 public class SqlHelper implements Serializable {
 
-    private List<String> selectContent;
-    private List<Unit> insertContent;
-    private List<Unit> updateContent;
+    private List<Expression> selectContent;
+    private List<Column> insertContent;
+    private List<Column> updateContent;
     private List<Where> conditions;
-    private String table;
+    private Table table;
     private List<Join> joins;
     private boolean order = false;
     private boolean group = false;
     private boolean have = false;
-    private List<String> groupContent;
+    private List<Column> groupContent;
     private String orderContent;
     private String havingContent;
 
-    public SqlHelper(String table) {
+    public SqlHelper(Table table) {
         this.table = table;
         this.selectContent = new ArrayList<>();
         this.insertContent = new ArrayList<>();
@@ -43,40 +45,19 @@ public class SqlHelper implements Serializable {
     }
 
     //查询语句,自定义
-    public SqlHelper scc(String name) {
-        this.selectContent.add(name.toUpperCase());
-        return this;
+    public SqlHelper sc(Column column) {
+        return sc(new Expression(column,false));
     }
 
     //查询语句
-    public SqlHelper sc(String name) {
-        this.selectContent.add("A." + name + SqlKey.AS + name.toUpperCase());
-        this.groupContent.add("A." + name);
-        return this;
-    }
-
-    //查询语句
-    public SqlHelper sc(Join alias, String name) {
-        this.selectContent.add(alias.getAlias() + "." + name + SqlKey.AS + name.toUpperCase());
-        this.groupContent.add(alias.getAlias() + "." + name);
-        return this;
-    }
-
-    //查询语句
-    public SqlHelper sc(Join alias, String name, String aname) {
-        this.selectContent.add(alias.getAlias() + "." + name + SqlKey.AS + aname);
-        return this;
-    }
-
-    //插入语句
-    public SqlHelper ic(String name, Object value) {
-        this.insertContent.add(new Unit(name, value));
+    public SqlHelper sc(Expression expression) {
+        this.selectContent.add(expression);
         return this;
     }
 
     //更新语句
-    public SqlHelper uc(String name, Object value) {
-        this.updateContent.add(new Unit(name, value));
+    public SqlHelper uc(Column column) {
+        this.updateContent.add(column);
         return this;
     }
 
@@ -160,10 +141,10 @@ public class SqlHelper implements Serializable {
         StringBuilder sql = new StringBuilder(SqlKey.INSERT).append(table).append(" ( ");
         StringBuilder sql1 = new StringBuilder();
         StringBuilder sql2 = new StringBuilder();
-        for (Unit unit : insertContent) {
-            sql2.append(",").append(unit.getName());
+        for (Column column : insertContent) {
+            sql2.append(",").append(column.getName());
             sql1.append(",?");
-            params.add(unit.getValue());
+            params.add(column.getValue());
         }
         sql.append(sql2.delete(0, 1));
         sql.append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
@@ -177,9 +158,9 @@ public class SqlHelper implements Serializable {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.UPDATE).append(table).append(SqlKey.SET);
         StringBuilder sql1 = new StringBuilder();
-        for (Unit unit : updateContent) {
-            sql1.append(",").append(unit.getName()).append(" =? ");
-            params.add(unit.getValue());
+        for (Column column : updateContent) {
+            sql1.append(",").append(column.getName()).append(" =? ");
+            params.add(column.getValue());
         }
 
         sql1.delete(0, 1);

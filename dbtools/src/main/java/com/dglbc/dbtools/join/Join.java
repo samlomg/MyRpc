@@ -57,7 +57,7 @@ public class Join implements Serializable {
         }};
     }
 
-    public Join On(Expression expression, Expression expression2) {
+    public Join on(Expression expression, Expression expression2) {
         List temp = new ArrayList();
         temp.addAll(expression.getValues());
         temp.addAll(expression2.getValues());

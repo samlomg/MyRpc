@@ -61,6 +61,12 @@ public class SqlHelper implements Serializable {
         return this;
     }
 
+    //插入语句
+    public SqlHelper ic(Column column) {
+        this.insertContent.add(column);
+        return this;
+    }
+
     public SqlHelper join(Join join) {
         joins.add(join);
         return this;
@@ -103,8 +109,12 @@ public class SqlHelper implements Serializable {
     public Expression selectBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.SELECT);
-        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
-        sql.append(SqlKey.FROM).append(table).append(" A").append(SqlKey.WITH);
+//        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
+        for (Expression expression:selectContent){
+            sql.append(expression.getSql());
+            params.addAll(expression.getValues());
+        }
+        sql.append(SqlKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(SqlKey.WITH);
         if (joins.size() > 0) {
             for (Join join : joins) {
                 Expression tempsql = join.builder();
@@ -138,7 +148,7 @@ public class SqlHelper implements Serializable {
      */
     public Expression insertBuilder() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.INSERT).append(table).append(" ( ");
+        StringBuilder sql = new StringBuilder(SqlKey.INSERT).append(table.getName()).append(" ( ");
         StringBuilder sql1 = new StringBuilder();
         StringBuilder sql2 = new StringBuilder();
         for (Column column : insertContent) {
@@ -146,8 +156,7 @@ public class SqlHelper implements Serializable {
             sql1.append(",?");
             params.add(column.getValue());
         }
-        sql.append(sql2.delete(0, 1));
-        sql.append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
+        sql.append(sql2.delete(0, 1)).append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
         return new Expression(sql, params);
     }
 
@@ -156,7 +165,7 @@ public class SqlHelper implements Serializable {
     */
     public Expression updateBuilder() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.UPDATE).append(table).append(SqlKey.SET);
+        StringBuilder sql = new StringBuilder(SqlKey.UPDATE).append(table.getName()).append(SqlKey.SET);
         StringBuilder sql1 = new StringBuilder();
         for (Column column : updateContent) {
             sql1.append(",").append(column.getName()).append(" =? ");
@@ -178,7 +187,8 @@ public class SqlHelper implements Serializable {
     */
     public Expression deleteBulider() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(" A ").append(SqlKey.FROM).append(table).append(" A ").append(SqlKey.WHERE);
+        StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(" ").append(table.getAlias()).append(" ")
+                .append(SqlKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(" ").append(SqlKey.WHERE);
         for (Where where : conditions) {
             Expression tempsql = where.builder();
             sql.append(tempsql.getSql());

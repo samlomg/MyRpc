@@ -64,7 +64,7 @@ public class Where implements Serializable {
     // 运算
     public Where add(Expression expression, Object value, String opt) {
         sql.append(expression.getSql()).append(opt).append(" ? ");
-        parms.add(expression.getValues());
+        parms.addAll(expression.getValues());
         parms.add(value);
         return this;
     }

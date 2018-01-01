@@ -59,7 +59,7 @@ public class Expression {
         return dateAdd(datepart, number, new Expression(time));
     }
 
-    public static Expression isnull(Expression expression, String value) {
+    public static Expression isnull(Expression expression, Object value) {
         List templist = new ArrayList();
         templist.addAll(expression.getValues());
         templist.add(value);
@@ -67,8 +67,8 @@ public class Expression {
                 append(expression.getSql()).append(",?").append(SqlKey.RIGHT), templist);
     }
 
-    public static Expression isnull(Column column, String value) {
-        return isnull(new Expression(column, false), value);
+    public static Expression isnull(Column column) {
+        return isnull(new Expression(column, false), column.getValue());
     }
 
 }

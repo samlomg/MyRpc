@@ -30,7 +30,8 @@ public class Join implements Serializable {
     private StringBuilder sql;
 
     public Expression builder() {
-        StringBuilder sql = new StringBuilder().append(join).append(table).append(" ").append(SqlKey.ON);
+        StringBuilder sql = new StringBuilder().append(join).append(table.getSql()).append(SqlKey.ON);
+        parms.addAll(table.getValues());
         boolean init = false;
         for (Expression expression : condition) {
             if (init) {
@@ -46,6 +47,8 @@ public class Join implements Serializable {
     public Join(String join, Expression table) {
         this.join = join;
         this.table = table;
+        this.condition = new ArrayList();
+        this.parms = new ArrayList();
     }
 
 
@@ -55,6 +58,7 @@ public class Join implements Serializable {
         this.condition = new ArrayList<Expression>() {{
             add(new Expression(column.getTable().getAlias() + "." + column.getName() + " = " + column2.getTable().getAlias() + "." + column2.getName()));
         }};
+        this.parms = new ArrayList();
     }
 
     public Join on(Expression expression, Expression expression2) {

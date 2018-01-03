@@ -32,5 +32,10 @@ public class SqlKey {
     public static String LEFT = " ( ";
     public static String RIGHT = " ) ";
     public static String ISNULL = " ISNULL ";
+    public static String CONVERT = " CONVERT ";
+    public static String CASE = " CASE ";
+    public static String WHEN = " WHEN ";
+    public static String ELSE = " ELSE ";
+    public static String END = " END ";
 
 }

@@ -35,7 +35,10 @@ public class SqlKey {
     public static String CONVERT = " CONVERT ";
     public static String CASE = " CASE ";
     public static String WHEN = " WHEN ";
+    public static String THEN = " THEN ";
     public static String ELSE = " ELSE ";
     public static String END = " END ";
+    public static String DATEDIFF = " DATEDIFF ";
+    public static String SUM = " SUM ";
 
 }

@@ -40,4 +40,10 @@ public class Table implements Serializable{
         this.values = expression.getValues();
 
     }
+
+    public Table(Expression expression,String alias) {
+        this.sql = expression.getSql();
+        this.values = expression.getValues();
+        this.alias = alias;
+    }
 }

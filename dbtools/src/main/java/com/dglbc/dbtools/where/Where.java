@@ -3,6 +3,7 @@ package com.dglbc.dbtools.where;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.SqlKey;
+import com.dglbc.dbtools.table.Table;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -157,4 +158,13 @@ public class Where implements Serializable {
         return this;
     }
 
+    // 大于
+    public Where gt(Expression expression,Object value) {
+        return add(expression, value, ">");
+    }
+
+    // 等于
+    public Where eq(Table table,String name,Object values) {
+        return eq(new Column(table,name,values));
+    }
 }

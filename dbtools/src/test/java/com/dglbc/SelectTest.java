@@ -4,11 +4,16 @@ import com.dglbc.dbtools.SQLFuntion;
 import com.dglbc.dbtools.SqlHelper;
 import com.dglbc.dbtools.SqlKey;
 import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.jdbc.JDBC;
+import com.dglbc.dbtools.jdbc.face.IVo;
 import com.dglbc.dbtools.join.Join;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
 import org.junit.Test;
+
+import java.sql.ResultSet;
+import java.util.List;
 
 /**
  * Created by LBC on 2017/12/20
@@ -30,7 +35,7 @@ public class SelectTest extends SQLFuntion{
         sqlHelper.join(f4211);
         sqlHelper.where(new Where(SqlKey.AND).eq(new Column(table,"SHMCU","1110114")));
         sqlHelper.where(new Where(SqlKey.AND).eq(new Column(table,"SHDCTO","1110114")));
-        sqlHelper.orderBy("A.Sequence");
+        sqlHelper.orderBy(new Column(table,"Sequence"));
         Expression expression = sqlHelper.selectBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
@@ -48,7 +53,7 @@ public class SelectTest extends SQLFuntion{
         sqlHelper.join(f4211);
         sqlHelper.where(new Where().eq(new Column(table,"SHMCU","1110114")))
         .where(new Where().eq(new Column(f4211_t,"Sequence",236536)));
-        sqlHelper.groupBy().having("SUM(B.SDDOCO) > 100000");
+        sqlHelper.groupBy().having(new Where("").gt(sum(new Expression(new Column(f4211_t,"SDDOCO"),false)),100000));//"SUM(B.SDDOCO) > 100000"
         Expression expression = sqlHelper.selectBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
@@ -56,25 +61,32 @@ public class SelectTest extends SQLFuntion{
 
     @Test
     public void test3() throws Exception {
-//        SqlHelper sqlHelperT = new SqlHelper("F0008");
-//        sqlHelperT.sc("drrt").sc("drky").sc("drdl01");
-//        sqlHelperT.where(new Where().eq("drsy", "42")).where(new Where().eq("drrt", "ZY"));
-//
-//
-//        SqlHelper sqlHelper = new SqlHelper("F4201");
-//        Join f4211 = new Join(SqlKey.LEFTJOIN, "F4211", "B", "SDDOCO", "A", "SHDOCO").on("B","SDDCTO","SDDCTO");
-//        Join f0008 = new Join(SqlKey.LEFTJOIN, sqlHelperT.selectBuilder(), "C", "drky", "B", "SDZKYY");
-//        sqlHelper.sc(f4211, "SDDOCO");
-//        sqlHelper.sc(f0008, "drdl01");
-//        sqlHelper.join(f4211);
-//        sqlHelper.join(f0008);
-//        sqlHelper.where(new Where().eq("SHMCU", "1110114"))
-//                .where(new Where().eq(f4211, "Sequence", 236536).and(new Where(SqlKey.OR).eq("Sequence",236536)))
-//        ;
-//        sqlHelper.groupBy().having("SUM(B.SDDOCO) > 100000");
-//        Expression expression = sqlHelper.selectBuilder();
-//        System.out.println(expression.getSql());
-//        System.out.println(expression.getValues().toString());
+
+
+        Table f0008t =new Table("F0008","A");
+
+        SqlHelper sqlHelperT = new SqlHelper(f0008t);
+        sqlHelperT.sc(f0008t,"drrt").sc(f0008t,"drky").sc(f0008t,"drdl01");
+        sqlHelperT.where(new Where().eq(f0008t,"drsy", "42")).where(new Where().eq(f0008t,"drrt", "ZY"));
+
+
+        Table table = new Table("F4201","A");
+        Table f4211t =new Table("F4211","B");
+        Table f0008_tt = new Table(sqlHelperT.selectBuilder(),"C");
+        SqlHelper sqlHelper = new SqlHelper(table);
+        Join f4211 = new Join(SqlKey.LEFTJOIN, f4211t, new Column(f4211t,"SDDOCO"), new Column(table,"SHDOCO")).on(new Column(f4211t,"SDDCTO"), new Column(table,"SDDCTO"));
+        Join f0008 = new Join(SqlKey.LEFTJOIN, f0008_tt).on(new Column(f0008_tt,"drky"), new Column(f4211t,"SDZKYY"));
+        sqlHelper.sc(f4211t, "SDDOCO");
+        sqlHelper.sc(f0008_tt, "drdl01");
+        sqlHelper.join(f4211);
+        sqlHelper.join(f0008);
+        sqlHelper.where(new Where().eq(table,"SHMCU", "1110114"))
+                .where(new Where().eq(f4211t, "Sequence", 236536).and(new Where(SqlKey.OR).eq(table,"Sequence",236536)))
+        ;
+        sqlHelper.groupBy().having(new Where("").gt(sum(new Expression(new Column(f4211t,"SDDOCO"),false)),100000));
+        Expression expression = sqlHelper.selectBuilder();
+        System.out.println(expression.getSql());
+        System.out.println(expression.getValues().toString());
 
 //        List<String> a= JDBC.list(JDBC.getConnection(), statement.getSql(), new IVo<String>() {
 //            @Override

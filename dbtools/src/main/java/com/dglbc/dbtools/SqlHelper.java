@@ -16,6 +16,7 @@ import java.util.List;
  * 目标是返回一个string sql，还有一个参数数组
  */
 
+@SuppressWarnings("ALL")
 @Accessors(chain = true)
 @Setter
 @Getter
@@ -31,8 +32,8 @@ public class SqlHelper implements Serializable {
     private boolean group = false;
     private boolean have = false;
     private List<Column> groupContent;
-    private String orderContent;
-    private String havingContent;
+    private List<Column> orderContent;
+    private List<Where> havingConditions;
 
     public SqlHelper(Table table) {
         this.table = table;
@@ -42,11 +43,18 @@ public class SqlHelper implements Serializable {
         this.conditions = new ArrayList<>();
         this.joins = new ArrayList<>();
         this.groupContent = new ArrayList<>();
+        this.orderContent = new ArrayList<>();
+        this.havingConditions = new ArrayList<>();
+    }
+
+    //查询语句,自定义
+    public SqlHelper sc(Table table,String name) {
+        return sc(new Column(table,name));
     }
 
     //查询语句,自定义
     public SqlHelper sc(Column column) {
-        return sc(new Expression(column,false));
+        return sc(new Expression(column, false));
     }
 
     //查询语句
@@ -77,10 +85,10 @@ public class SqlHelper implements Serializable {
         return this;
     }
 
-    public SqlHelper having(String sql) {
+    public SqlHelper having(Where where) {
         this.group = true;
         this.have = true;
-        this.havingContent = sql;
+        havingConditions.add(where);
         return this;
     }
 
@@ -92,9 +100,9 @@ public class SqlHelper implements Serializable {
         return this;
     }
 
-    public SqlHelper orderBy(String sql) {
+    public SqlHelper orderBy(Column column) {
         this.order = true;
-        this.orderContent = sql;
+        orderContent.add(column);
         return this;
     }
 
@@ -110,7 +118,7 @@ public class SqlHelper implements Serializable {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.SELECT);
 //        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
-        for (Expression expression:selectContent){
+        for (Expression expression : selectContent) {
             sql.append(expression.getSql());
             params.addAll(expression.getValues());
         }
@@ -134,12 +142,34 @@ public class SqlHelper implements Serializable {
         }
 
         if (group) {
-            sql.append(SqlKey.GROUP).append(groupContent.toString().replaceAll("[\\[\\]]", " "));
-            if (have) sql.append(SqlKey.HAVING).append(havingContent);
+            sql.append(SqlKey.GROUP);
+            String temp = new String();
+            for (Column column : groupContent) {
+                temp += "," + column.getTable().getAlias() + "." + column.getName();
+            }
+            sql.append(temp.replaceFirst(",", ""));
+
+            if (have) {
+                sql.append(SqlKey.HAVING);
+
+                if (havingConditions.size() > 0) {
+                    for (Where where : havingConditions) {
+                        Expression tempsql = where.builder();
+                        sql.append(tempsql.getSql());
+                        params.addAll(tempsql.getValues());
+                    }
+                }
+            }
         }
-
-        if (order) sql.append(SqlKey.ORDER).append(orderContent);
-
+        
+        if (order) {
+            sql.append(SqlKey.ORDER);
+            String temp1 = new String();
+            for (Column column : orderContent) {
+                temp1 += "," + column.getTable().getAlias() + "." + column.getName();
+            }
+            sql.append(temp1.replaceFirst(",", ""));
+        }
         return new Expression(sql, params);
     }
 

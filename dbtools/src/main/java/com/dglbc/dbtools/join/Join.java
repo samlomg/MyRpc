@@ -51,6 +51,12 @@ public class Join implements Serializable {
         this.parms = new ArrayList();
     }
 
+    public Join(String join, Table table) {
+        this.join = join;
+        this.table = StringUtils.isEmpty(table.getName()) ? new Expression(table, true) : new Expression(table, false);
+        this.condition = new ArrayList<>();
+        this.parms = new ArrayList();
+    }
 
     public Join(String join, Table table, Column column, Column column2) {
         this.join = join;
@@ -72,6 +78,16 @@ public class Join implements Serializable {
     public Join on(Expression expression, Column column) {
         Expression expression1 = new Expression(column, false);
         condition.add(new Expression(expression.getSql().append(" = ").append(expression1.getSql()), expression.getValues()));
+        return this;
+    }
+
+    public Join on(Column column, Column column2) {
+        Expression expression = new Expression(column, false);
+        Expression expression1 = new Expression(column2, false);
+        List templist = new ArrayList();
+        templist.addAll(expression.getValues());
+        templist.addAll(expression1.getValues());
+        condition.add(new Expression(expression.getSql().append(" = ").append(expression1.getSql()), templist));
         return this;
     }
 

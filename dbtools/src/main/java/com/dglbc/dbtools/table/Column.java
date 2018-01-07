@@ -33,5 +33,6 @@ public class Column implements Serializable{
         this.table = table;
         this.name = name;
         this.value = value;
+        table.getColumns().add(this);
     }
 }

@@ -95,8 +95,9 @@ public class SqlHelper implements Serializable {
     /*
         Group by 是按select的内容，毕竟group by 和select 是要相同，对了自定义部分没有自动列入。
      */
-    public SqlHelper groupBy() {
+    public SqlHelper groupBy(Column column) {
         this.group = true;
+        groupContent.add(column);
         return this;
     }
 
@@ -118,9 +119,14 @@ public class SqlHelper implements Serializable {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SqlKey.SELECT);
 //        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
+        boolean init = false;
         for (Expression expression : selectContent) {
+            if (init){
+                sql.append(",");
+            }
             sql.append(expression.getSql());
             params.addAll(expression.getValues());
+            init = true;
         }
         sql.append(SqlKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(SqlKey.WITH);
         if (joins.size() > 0) {

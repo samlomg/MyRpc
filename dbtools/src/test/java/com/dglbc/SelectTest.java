@@ -53,7 +53,7 @@ public class SelectTest extends SQLFuntion{
         sqlHelper.join(f4211);
         sqlHelper.where(new Where().eq(new Column(table,"SHMCU","1110114")))
         .where(new Where().eq(new Column(f4211_t,"Sequence",236536)));
-        sqlHelper.groupBy().having(new Where("").gt(sum(new Expression(new Column(f4211_t,"SDDOCO"),false)),100000));//"SUM(B.SDDOCO) > 100000"
+        sqlHelper.groupBy(new Column(table,"SDDOCO","1111")).having(new Where("").gt(sum(new Expression(new Column(f4211_t,"SDDOCO"),false)),100000));//"SUM(B.SDDOCO) > 100000"
         Expression expression = sqlHelper.selectBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
@@ -83,7 +83,7 @@ public class SelectTest extends SQLFuntion{
         sqlHelper.where(new Where().eq(table,"SHMCU", "1110114"))
                 .where(new Where().eq(f4211t, "Sequence", 236536).and(new Where(SqlKey.OR).eq(table,"Sequence",236536)))
         ;
-        sqlHelper.groupBy().having(new Where("").gt(sum(new Expression(new Column(f4211t,"SDDOCO"),false)),100000));
+        sqlHelper.groupBy(new Column(f4211t, "SDDOCO")).having(new Where("").gt(sum(new Expression(new Column(f4211t,"SDDOCO"),false)),100000));
         Expression expression = sqlHelper.selectBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());

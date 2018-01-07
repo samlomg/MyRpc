@@ -45,5 +45,6 @@ public class Table implements Serializable{
         this.sql = expression.getSql();
         this.values = expression.getValues();
         this.alias = alias;
+        this.columns = new ArrayList<>();
     }
 }

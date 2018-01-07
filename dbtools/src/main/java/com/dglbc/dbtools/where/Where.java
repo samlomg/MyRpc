@@ -158,11 +158,14 @@ public class Where implements Serializable {
         return this;
     }
 
+
+    //第二种形式
     // 大于
     public Where gt(Expression expression,Object value) {
         return add(expression, value, ">");
     }
 
+    //第3种形式
     // 等于
     public Where eq(Table table,String name,Object values) {
         return eq(new Column(table,name,values));

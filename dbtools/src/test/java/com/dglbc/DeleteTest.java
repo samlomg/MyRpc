@@ -1,8 +1,8 @@
 package com.dglbc;
 
 import com.dglbc.dbtools.Expression;
-import com.dglbc.dbtools.SqlHelper;
-import com.dglbc.dbtools.SqlKey;
+import com.dglbc.dbtools.SQLHelper;
+import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
@@ -17,9 +17,9 @@ public class DeleteTest {
     @Test
     public void test1() {
         Table table = new Table("Test","A");
-        SqlHelper sqlHelper = new SqlHelper(table);
-        sqlHelper.where(new Where(SqlKey.AND).eq(new Column(table,"testId",1)));
-        Expression expression = sqlHelper.deleteBulider();
+        SQLHelper SQLHelper = new SQLHelper(table);
+        SQLHelper.where(new Where(SQLKey.AND).eq(new Column(table,"testId",1)));
+        Expression expression = SQLHelper.deleteBulider();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
     }

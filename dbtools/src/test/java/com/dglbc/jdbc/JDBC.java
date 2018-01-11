@@ -1,8 +1,8 @@
-package com.dglbc.dbtools.jdbc;
+package com.dglbc.jdbc;
 
-import com.dglbc.dbtools.jdbc.exception.MultiRowExp;
-import com.dglbc.dbtools.jdbc.exception.SqlExp;
-import com.dglbc.dbtools.jdbc.face.IVo;
+import com.dglbc.jdbc.exception.MultiRowExp;
+import com.dglbc.jdbc.exception.SqlExp;
+import com.dglbc.jdbc.face.IVo;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;

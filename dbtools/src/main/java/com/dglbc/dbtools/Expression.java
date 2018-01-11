@@ -37,7 +37,7 @@ public class Expression {
     public Expression(Table table, boolean flag) {
         List temp = new ArrayList();
         if (flag) temp.addAll(table.getValues());
-        this.sql = flag ? new StringBuilder().append(SqlKey.LEFT).append(table.getSql()).append(SqlKey.RIGHT).append(table.getAlias()) :
+        this.sql = flag ? new StringBuilder().append(SQLKey.LEFT).append(table.getSql()).append(SQLKey.RIGHT).append(table.getAlias()) :
                 new StringBuilder().append(table.getName()).append(" ").append(table.getAlias());
         this.values = temp;
     }

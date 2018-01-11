@@ -4,7 +4,7 @@ package com.dglbc.dbtools;
  * Created by LBC on 2017/12/19
  **/
 
-public class SqlKey {
+public class SQLKey {
 
 
     public static String SELECT = "SELECT ";

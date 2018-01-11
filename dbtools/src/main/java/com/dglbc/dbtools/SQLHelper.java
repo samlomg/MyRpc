@@ -20,7 +20,7 @@ import java.util.List;
 @Accessors(chain = true)
 @Setter
 @Getter
-public class SqlHelper implements Serializable {
+public class SQLHelper implements Serializable {
 
     private List<Expression> selectContent;
     private List<Column> insertContent;
@@ -35,7 +35,7 @@ public class SqlHelper implements Serializable {
     private List<Column> orderContent;
     private List<Where> havingConditions;
 
-    public SqlHelper(Table table) {
+    public SQLHelper(Table table) {
         this.table = table;
         this.selectContent = new ArrayList<>();
         this.insertContent = new ArrayList<>();
@@ -48,44 +48,44 @@ public class SqlHelper implements Serializable {
     }
 
     //查询语句,自定义
-    public SqlHelper sc(Table table,String name) {
+    public SQLHelper sc(Table table, String name) {
         return sc(new Column(table,name));
     }
 
     //查询语句,自定义
-    public SqlHelper sc(Column column) {
+    public SQLHelper sc(Column column) {
         return sc(new Expression(column, false));
     }
 
     //查询语句
-    public SqlHelper sc(Expression expression) {
+    public SQLHelper sc(Expression expression) {
         this.selectContent.add(expression);
         return this;
     }
 
     //更新语句
-    public SqlHelper uc(Column column) {
+    public SQLHelper uc(Column column) {
         this.updateContent.add(column);
         return this;
     }
 
     //插入语句
-    public SqlHelper ic(Column column) {
+    public SQLHelper ic(Column column) {
         this.insertContent.add(column);
         return this;
     }
 
-    public SqlHelper join(Join join) {
+    public SQLHelper join(Join join) {
         joins.add(join);
         return this;
     }
 
-    public SqlHelper where(Where where) {
+    public SQLHelper where(Where where) {
         conditions.add(where);
         return this;
     }
 
-    public SqlHelper having(Where where) {
+    public SQLHelper having(Where where) {
         this.group = true;
         this.have = true;
         havingConditions.add(where);
@@ -95,13 +95,13 @@ public class SqlHelper implements Serializable {
     /*
         Group by 是按select的内容，毕竟group by 和select 是要相同，对了自定义部分没有自动列入。
      */
-    public SqlHelper groupBy(Column column) {
+    public SQLHelper groupBy(Column column) {
         this.group = true;
         groupContent.add(column);
         return this;
     }
 
-    public SqlHelper orderBy(Column column) {
+    public SQLHelper orderBy(Column column) {
         this.order = true;
         orderContent.add(column);
         return this;
@@ -117,7 +117,7 @@ public class SqlHelper implements Serializable {
      */
     public Expression selectBuilder() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.SELECT);
+        StringBuilder sql = new StringBuilder(SQLKey.SELECT);
 //        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
         boolean init = false;
         for (Expression expression : selectContent) {
@@ -128,7 +128,7 @@ public class SqlHelper implements Serializable {
             params.addAll(expression.getValues());
             init = true;
         }
-        sql.append(SqlKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(SqlKey.WITH);
+        sql.append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(SQLKey.WITH);
         if (joins.size() > 0) {
             for (Join join : joins) {
                 Expression tempsql = join.builder();
@@ -137,7 +137,7 @@ public class SqlHelper implements Serializable {
             }
 
         }
-        sql.append(SqlKey.WHERE);
+        sql.append(SQLKey.WHERE);
 
         if (conditions.size() > 0) {
             for (Where where : conditions) {
@@ -148,7 +148,7 @@ public class SqlHelper implements Serializable {
         }
 
         if (group) {
-            sql.append(SqlKey.GROUP);
+            sql.append(SQLKey.GROUP);
             String temp = new String();
             for (Column column : groupContent) {
                 temp += "," + column.getTable().getAlias() + "." + column.getName();
@@ -156,7 +156,7 @@ public class SqlHelper implements Serializable {
             sql.append(temp.replaceFirst(",", ""));
 
             if (have) {
-                sql.append(SqlKey.HAVING);
+                sql.append(SQLKey.HAVING);
 
                 if (havingConditions.size() > 0) {
                     for (Where where : havingConditions) {
@@ -169,7 +169,7 @@ public class SqlHelper implements Serializable {
         }
         
         if (order) {
-            sql.append(SqlKey.ORDER);
+            sql.append(SQLKey.ORDER);
             String temp1 = new String();
             for (Column column : orderContent) {
                 temp1 += "," + column.getTable().getAlias() + "." + column.getName();
@@ -184,7 +184,7 @@ public class SqlHelper implements Serializable {
      */
     public Expression insertBuilder() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.INSERT).append(table.getName()).append(" ( ");
+        StringBuilder sql = new StringBuilder(SQLKey.INSERT).append(table.getName()).append(" ( ");
         StringBuilder sql1 = new StringBuilder();
         StringBuilder sql2 = new StringBuilder();
         for (Column column : insertContent) {
@@ -192,7 +192,7 @@ public class SqlHelper implements Serializable {
             sql1.append(",?");
             params.add(column.getValue());
         }
-        sql.append(sql2.delete(0, 1)).append(" ) ").append(SqlKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
+        sql.append(sql2.delete(0, 1)).append(" ) ").append(SQLKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
         return new Expression(sql, params);
     }
 
@@ -201,7 +201,7 @@ public class SqlHelper implements Serializable {
     */
     public Expression updateBuilder() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.UPDATE).append(table.getName()).append(SqlKey.SET);
+        StringBuilder sql = new StringBuilder(SQLKey.UPDATE).append(table.getName()).append(SQLKey.SET);
         StringBuilder sql1 = new StringBuilder();
         for (Column column : updateContent) {
             sql1.append(",").append(column.getName()).append(" =? ");
@@ -209,7 +209,7 @@ public class SqlHelper implements Serializable {
         }
 
         sql1.delete(0, 1);
-        sql.append(sql1).append(SqlKey.WHERE);
+        sql.append(sql1).append(SQLKey.WHERE);
         for (Where where : conditions) {
             Expression tempsql = where.builder();
             sql.append(tempsql.getSql());
@@ -223,8 +223,8 @@ public class SqlHelper implements Serializable {
     */
     public Expression deleteBulider() {
         List<Object> params = new ArrayList<>();
-        StringBuilder sql = new StringBuilder(SqlKey.DELETE).append(" ").append(table.getAlias()).append(" ")
-                .append(SqlKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(" ").append(SqlKey.WHERE);
+        StringBuilder sql = new StringBuilder(SQLKey.DELETE).append(" ").append(table.getAlias()).append(" ")
+                .append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(" ").append(SQLKey.WHERE);
         for (Where where : conditions) {
             Expression tempsql = where.builder();
             sql.append(tempsql.getSql());

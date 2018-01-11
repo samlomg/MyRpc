@@ -1,4 +1,4 @@
-package com.dglbc.dbtools.jdbc.face;
+package com.dglbc.jdbc.face;
 
 import java.sql.ResultSet;
 

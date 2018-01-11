@@ -1,7 +1,7 @@
 package com.dglbc.dbtools.join;
 
 import com.dglbc.dbtools.Expression;
-import com.dglbc.dbtools.SqlKey;
+import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import lombok.AllArgsConstructor;
@@ -30,12 +30,12 @@ public class Join implements Serializable {
     private StringBuilder sql;
 
     public Expression builder() {
-        StringBuilder sql = new StringBuilder().append(join).append(table.getSql()).append(SqlKey.ON);
+        StringBuilder sql = new StringBuilder().append(join).append(table.getSql()).append(SQLKey.ON);
         parms.addAll(table.getValues());
         boolean init = false;
         for (Expression expression : condition) {
             if (init) {
-                sql.append(SqlKey.AND);
+                sql.append(SQLKey.AND);
             }
             sql.append(expression.getSql());
             parms.addAll(expression.getValues());

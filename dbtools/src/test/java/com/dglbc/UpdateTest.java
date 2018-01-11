@@ -1,8 +1,8 @@
 package com.dglbc;
 
 import com.dglbc.dbtools.Expression;
-import com.dglbc.dbtools.SqlHelper;
-import com.dglbc.dbtools.SqlKey;
+import com.dglbc.dbtools.SQLHelper;
+import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
@@ -17,10 +17,10 @@ public class UpdateTest {
     @Test
     public void test1(){
         Table table = new Table("TEST","A");
-        SqlHelper sqlHelper = new SqlHelper(table);
-        sqlHelper.uc(new Column(table, "testName", "SAMBC"));
-        sqlHelper.where(new Where(SqlKey.AND).eq(new Column(table,"testId",1)));
-        Expression expression = sqlHelper.updateBuilder();
+        SQLHelper SQLHelper = new SQLHelper(table);
+        SQLHelper.uc(new Column(table, "testName", "SAMBC"));
+        SQLHelper.where(new Where(SQLKey.AND).eq(new Column(table,"testId",1)));
+        Expression expression = SQLHelper.updateBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
     }

@@ -1,4 +1,4 @@
-package com.dglbc.dbtools.jdbc.exception;
+package com.dglbc.jdbc.exception;
 
 @SuppressWarnings("serial")
 public class AppExp extends RuntimeException {

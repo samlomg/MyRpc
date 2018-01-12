@@ -31,20 +31,20 @@ public class SQLBase {
     }
 
     public static Column column(Table table, String name) {
-        return new Column(table,name);
+        return new Column(table, name);
     }
 
     public static Column column(Table table, String name, Object value) {
-        return new Column(table,name,value);
+        return new Column(table, name, value);
     }
 
     //table
     public static Table table(String name, String alias) {
-        return new Table(name,alias);
+        return new Table(name, alias);
     }
 
-    public static Table table(Expression expression,String alias) {
-        return new Table(expression,alias);
+    public static Table table(Expression expression, String alias) {
+        return new Table(expression, alias);
     }
 
     public static Table table() {
@@ -60,19 +60,18 @@ public class SQLBase {
         return new Where();
     }
 
-     //JOIN
+    //JOIN
     public static Join join(String join, Expression table) {
-        return new Join(join,table);
+        return new Join(join, table);
     }
 
     public static Join join(String join, Table table) {
-        return new Join(join,table);
+        return new Join(join, table);
     }
 
     public static Join join(String join, Table table, Column column, Column column2) {
-        return new Join(join,table,column,column2);
+        return new Join(join, table, column, column2);
     }
-
 
 
 }

@@ -37,21 +37,21 @@ public class SQLFuntion {
         return new Expression(expression.getSql().append(SQLKey.AS).append(name), expression.getValues());
     }
 
-    public static Expression dateDiff(String datepart,Expression expression,Expression expression1,String opt,int values) {
+    public static Expression dateDiff(String datepart, Expression expression, Expression expression1, String opt, int values) {
         List<Object> temp = new ArrayList<Object>();
         temp.addAll(expression.getValues());
         temp.addAll(expression1.getValues());
         temp.add(values);
         return new Expression(new StringBuilder().append(SQLKey.DATEDIFF).append(SQLKey.LEFT).append(datepart).append(",")
-                .append(expression).append(",").append(expression1).append(SQLKey.RIGHT).append(opt).append(" ? "),temp);
+                .append(expression).append(",").append(expression1).append(SQLKey.RIGHT).append(opt).append(" ? "), temp);
     }
 
-    public static Expression convert(String dataType,Expression expression) {
+    public static Expression convert(String dataType, Expression expression) {
         return new Expression(new StringBuilder().append(SQLKey.CONVERT).append(SQLKey.LEFT).append(dataType).append(",")
                 .append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
     }
 
-    public static Expression caseWhen(Expression cas,Map<Expression,Expression> when,Expression els) {
+    public static Expression caseWhen(Expression cas, Map<Expression, Expression> when, Expression els) {
         StringBuilder sql = new StringBuilder();
         List<Object> values = new ArrayList<Object>();
         //先处理case
@@ -59,23 +59,23 @@ public class SQLFuntion {
         values.addAll(cas.getValues());
 
         //处理when
-        for (Map.Entry<Expression,Expression> entry:when.entrySet()){
+        for (Map.Entry<Expression, Expression> entry : when.entrySet()) {
             sql.append(SQLKey.WHEN).append(entry.getKey().getSql()).append(SQLKey.THEN).append(entry.getValue().getSql()).append(" ");
             values.addAll(entry.getKey().getValues());
             values.addAll(entry.getValue().getValues());
         }
         //最后的else
-        if (null !=els){
+        if (null != els) {
             sql.append(SQLKey.ELSE).append(els.getSql()).append(" ");
             values.addAll(els.getValues());
         }
         //end
         sql.append(SQLKey.END);
 
-        return new Expression(sql,values);
+        return new Expression(sql, values);
     }
 
-    public static Expression sum(Expression expression){
+    public static Expression sum(Expression expression) {
         return new Expression(new StringBuilder().append(SQLKey.SUM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
     }
 

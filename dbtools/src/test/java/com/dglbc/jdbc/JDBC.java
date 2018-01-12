@@ -26,7 +26,7 @@ public class JDBC {
         return ds.getConnection();
     }
 
-    public static  <T> T get(Connection con, String sql, IVo<T> iQuery, Object... params) throws Exception {
+    public static <T> T get(Connection con, String sql, IVo<T> iQuery, Object... params) throws Exception {
         if (StringUtils.isEmpty(sql)) {
             SqlExp.error("错误:查询相关的sql语句为空");
         }

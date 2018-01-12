@@ -42,7 +42,7 @@ public class Expression {
         this.values = temp;
     }
 
-
+    //自定义 语句
     public Expression(String sql) {
         this.sql = new StringBuilder().append(sql);
         this.values = new ArrayList();

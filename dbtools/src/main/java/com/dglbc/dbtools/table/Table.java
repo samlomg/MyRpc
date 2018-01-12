@@ -20,7 +20,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Table implements Serializable{
+public class Table implements Serializable {
     private String name;
     private String alias;
     private String link;
@@ -41,7 +41,7 @@ public class Table implements Serializable{
 
     }
 
-    public Table(Expression expression,String alias) {
+    public Table(Expression expression, String alias) {
         this.sql = expression.getSql();
         this.values = expression.getValues();
         this.alias = alias;

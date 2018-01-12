@@ -1,6 +1,7 @@
 package com.dglbc.dbtools;
 
 import com.dglbc.dbtools.join.Join;
+import com.dglbc.dbtools.produce.Produce;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
@@ -34,6 +35,7 @@ public class SQLHelper implements Serializable {
     private List<Column> groupContent;
     private List<Column> orderContent;
     private List<Where> havingConditions;
+    private List<Produce> produces;
 
     public SQLHelper(Table table) {
         this.table = table;
@@ -49,7 +51,7 @@ public class SQLHelper implements Serializable {
 
     //查询语句,自定义
     public SQLHelper sc(Table table, String name) {
-        return sc(new Column(table,name));
+        return sc(new Column(table, name));
     }
 
     //查询语句,自定义
@@ -121,7 +123,7 @@ public class SQLHelper implements Serializable {
 //        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
         boolean init = false;
         for (Expression expression : selectContent) {
-            if (init){
+            if (init) {
                 sql.append(",");
             }
             sql.append(expression.getSql());
@@ -167,7 +169,7 @@ public class SQLHelper implements Serializable {
                 }
             }
         }
-        
+
         if (order) {
             sql.append(SQLKey.ORDER);
             String temp1 = new String();
@@ -232,5 +234,9 @@ public class SQLHelper implements Serializable {
         }
         return new Expression(sql, params);
     }
+
+    /*
+        过程语句生成器
+     */
 
 }

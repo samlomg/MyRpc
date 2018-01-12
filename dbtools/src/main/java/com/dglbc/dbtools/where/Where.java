@@ -84,7 +84,6 @@ public class Where implements Serializable {
     }
 
 
-
     // like
     public Where like(Column column) {
         return like(new Expression(column, false), column.getValue());

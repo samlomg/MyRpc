@@ -1,11 +1,13 @@
 package com.dglbc.dbtools;
 
 import com.dglbc.dbtools.join.Join;
-import com.dglbc.dbtools.produce.Produce;
+import com.dglbc.dbtools.produce.ParameterMode;
+import com.dglbc.dbtools.produce.ProduceParameter;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -21,6 +23,7 @@ import java.util.List;
 @Accessors(chain = true)
 @Setter
 @Getter
+@NoArgsConstructor
 public class SQLHelper implements Serializable {
 
     private List<Expression> selectContent;
@@ -35,7 +38,8 @@ public class SQLHelper implements Serializable {
     private List<Column> groupContent;
     private List<Column> orderContent;
     private List<Where> havingConditions;
-    private List<Produce> produces;
+    private List<ProduceParameter> produceParameters;
+    private String produceFuntion;
 
     public SQLHelper(Table table) {
         this.table = table;
@@ -47,6 +51,17 @@ public class SQLHelper implements Serializable {
         this.groupContent = new ArrayList<>();
         this.orderContent = new ArrayList<>();
         this.havingConditions = new ArrayList<>();
+    }
+
+    public SQLHelper call(String sql) {
+        this.produceFuntion = sql;
+        this.produceParameters = new ArrayList<>();
+        return this;
+    }
+
+    public SQLHelper cc(ParameterMode parameterMode, int num, Object parm) {
+        produceParameters.add(new ProduceParameter(num, parameterMode, parm));
+        return this;
     }
 
     //查询语句,自定义
@@ -238,5 +253,15 @@ public class SQLHelper implements Serializable {
     /*
         过程语句生成器
      */
-
+    public Expression callBulider(){
+        List<Object> params = new ArrayList<>();
+        StringBuilder sql = new StringBuilder().append(" { ").append(produceFuntion).append(SQLKey.LEFT);
+        StringBuilder tem1 = new StringBuilder();
+        for (ProduceParameter produceParameter:produceParameters){
+            tem1.append(",?");
+            params.add(produceParameter);
+        }
+        sql.append(tem1.delete(0, 1)).append(SQLKey.RIGHT).append(" } ");
+        return new Expression(sql, params);
+    }
 }

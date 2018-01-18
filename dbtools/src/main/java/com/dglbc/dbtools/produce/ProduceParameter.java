@@ -13,7 +13,7 @@ import lombok.experimental.Accessors;
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Produce {
+public class ProduceParameter {
     private int num;
     private ParameterMode mode;
     private Object value;

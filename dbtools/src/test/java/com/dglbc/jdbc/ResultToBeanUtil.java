@@ -48,8 +48,7 @@ public class ResultToBeanUtil<T> {
                         // 这里是获取数据库字段的类型
                         Class<?> dbType = value.getClass();
                         // 处理日期类型不匹配问题
-                        if (dbType == java.sql.Timestamp.class
-                                && beanType == java.util.Date.class) {
+                        if (dbType == java.sql.Timestamp.class && beanType == java.util.Date.class) {
                             // value = new
                             // java.util.Date(rs.getTimestamp(columnNames[i]).getTime());
                             value = new java.util.Date(
@@ -69,8 +68,7 @@ public class ResultToBeanUtil<T> {
                         }
                     }
 
-                    String setMethodName = "set"
-                            + firstUpperCase(columnNames[i]);
+                    String setMethodName = "set"+ firstUpperCase(columnNames[i]);
                     // 第一个参数是传进去的方法名称，第二个参数是 传进去的类型；
                     Method m = t.getClass().getMethod(setMethodName, beanType);
 

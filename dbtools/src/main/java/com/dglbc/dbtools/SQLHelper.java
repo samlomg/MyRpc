@@ -63,6 +63,14 @@ public class SQLHelper implements Serializable {
         produceParameters.add(new ProduceParameter(num, parameterMode, parm));
         return this;
     }
+    public SQLHelper cc( int num, Object parm) {
+        produceParameters.add(new ProduceParameter(num, ParameterMode.IN, parm));
+        return this;
+    }
+    public SQLHelper cc(  Object parm) {
+        produceParameters.add(new ProduceParameter(ParameterMode.IN, parm));
+        return this;
+    }
 
     //查询语句,自定义
     public SQLHelper sc(Table table, String name) {

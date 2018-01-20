@@ -17,4 +17,9 @@ public class ProduceParameter {
     private int num;
     private ParameterMode mode;
     private Object value;
+
+    public ProduceParameter(ParameterMode mode, Object value) {
+        this.mode = mode;
+        this.value = value;
+    }
 }

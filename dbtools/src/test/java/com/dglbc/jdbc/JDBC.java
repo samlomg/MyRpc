@@ -4,7 +4,6 @@ import com.dglbc.dbtools.produce.ParameterMode;
 import com.dglbc.dbtools.produce.ProduceParameter;
 import com.dglbc.jdbc.exception.MultiRowExp;
 import com.dglbc.jdbc.exception.SqlExp;
-import com.dglbc.jdbc.face.ICall;
 import com.dglbc.jdbc.face.ICallResult;
 import com.dglbc.jdbc.face.IVo;
 import com.zaxxer.hikari.HikariConfig;
@@ -100,26 +99,6 @@ public class JDBC {
         return list;
     }
 
-    public boolean callProcedure(Connection con, String sql_callProcedure, ICall iCall) throws Exception {
-        /**
-         * {call 过程名[(?, ?, ...)]} 　　返回结果参数的过程的语法为： {? = call 过程名[(?, ?, ...)]}
-         * 　　不带参数的已储存过程的语法类似： {call 过程名}
-         */
-        CallableStatement cst = null;
-        boolean ok = false;
-        try {
-            cst = con.prepareCall(sql_callProcedure);
-            iCall.callParamed(cst);// 设置参数
-            cst.executeUpdate();
-            ok = iCall.callResult(cst); // 获取结果
-        } catch (Exception e) {
-            throw e;
-        } finally {
-            JDBC.close(cst);
-        }
-        return ok;
-    }
-
     public <T> T call(Connection con, String sql_callProcedure, boolean flag, ICallResult<T> iCallResult, ProduceParameter... params) throws Exception {
         /**
          * {call 过程名[(?, ?, ...)]} 　　返回结果参数的过程的语法为： {? = call 过程名[(?, ?, ...)]}
@@ -140,13 +119,13 @@ public class JDBC {
                     } else {
                         cst.setObject(i + 1, params[i].getValue());
                     }
-                }else if (params[i].getMode().equals(ParameterMode.OUT)){
+                } else if (params[i].getMode().equals(ParameterMode.OUT)) {
                     if (flag) {
                         cst.registerOutParameter(params[i].getNum(), (Integer) params[i].getValue());
                     } else {
                         cst.registerOutParameter(i + 1, (Integer) params[i].getValue());
                     }
-                }else if (params[i].getMode().equals(ParameterMode.INOUT)){
+                } else if (params[i].getMode().equals(ParameterMode.INOUT)) {
                     if (flag) {
                         cst.setObject(params[i].getNum(), params[i].getValue());
                         cst.registerOutParameter(params[i].getNum(), (Integer) params[i].getValue());

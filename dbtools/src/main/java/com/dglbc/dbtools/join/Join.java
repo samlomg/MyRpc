@@ -58,7 +58,7 @@ public class Join implements Serializable {
         this.parms = new ArrayList();
     }
 
-    public Join(String join, Table table, Column column, Column column2) {
+    public Join(String join, Table table, final Column column, final Column column2) {
         this.join = join;
         this.table = StringUtils.isEmpty(table.getName()) ? new Expression(table, true) : new Expression(table, false);
         this.condition = new ArrayList<Expression>() {{
@@ -91,7 +91,7 @@ public class Join implements Serializable {
         return this;
     }
 
-    public Join on(Column column) {
+    public Join on(final Column column) {
         StringBuilder temsb = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").
                 append(column.getName()).append(" =? ");
         condition.add(new Expression().setSql(temsb).setValues(new ArrayList() {{

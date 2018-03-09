@@ -40,5 +40,7 @@ public class SQLKey {
     public static String END = " END ";
     public static String DATEDIFF = " DATEDIFF ";
     public static String SUM = " SUM ";
+    public static String LTRIM = " LTRIM ";
+    public static String RTRIM = " RTRIM ";
 
 }

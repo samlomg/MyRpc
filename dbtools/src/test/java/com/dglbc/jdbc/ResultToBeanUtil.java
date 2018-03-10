@@ -12,6 +12,7 @@ import java.util.*;
 /**
  * Created by LBC on 2017/5/3.
  * 忘记在哪里找到的代码
+ * 2018-2-6这个先完成60%剩下的慢慢来
  */
 public class ResultToBeanUtil<T> {
     /**
@@ -231,6 +232,6 @@ public class ResultToBeanUtil<T> {
 //            m.invoke(t, rs.getObject(parmerName));
             }
         }
-        return null;
+        return o;
     }
 }

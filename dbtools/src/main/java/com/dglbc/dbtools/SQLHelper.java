@@ -27,6 +27,7 @@ import java.util.List;
 public class SQLHelper implements Serializable {
 
     private List<Expression> selectContent;
+    private List<String> specials;
     private List<Column> insertContent;
     private List<Column> updateContent;
     private List<Where> conditions;
@@ -51,6 +52,12 @@ public class SQLHelper implements Serializable {
         this.groupContent = new ArrayList<>();
         this.orderContent = new ArrayList<>();
         this.havingConditions = new ArrayList<>();
+        this.specials = new ArrayList<>();
+    }
+
+    public SQLHelper as(String special){
+        this.specials.add(special);
+        return this;
     }
 
     public SQLHelper call(String sql) {
@@ -144,6 +151,9 @@ public class SQLHelper implements Serializable {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.SELECT);
 //        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
+        for (String special:specials){
+            sql.append(special).append(" ");
+        }
         boolean init = false;
         for (Expression expression : selectContent) {
             if (init) {

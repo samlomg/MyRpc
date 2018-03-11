@@ -21,7 +21,7 @@ public class Expression {
     private StringBuilder sql;
     private List values;
 
-    public Expression(Column column, boolean flag) {
+    public Expression(final Column column, boolean flag) {
         if (flag) {
             this.sql = new StringBuilder().append("?");
             this.values = new ArrayList() {{

@@ -79,4 +79,11 @@ public class SQLFuntion {
         return new Expression(new StringBuilder().append(SQLKey.SUM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
     }
 
+    public static Expression ltrim(Expression expression){
+        return new Expression(new StringBuilder().append(SQLKey.LTRIM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
+    }
+
+    public static Expression rtrim(Expression expression){
+        return new Expression(new StringBuilder().append(SQLKey.RTRIM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
+    }
 }

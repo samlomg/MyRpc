@@ -39,8 +39,10 @@ public class SQLKey {
     public static String ELSE = " ELSE ";
     public static String END = " END ";
     public static String DATEDIFF = " DATEDIFF ";
-    public static String SUM = " SUM ";
     public static String TOP = " TOP ";
     public static String DISTINCT  = " DISTINCT ";
+    public static String SUM = " SUM ";
+    public static String LTRIM = " LTRIM ";
+    public static String RTRIM = " RTRIM ";
 
 }

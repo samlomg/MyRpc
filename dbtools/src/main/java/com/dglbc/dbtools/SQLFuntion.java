@@ -38,7 +38,7 @@ public class SQLFuntion {
     }
 
     public static Expression dateDiff(String datepart, Expression expression, Expression expression1, String opt, int values) {
-        List<Object> temp = new ArrayList<Object>();
+        List<Object> temp = new ArrayList<>();
         temp.addAll(expression.getValues());
         temp.addAll(expression1.getValues());
         temp.add(values);
@@ -79,11 +79,11 @@ public class SQLFuntion {
         return new Expression(new StringBuilder().append(SQLKey.SUM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
     }
 
-    public static Expression ltrim(Expression expression){
+    public static Expression ltrim(Expression expression) {
         return new Expression(new StringBuilder().append(SQLKey.LTRIM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
     }
 
-    public static Expression rtrim(Expression expression){
+    public static Expression rtrim(Expression expression) {
         return new Expression(new StringBuilder().append(SQLKey.RTRIM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
     }
 }

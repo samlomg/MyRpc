@@ -4,45 +4,43 @@ package com.dglbc.dbtools;
  * Created by LBC on 2017/12/19
  **/
 
-public class SQLKey {
-
-
-    public static String SELECT = "SELECT ";
-    public static String INSERT = "INSERT INTO ";
-    public static String UPDATE = "UPDATE ";
-    public static String DELETE = "DELETE ";
-    public static String WITH = " WITH(NOLOCK) ";
-    public static String AND = " AND ";
-    public static String OR = " OR ";
-    public static String WHERE = " \nWHERE 1=1 ";
-    public static String ORDER = " \nORDER BY ";
-    public static String GROUP = " \nGROUP BY ";
-    public static String ON = " ON ";
-    public static String LEFTJOIN = " \nLEFT JOIN ";
-    public static String RIGHTJOIN = " \nRIGHT JOIN ";
-    public static String INNERJOIN = " \nINNER JOIN ";
-    public static String BETWEEN = " BETWEEN ";
-    public static String IN = " IN ";
-    public static String FROM = " \nFROM ";
-    public static String HAVING = " \nHAVING ";
-    public static String VALUES = " VALUES ";
-    public static String SET = " SET ";
-    public static String AS = " AS ";
-    public static String DATEADD = " DATEADD ";
-    public static String LEFT = " ( ";
-    public static String RIGHT = " ) ";
-    public static String ISNULL = " ISNULL ";
-    public static String CONVERT = " CONVERT ";
-    public static String CASE = " CASE ";
-    public static String WHEN = " WHEN ";
-    public static String THEN = " THEN ";
-    public static String ELSE = " ELSE ";
-    public static String END = " END ";
-    public static String DATEDIFF = " DATEDIFF ";
-    public static String TOP = " TOP ";
-    public static String DISTINCT  = " DISTINCT ";
-    public static String SUM = " SUM ";
-    public static String LTRIM = " LTRIM ";
-    public static String RTRIM = " RTRIM ";
+public interface SQLKey {
+    String SELECT = "SELECT ";
+    String INSERT = "INSERT INTO ";
+    String UPDATE = "UPDATE ";
+    String DELETE = "DELETE ";
+    String WITH = " WITH(NOLOCK) ";
+    String AND = " AND ";
+    String OR = " OR ";
+    String WHERE = " \nWHERE 1=1 ";
+    String ORDER = " \nORDER BY ";
+    String GROUP = " \nGROUP BY ";
+    String ON = " ON ";
+    String LEFTJOIN = " \nLEFT JOIN ";
+    String RIGHTJOIN = " \nRIGHT JOIN ";
+    String INNERJOIN = " \nINNER JOIN ";
+    String BETWEEN = " BETWEEN ";
+    String IN = " IN ";
+    String FROM = " \nFROM ";
+    String HAVING = " \nHAVING ";
+    String VALUES = " VALUES ";
+    String SET = " SET ";
+    String AS = " AS ";
+    String DATEADD = " DATEADD ";
+    String LEFT = " ( ";
+    String RIGHT = " ) ";
+    String ISNULL = " ISNULL ";
+    String CONVERT = " CONVERT ";
+    String CASE = " CASE ";
+    String WHEN = " WHEN ";
+    String THEN = " THEN ";
+    String ELSE = " ELSE ";
+    String END = " END ";
+    String DATEDIFF = " DATEDIFF ";
+    String TOP = " TOP ";
+    String DISTINCT  = " DISTINCT ";
+    String SUM = " SUM ";
+    String LTRIM = " LTRIM ";
+    String RTRIM = " RTRIM ";
 
 }

@@ -24,17 +24,17 @@ public class SelectTest{
     @Test
     public void test1() {
         Table table = table("Test","A");
-        SQLHelper SQLHelper = new SQLHelper(table);
+        SQLHelper sqlHelper = new SQLHelper(table);
         Table f4211_t =table("F4211","B");
         Join f4211 = join(SQLKey.LEFTJOIN,f4211_t,column(table,"Sequence"),column(f4211_t,"Sequence"));
 //        sqlHelper.sc(new Column(f4211_t,"SDDOCO"));
-        SQLHelper.sc(as(isnull(column(f4211_t,"SDDOCO",0)),"SDDOCO"));
-        SQLHelper.join(f4211);
-        SQLHelper.where(where(SQLKey.AND).eq(column(table,"SHMCU","1110114")));
-        SQLHelper.where(where(SQLKey.AND)
-                .eq(convert("varchar(20)",expression(column(table,"SHDCTO"),false)),"SL"));
-        SQLHelper.orderBy(column(table,"Sequence"));
-        Expression expression = SQLHelper.selectBuilder();
+        sqlHelper.as(SQLKey.TOP+" 10")
+        .sc(as(isnull(column(f4211_t,"SDDOCO",0)),"SDDOCO"))
+        .join(f4211)
+        .where(where(SQLKey.AND).eq(column(table,"SHMCU","1110114")))
+        .where(where(SQLKey.AND).eq(convert("varchar(20)",expression(column(table,"SHDCTO"),false)),"SL"))
+        .orderBy(column(table,"Sequence"));
+        Expression expression = sqlHelper.selectBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
     }
@@ -102,14 +102,12 @@ public class SelectTest{
 */
     @Test
     public void test4() {
-//        SqlHelper sqlHelper = new SqlHelper("F4201");
-//        Join f4211 = new Join(SqlKey.LEFTJOIN, "F4211", "B", "Sequence", "A", "Sequence");
-//
-//        sqlHelper.sc(f4211, "SDDOCO");
-//        sqlHelper.join(f4211);
-//        sqlHelper.where(new Where().eq("SHMCU", "1110114"));
-//        Expression expression = sqlHelper.selectBuilder();
-//        System.out.println(expression.getSql());
+        Table f4201 = new Table("F4201","A");
+        Table f4211 = new Table("F4211","B");
+        SQLHelper sqlHelper = new SQLHelper(f4201);
+        sqlHelper.sc(f4201, "SHDOCO").sc(column(f4201,"SHMCU")).join(join(SQLKey.LEFTJOIN,f4211)
+                .on(column(f4201,"Sequence"),column(f4211,"Sequence"))).eq("SDMCU", "1110114",f4211);
+        System.out.println(sqlHelper.selectBuilder().getSql());
     }
 
 }

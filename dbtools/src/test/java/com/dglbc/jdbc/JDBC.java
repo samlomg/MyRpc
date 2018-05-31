@@ -113,29 +113,19 @@ public class JDBC {
 
             int param_num = params.length;
             for (int i = 0; i < param_num; i++) {
-                if (params[i].getMode().equals(ParameterMode.IN)) {
-                    if (flag) {
-                        cst.setObject(params[i].getNum(), params[i].getValue());
-                    } else {
-                        cst.setObject(i + 1, params[i].getValue());
-                    }
-                } else if (params[i].getMode().equals(ParameterMode.OUT)) {
-                    if (flag) {
-                        cst.registerOutParameter(params[i].getNum(), (Integer) params[i].getValue());
-                    } else {
-                        cst.registerOutParameter(i + 1, (Integer) params[i].getValue());
-                    }
-                } else if (params[i].getMode().equals(ParameterMode.INOUT)) {
-                    if (flag) {
-                        cst.setObject(params[i].getNum(), params[i].getValue());
-                        cst.registerOutParameter(params[i].getNum(), (Integer) params[i].getValue());
-                    } else {
-                        cst.setObject(i + 1, params[i].getValue());
-                        cst.registerOutParameter(i + 1, (Integer) params[i].getValue());
-                    }
+                switch (params[i].getMode()) {
+                    case IN:
+                        cst.setObject(flag ? params[i].getNum() : i + 1, params[i].getValue());
+                        break;
+                    case OUT:
+                        cst.registerOutParameter(flag ? params[i].getNum() : i + 1, (Integer) params[i].getValue());
+                        break;
+                    case INOUT:
+                        cst.setObject(flag ? params[i].getNum() : i + 1, params[i].getValue());
+                        cst.registerOutParameter(flag ? params[i].getNum() : i + 1, (Integer) params[i].getValue());
+                        break;
                 }
             }
-
             cst.executeUpdate();
             row = iCallResult.callResult(cst); // 获取结果
         } catch (Exception e) {

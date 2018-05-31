@@ -1,5 +1,6 @@
 package com.dglbc.dbtools;
 
+import com.dglbc.dbtools.declear.CrudOperate;
 import com.dglbc.dbtools.join.Join;
 import com.dglbc.dbtools.produce.ParameterMode;
 import com.dglbc.dbtools.produce.ProduceParameter;
@@ -12,8 +13,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.dglbc.dbtools.SQLBase.where;
 
 /**
  * 目标是返回一个string sql，还有一个参数数组
@@ -26,40 +30,41 @@ import java.util.List;
 @NoArgsConstructor
 public class SQLHelper implements Serializable {
 
-    private List<Expression> selectContent;
-    private List<String> specials;
-    private List<Column> insertContent;
-    private List<Column> updateContent;
-    private List<Where> conditions;
+    private List<Expression> selectContent = new ArrayList<>();
+    private List<String> specials= new ArrayList<>();
+    private List<Column> insertContent= new ArrayList<>();
+    private List<Column> updateContent= new ArrayList<>();
+    private List<Where> conditions= new ArrayList<>();
     private Table table;
-    private List<Join> joins;
+    private List<Join> joins= new ArrayList<>();
     private boolean order = false;
     private boolean group = false;
     private boolean have = false;
-    private List<Column> groupContent;
-    private List<Column> orderContent;
-    private List<Where> havingConditions;
-    private List<ProduceParameter> produceParameters;
+    private List<Column> groupContent= new ArrayList<>();
+    private List<Column> orderContent= new ArrayList<>();
+    private List<Where> havingConditions= new ArrayList<>();
+    private List<ProduceParameter> produceParameters= new ArrayList<>();
     private String produceFuntion;
 
     public SQLHelper(Table table) {
         this.table = table;
-        this.selectContent = new ArrayList<>();
-        this.insertContent = new ArrayList<>();
-        this.updateContent = new ArrayList<>();
-        this.conditions = new ArrayList<>();
-        this.joins = new ArrayList<>();
-        this.groupContent = new ArrayList<>();
-        this.orderContent = new ArrayList<>();
-        this.havingConditions = new ArrayList<>();
-        this.specials = new ArrayList<>();
     }
 
-    public SQLHelper as(String special){
+    public SQLHelper(Class cl, CrudOperate... crudOperates) {
+        this.table = table;
+        Field[] fields = cl.getDeclaredFields();
+        Table table = new Table(cl.getSimpleName(), "A");
+        for (int i=0;i<crudOperates.length;i++){
+
+        }
+    }
+
+    public SQLHelper as(String special) {
         this.specials.add(special);
         return this;
     }
 
+    //存储过程
     public SQLHelper call(String sql) {
         this.produceFuntion = sql;
         this.produceParameters = new ArrayList<>();
@@ -70,11 +75,13 @@ public class SQLHelper implements Serializable {
         produceParameters.add(new ProduceParameter(num, parameterMode, parm));
         return this;
     }
-    public SQLHelper cc( int num, Object parm) {
+
+    public SQLHelper cc(int num, Object parm) {
         produceParameters.add(new ProduceParameter(num, ParameterMode.IN, parm));
         return this;
     }
-    public SQLHelper cc(  Object parm) {
+
+    public SQLHelper cc(Object parm) {
         produceParameters.add(new ProduceParameter(ParameterMode.IN, parm));
         return this;
     }
@@ -140,37 +147,30 @@ public class SQLHelper implements Serializable {
     }
 
     /*
-    生成 查询语句 首先
-    1：把selectContent里面的内容生成出来
-    2：生成表信息
-    3：生成join的信息
-    4：生成where的信息
-    5：生成group by order by 信息
+        生成 查询语句 首先
+        1：把selectContent里面的内容生成出来
+        2：生成表信息
+        3：生成join的信息
+        4：生成where的信息
+        5：生成group by order by 信息
      */
     public Expression selectBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.SELECT);
 //        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
-        for (String special:specials){
-            sql.append(special).append(" ");
-        }
-        boolean init = false;
+        for (String special : specials) sql.append(special).append(" ");
+        StringBuilder tem1 = new StringBuilder();
         for (Expression expression : selectContent) {
-            if (init) {
-                sql.append(",");
-            }
-            sql.append(expression.getSql());
+            tem1.append(",").append(expression.getSql());
             params.addAll(expression.getValues());
-            init = true;
         }
-        sql.append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(SQLKey.WITH);
+        sql.append(tem1.delete(0, 1)).append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(SQLKey.WITH);
         if (joins.size() > 0) {
             for (Join join : joins) {
                 Expression tempsql = join.builder();
                 sql.append(tempsql.getSql());
                 params.addAll(tempsql.getValues());
             }
-
         }
         sql.append(SQLKey.WHERE);
 
@@ -185,14 +185,11 @@ public class SQLHelper implements Serializable {
         if (group) {
             sql.append(SQLKey.GROUP);
             String temp = new String();
-            for (Column column : groupContent) {
-                temp += "," + column.getTable().getAlias() + "." + column.getName();
-            }
+            for (Column column : groupContent) temp += "," + column.getTable().getAlias() + "." + column.getName();
             sql.append(temp.replaceFirst(",", ""));
 
             if (have) {
                 sql.append(SQLKey.HAVING);
-
                 if (havingConditions.size() > 0) {
                     for (Where where : havingConditions) {
                         Expression tempsql = where.builder();
@@ -206,9 +203,7 @@ public class SQLHelper implements Serializable {
         if (order) {
             sql.append(SQLKey.ORDER);
             String temp1 = new String();
-            for (Column column : orderContent) {
-                temp1 += "," + column.getTable().getAlias() + "." + column.getName();
-            }
+            for (Column column : orderContent) temp1 += "," + column.getTable().getAlias() + "." + column.getName();
             sql.append(temp1.replaceFirst(",", ""));
         }
         return new Expression(sql, params);
@@ -242,9 +237,7 @@ public class SQLHelper implements Serializable {
             sql1.append(",").append(column.getName()).append(" =? ");
             params.add(column.getValue());
         }
-
-        sql1.delete(0, 1);
-        sql.append(sql1).append(SQLKey.WHERE);
+        sql.append(sql1.delete(0, 1)).append(SQLKey.WHERE);
         for (Where where : conditions) {
             Expression tempsql = where.builder();
             sql.append(tempsql.getSql());
@@ -259,7 +252,8 @@ public class SQLHelper implements Serializable {
     public Expression deleteBulider() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.DELETE).append(" ").append(table.getAlias()).append(" ")
-                .append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(" ").append(SQLKey.WHERE);
+                .append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(" ")
+                .append(SQLKey.WHERE);
         for (Where where : conditions) {
             Expression tempsql = where.builder();
             sql.append(tempsql.getSql());
@@ -271,15 +265,158 @@ public class SQLHelper implements Serializable {
     /*
         过程语句生成器
      */
-    public Expression callBulider(){
+    public Expression callBulider() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder().append(" { ").append(produceFuntion).append(SQLKey.LEFT);
         StringBuilder tem1 = new StringBuilder();
-        for (ProduceParameter produceParameter:produceParameters){
+        for (ProduceParameter produceParameter : produceParameters) {
             tem1.append(",?");
             params.add(produceParameter);
         }
         sql.append(tem1.delete(0, 1)).append(SQLKey.RIGHT).append(" } ");
         return new Expression(sql, params);
+    }
+
+    /*
+            where条件
+     */
+
+    // like
+    public SQLHelper like(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).like(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // not like
+    public SQLHelper notLike(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).notLike(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // 大于
+    public SQLHelper gt(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).gt(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // 大于等于
+    public SQLHelper ge(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).ge(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // 小于
+    public SQLHelper lt(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).lt(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // 小于等于
+    public SQLHelper le(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).le(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // 等于
+    public SQLHelper eq(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).eq(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // 不等于
+    public SQLHelper neq(String name, Object values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).neq(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
+        return this;
+    }
+
+    // 为空
+    public SQLHelper isNull(String name, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).isNull(new Column(tables.length > 0 ? tables[0] : this.table, name)));
+        return this;
+    }
+
+    // 为空
+    public SQLHelper isNotNull(String name, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).isNotNull(new Column(tables.length > 0 ? tables[0] : this.table, name)));
+        return this;
+    }
+
+    //between
+    public SQLHelper between(String name, Object value, Object value1, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).between(new Column(tables.length > 0 ? tables[0] : this.table, name), value, value1));
+        return this;
+    }
+
+    //in
+    public SQLHelper in(String name, List values, Table... tables) {
+        conditions.add(new Where(SQLKey.AND).in(new Column(tables.length > 0 ? tables[0] : this.table, name), values));
+        return this;
+    }
+
+    /*
+        生成sqlhelper
+    */
+    public SQLHelper insert(Field[] fields) throws IllegalAccessException {
+        //首先获取class的属性 来生成sql语句
+        Table table = new Table(clazz.getSimpleName(), "A");
+        SQLHelper sqlHelper = new SQLHelper(table);
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            sqlHelper.ic(new Column(table, field.getName(), field.get(o)));
+        }
+        return sqlHelper;
+    }
+
+    public SQLHelper update(T o, Where... wheres) throws  IllegalAccessException {
+        return update(o,null, wheres);
+    }
+
+    public SQLHelper update(T o,String key, Where... wheres) throws IllegalAccessException {
+        //首先获取class的属性 来生成sql语句
+
+        SQLHelper sqlHelper = new SQLHelper(table);
+        key = key == null ? "sequence" : key;
+        Field seq = null;
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.getName().equals(key)){
+                seq = field;
+            }else {
+                sqlHelper.uc(new Column(table, field.getName(), field.get(o)));
+            }
+        }
+        if (wheres.length == 0) {
+            sqlHelper.where(where().eq(table, "sequence", seq.get(o)));
+        } else {
+            for (Where where : wheres) {
+                sqlHelper.where(where);
+            }
+        }
+        return sqlHelper;
+    }
+
+    public SQLHelper select(Where... wheres) throws IllegalAccessException, NoSuchFieldException {
+        //首先获取class的属性 来生成sql语句
+        Field[] fields = clazz.getDeclaredFields();
+        Table table = new Table(clazz.getSimpleName(), "A");
+        SQLHelper sqlHelper = new SQLHelper(table);
+
+        for (Field field : fields) {
+            sqlHelper.sc(table, field.getName());
+        }
+
+        if (wheres.length != 0) {
+            for (Where where : wheres) {
+                sqlHelper.where(where);
+            }
+        }
+
+
+        return sqlHelper;
+    }
+
+    public Table obtainTable(){
+        return  new Table(clazz.getSimpleName(), "A");
     }
 }

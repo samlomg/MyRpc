@@ -50,13 +50,17 @@ public class SQLHelper implements Serializable {
         this.table = table;
     }
 
-    public SQLHelper(Class cl, CrudOperate... crudOperates) {
+    public SQLHelper(Class cl) {
+        this.table = table;
+        Table table = new Table(cl.getSimpleName(), cl.getSimpleName()+"_l");
+        select(cl.getDeclaredFields());
+    }
+
+    public SQLHelper(Class cl,Object o,CrudOperate... crudOperates) {
         this.table = table;
         Field[] fields = cl.getDeclaredFields();
         Table table = new Table(cl.getSimpleName(), "A");
-        for (int i=0;i<crudOperates.length;i++){
 
-        }
     }
 
     public SQLHelper as(String special) {
@@ -356,23 +360,20 @@ public class SQLHelper implements Serializable {
     /*
         生成sqlhelper
     */
-    public SQLHelper insert(Field[] fields) throws IllegalAccessException {
+    public SQLHelper insert(Field[] fields,Object o) throws IllegalAccessException {
         //首先获取class的属性 来生成sql语句
-        Table table = new Table(clazz.getSimpleName(), "A");
-        SQLHelper sqlHelper = new SQLHelper(table);
-
         for (Field field : fields) {
             field.setAccessible(true);
-            sqlHelper.ic(new Column(table, field.getName(), field.get(o)));
+            this.ic(new Column(table, field.getName(), field.get(o)));
         }
-        return sqlHelper;
+        return this;
     }
 
-    public SQLHelper update(T o, Where... wheres) throws  IllegalAccessException {
-        return update(o,null, wheres);
+    public SQLHelper update(Field[] fields,Object o) throws  IllegalAccessException {
+        return update(fields,o,null);
     }
 
-    public SQLHelper update(T o,String key, Where... wheres) throws IllegalAccessException {
+    public SQLHelper update(Field[] fields,Object o,String key) throws IllegalAccessException {
         //首先获取class的属性 来生成sql语句
 
         SQLHelper sqlHelper = new SQLHelper(table);
@@ -383,40 +384,18 @@ public class SQLHelper implements Serializable {
             if (field.getName().equals(key)){
                 seq = field;
             }else {
-                sqlHelper.uc(new Column(table, field.getName(), field.get(o)));
+                this.uc(new Column(table, field.getName(), field.get(o)));
             }
         }
-        if (wheres.length == 0) {
-            sqlHelper.where(where().eq(table, "sequence", seq.get(o)));
-        } else {
-            for (Where where : wheres) {
-                sqlHelper.where(where);
-            }
-        }
-        return sqlHelper;
+
+        return this;
     }
 
-    public SQLHelper select(Where... wheres) throws IllegalAccessException, NoSuchFieldException {
+    public SQLHelper select(Field[] fields) {
         //首先获取class的属性 来生成sql语句
-        Field[] fields = clazz.getDeclaredFields();
-        Table table = new Table(clazz.getSimpleName(), "A");
-        SQLHelper sqlHelper = new SQLHelper(table);
-
         for (Field field : fields) {
-            sqlHelper.sc(table, field.getName());
+            this.sc(table, field.getName());
         }
-
-        if (wheres.length != 0) {
-            for (Where where : wheres) {
-                sqlHelper.where(where);
-            }
-        }
-
-
-        return sqlHelper;
-    }
-
-    public Table obtainTable(){
-        return  new Table(clazz.getSimpleName(), "A");
+        return this;
     }
 }

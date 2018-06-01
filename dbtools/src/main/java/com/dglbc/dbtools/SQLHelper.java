@@ -59,7 +59,7 @@ public class SQLHelper implements Serializable {
     public SQLHelper(Class cl,Object o,CrudOperate... crudOperates) {
         this.table = table;
         Field[] fields = cl.getDeclaredFields();
-        Table table = new Table(cl.getSimpleName(), "A");
+        Table table = new Table(cl.getSimpleName(), cl.getSimpleName()+"_b");
 
     }
 

@@ -7,7 +7,12 @@ import com.dglbc.dbtools.join.Join;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
+import com.dglbc.jdbc.JDBC;
+import com.dglbc.jdbc.face.IVo;
 import org.junit.Test;
+
+import java.sql.ResultSet;
+import java.util.List;
 
 import static com.dglbc.dbtools.SQLBase.*;
 import static com.dglbc.dbtools.SQLFuntion.*;
@@ -101,13 +106,22 @@ public class SelectTest{
 查询语句where 带 运算
 */
     @Test
-    public void test4() {
+    public void test4() throws Exception {
         Table f4201 = new Table("F4201","A");
         Table f4211 = new Table("F4211","B");
         SQLHelper sqlHelper = new SQLHelper(f4201);
-        sqlHelper.sc(f4201, "SHDOCO").sc(column(f4201,"SHMCU")).join(join(SQLKey.LEFTJOIN,f4211)
-                .on(column(f4201,"Sequence"),column(f4211,"Sequence"))).eq("SDMCU", "1110114",f4211);
+        sqlHelper.sc(f4201, "SHDOCO").sc(column(f4201,"SHMCU")).sc(f4201,"Sequence")
+                .join(join(SQLKey.LEFTJOIN,f4211).on(column(f4201,"Sequence"),column(f4211,"Sequence")))
+                .eq("SDMCU", "1110114",f4211)
+        .as(SQLKey.TOP+"10");
         System.out.println(sqlHelper.selectBuilder().getSql());
+        List<Integer> a= JDBC.list(sqlHelper.selectBuilder(), new IVo<Integer>() {
+            @Override
+            public Integer row(ResultSet rs, int rowNum) throws Exception {
+                return rs.getInt("Sequence");
+            }
+        });
+        a.forEach(System.out::println);
     }
 
 }

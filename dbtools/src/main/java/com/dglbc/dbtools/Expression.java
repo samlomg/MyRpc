@@ -4,6 +4,7 @@ import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,15 @@ public class Expression {
             this.sql = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").append(column.getName()).append(" ");
             this.values = new ArrayList();
         }
+    }
+
+    /*
+     * 查询语句专用
+     * */
+    public Expression(Column column) {
+        this.sql = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").append(column.getName()).append(" ");
+        if (StringUtils.isNoneEmpty(column.getBind())) this.sql.append(SQLKey.AS).append(column.getBind());
+        this.values = new ArrayList();
     }
 
     //true 是语句生成的表，false是原生表

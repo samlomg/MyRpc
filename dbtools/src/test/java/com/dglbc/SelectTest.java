@@ -7,8 +7,10 @@ import com.dglbc.dbtools.join.Join;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
+import com.dglbc.entity.User;
 import com.dglbc.jdbc.JDBC;
 import com.dglbc.jdbc.face.IVo;
+import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -21,7 +23,7 @@ import static com.dglbc.dbtools.SQLFuntion.*;
  * Created by LBC on 2017/12/20
  **/
 
-public class SelectTest{
+public class SelectTest extends TestCase {
 
     /*
         普通的查询语句
@@ -122,6 +124,12 @@ public class SelectTest{
             }
         });
         a.forEach(System.out::println);
+    }
+
+
+    public void test5(){
+        SQLHelper sqlHelper = new SQLHelper(User.class);
+        System.out.println(sqlHelper.selectBuilder().getSql());
     }
 
 }

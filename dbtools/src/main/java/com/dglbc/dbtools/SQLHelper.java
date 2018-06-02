@@ -1,5 +1,7 @@
 package com.dglbc.dbtools;
 
+import com.dglbc.dbtools.annotation.FilterCondition;
+import com.dglbc.dbtools.annotation.NotInclude;
 import com.dglbc.dbtools.declear.CrudOperate;
 import com.dglbc.dbtools.join.Join;
 import com.dglbc.dbtools.produce.ParameterMode;
@@ -17,8 +19,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.dglbc.dbtools.SQLBase.where;
-
 /**
  * 目标是返回一个string sql，还有一个参数数组
  */
@@ -31,19 +31,19 @@ import static com.dglbc.dbtools.SQLBase.where;
 public class SQLHelper implements Serializable {
 
     private List<Expression> selectContent = new ArrayList<>();
-    private List<String> specials= new ArrayList<>();
-    private List<Column> insertContent= new ArrayList<>();
-    private List<Column> updateContent= new ArrayList<>();
-    private List<Where> conditions= new ArrayList<>();
+    private List<String> specials = new ArrayList<>();
+    private List<Column> insertContent = new ArrayList<>();
+    private List<Column> updateContent = new ArrayList<>();
+    private List<Where> conditions = new ArrayList<>();
     private Table table;
-    private List<Join> joins= new ArrayList<>();
+    private List<Join> joins = new ArrayList<>();
     private boolean order = false;
     private boolean group = false;
     private boolean have = false;
-    private List<Column> groupContent= new ArrayList<>();
-    private List<Column> orderContent= new ArrayList<>();
-    private List<Where> havingConditions= new ArrayList<>();
-    private List<ProduceParameter> produceParameters= new ArrayList<>();
+    private List<Column> groupContent = new ArrayList<>();
+    private List<Column> orderContent = new ArrayList<>();
+    private List<Where> havingConditions = new ArrayList<>();
+    private List<ProduceParameter> produceParameters = new ArrayList<>();
     private String produceFuntion;
 
     public SQLHelper(Table table) {
@@ -51,16 +51,17 @@ public class SQLHelper implements Serializable {
     }
 
     public SQLHelper(Class cl) {
-        this.table = table;
-        Table table = new Table(cl.getSimpleName(), cl.getSimpleName()+"_l");
+        this.table =  new Table(cl.getSimpleName(), cl.getSimpleName() + "_l");
         select(cl.getDeclaredFields());
     }
 
-    public SQLHelper(Class cl,Object o,CrudOperate... crudOperates) {
-        this.table = table;
+    public SQLHelper(Class cl, Object o, CrudOperate... crudOperates) throws IllegalAccessException {
+        this.table = new Table(cl.getSimpleName(), cl.getSimpleName() + "_b");
         Field[] fields = cl.getDeclaredFields();
-        Table table = new Table(cl.getSimpleName(), cl.getSimpleName()+"_b");
-
+        for (int i = 0; i < crudOperates.length; i++) {
+            if (crudOperates[i].equals(CrudOperate.INSERT)) insert(fields, o);
+            if (crudOperates[i].equals(CrudOperate.UPDATE)) update(fields, o);
+        }
     }
 
     public SQLHelper as(String special) {
@@ -91,13 +92,23 @@ public class SQLHelper implements Serializable {
     }
 
     //查询语句,自定义
+    public SQLHelper sc(String name) {
+        return sc(new Column(table, name));
+    }
+
+    //查询语句,自定义
     public SQLHelper sc(Table table, String name) {
         return sc(new Column(table, name));
     }
 
     //查询语句,自定义
+    public SQLHelper sc(Table table, String name, String bind) {
+        return sc(new Column(table, name, bind));
+    }
+
+    //查询语句,自定义
     public SQLHelper sc(Column column) {
-        return sc(new Expression(column, false));
+        return sc(new Expression(column));
     }
 
     //查询语句
@@ -360,20 +371,37 @@ public class SQLHelper implements Serializable {
     /*
         生成sqlhelper
     */
-    public SQLHelper insert(Field[] fields,Object o) throws IllegalAccessException {
+    public SQLHelper insert(Field[] fields, Object o) throws IllegalAccessException {
         //首先获取class的属性 来生成sql语句
         for (Field field : fields) {
             field.setAccessible(true);
-            this.ic(new Column(table, field.getName(), field.get(o)));
+            if (!field.isAnnotationPresent(NotInclude.class)) {
+                this.ic(new Column(table, field.getName(), field.get(o)));
+            }
         }
         return this;
     }
 
-    public SQLHelper update(Field[] fields,Object o) throws  IllegalAccessException {
-        return update(fields,o,null);
+    public SQLHelper update(Field[] fields, Object o) throws IllegalAccessException {
+        //首先获取class的属性 来生成sql语句
+
+        SQLHelper sqlHelper = new SQLHelper(table);
+
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (!field.isAnnotationPresent(NotInclude.class)) {
+                this.uc(new Column(table, field.getName(), field.get(o)));
+            }
+            if (field.isAnnotationPresent(FilterCondition.class)){
+                this.eq(field.getName(), field.get(o));
+            }
+
+        }
+
+        return this;
     }
 
-    public SQLHelper update(Field[] fields,Object o,String key) throws IllegalAccessException {
+    public SQLHelper update(Field[] fields, Object o, String key) throws IllegalAccessException {
         //首先获取class的属性 来生成sql语句
 
         SQLHelper sqlHelper = new SQLHelper(table);
@@ -381,9 +409,9 @@ public class SQLHelper implements Serializable {
         Field seq = null;
         for (Field field : fields) {
             field.setAccessible(true);
-            if (field.getName().equals(key)){
+            if (field.getName().equals(key)) {
                 seq = field;
-            }else {
+            } else {
                 this.uc(new Column(table, field.getName(), field.get(o)));
             }
         }

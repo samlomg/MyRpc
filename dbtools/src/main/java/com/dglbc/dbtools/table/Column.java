@@ -29,6 +29,12 @@ public class Column implements Serializable{
         table.getColumns().add(this);
     }
 
+    public Column(Table table, String name, String bind) {
+        this.table = table;
+        this.name = name;
+        this.bind = bind;
+    }
+
     public Column(Table table, String name, Object value) {
         this.table = table;
         this.name = name;

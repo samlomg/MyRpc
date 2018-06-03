@@ -3,11 +3,19 @@ package com.dglbc.dbtools.unit;
 import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
+import lombok.*;
+import lombok.experimental.Accessors;
 
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 
+@Setter
+@Getter
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Accessors(chain = true)
 public class ClassGenSQL {
     Map<String, Expression> selectContent = new HashMap<>();
     Table table;

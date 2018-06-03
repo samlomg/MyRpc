@@ -73,7 +73,7 @@ public abstract class SQLAssistant<T> {
         return sqlHelper.updateBuilder();
     }
 
-    public Expression select(Where... wheres) throws IllegalAccessException, NoSuchFieldException {
+    public Expression select(Where... wheres)  {
         //首先获取class的属性 来生成sql语句
         Field[] fields = clazz.getDeclaredFields();
         Table table = new Table(clazz.getSimpleName(), "A");

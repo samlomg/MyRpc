@@ -8,6 +8,7 @@ import com.dglbc.dbtools.produce.ParameterMode;
 import com.dglbc.dbtools.produce.ProduceParameter;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
+import com.dglbc.dbtools.unit.ClassGenSQL;
 import com.dglbc.dbtools.where.Where;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,7 +52,7 @@ public class SQLHelper implements Serializable {
     }
 
     public SQLHelper(Class cl) {
-        this.table =  new Table(cl.getSimpleName(), cl.getSimpleName() + "_l");
+        this.table = new Table(cl.getSimpleName(), cl.getSimpleName() + "_l");
         select(cl.getDeclaredFields());
     }
 
@@ -392,7 +393,7 @@ public class SQLHelper implements Serializable {
             if (!field.isAnnotationPresent(NotInclude.class)) {
                 this.uc(new Column(table, field.getName(), field.get(o)));
             }
-            if (field.isAnnotationPresent(FilterCondition.class)){
+            if (field.isAnnotationPresent(FilterCondition.class)) {
                 this.eq(field.getName(), field.get(o));
             }
 
@@ -426,4 +427,10 @@ public class SQLHelper implements Serializable {
         }
         return this;
     }
+
+    public SQLHelper merge(ClassGenSQL classGenSQL){
+        selectContent.addAll(classGenSQL.getSelectContent().values());
+        return this;
+    }
+
 }

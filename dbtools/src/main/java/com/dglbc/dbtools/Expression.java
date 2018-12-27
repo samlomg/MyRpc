@@ -58,4 +58,10 @@ public class Expression {
         this.values = new ArrayList();
     }
 
+    public Expression merge(Expression expression){
+        this.sql.append(expression.getSql());
+        this.values.addAll(expression.getValues());
+        return this;
+    }
+
 }

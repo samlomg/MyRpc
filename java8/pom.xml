@@ -40,6 +40,22 @@
       <artifactId>disruptor</artifactId>
       <version>3.4.1</version>
     </dependency>
+    <dependency>
+      <groupId>com.jfoenix</groupId>
+      <artifactId>jfoenix</artifactId>
+      <version>8.0.4</version>
+    </dependency>
+    <dependency>
+      <groupId>io.datafx</groupId>
+      <artifactId>flow</artifactId>
+      <version>8.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>de.jensd</groupId>
+      <artifactId>fontawesomefx</artifactId>
+      <version>8.9</version>
+    </dependency>
 
     <dependency>
       <groupId>org.projectlombok</groupId>

@@ -139,6 +139,10 @@ public class SQLHelper implements Serializable {
         conditions.add(where);
         return this;
     }
+    public SQLHelper where(List<Where> wheres) {
+        conditions.addAll(wheres);
+        return this;
+    }
 
     public SQLHelper having(Where where) {
         this.group = true;

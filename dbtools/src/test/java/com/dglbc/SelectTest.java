@@ -10,7 +10,6 @@ import com.dglbc.dbtools.where.Where;
 import com.dglbc.entity.User;
 import com.dglbc.jdbc.JDBC;
 import com.dglbc.jdbc.face.IVo;
-import junit.framework.TestCase;
 import org.junit.Test;
 
 import java.sql.ResultSet;
@@ -23,7 +22,7 @@ import static com.dglbc.dbtools.SQLFuntion.*;
  * Created by LBC on 2017/12/20
  **/
 
-public class SelectTest extends TestCase {
+public class SelectTest{
 
     /*
         普通的查询语句
@@ -107,7 +106,6 @@ public class SelectTest extends TestCase {
     /*
 查询语句where 带 运算
 */
-    @Test
     public void test4() throws Exception {
         Table f4201 = new Table("F4201", "A");
         Table f4211 = new Table("F4211", "B");
@@ -127,6 +125,7 @@ public class SelectTest extends TestCase {
     }
 
 
+    @Test
     public void test5() {
         SQLHelper sqlHelper = new SQLHelper(User.class);
         System.out.println(sqlHelper.selectBuilder().getSql());

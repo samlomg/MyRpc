@@ -1,8 +1,8 @@
 package com.dglbc.dbtools.where;
 
-import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.SQLKey;
+import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Accessors(chain = true)
@@ -50,6 +51,29 @@ public class Where implements Serializable {
         this.logic = SQLKey.AND;
         this.sql = new StringBuilder();
         this.parms = new ArrayList();
+    }
+
+    //增加一个有争议的构造函数。因为这个要看使用人使用是否妥当。
+    public Where(StringBuilder sql, Object... parms) {
+        this.sql = sql;
+        this.parms = Arrays.asList(parms);
+    }
+
+    public Where(StringBuilder sql, String... parms) {
+        this.sql = sql;
+        this.parms = Arrays.asList(parms);
+    }
+    public Where(StringBuilder sql, Integer... parms) {
+        this.sql = sql;
+        this.parms = Arrays.asList(parms);
+    }
+    public Where(StringBuilder sql, Double... parms) {
+        this.sql = sql;
+        this.parms = Arrays.asList(parms);
+    }
+    public Where(StringBuilder sql, Float... parms) {
+        this.sql = sql;
+        this.parms = Arrays.asList(parms);
     }
 
     public Where or(Where where) {

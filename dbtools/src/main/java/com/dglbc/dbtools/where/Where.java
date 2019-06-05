@@ -27,6 +27,9 @@ public class Where implements Serializable {
     public Expression builder() {
         StringBuilder nsql = new StringBuilder();
         if (conditions.size() == 0) {
+            if (null == logic){
+                logic = SQLKey.AND;
+            }
             nsql.append(logic).append(sql);
         } else {
             nsql.append(logic).append(SQLKey.LEFT).append(sql);

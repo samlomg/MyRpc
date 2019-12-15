@@ -25,9 +25,9 @@ public class MyApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         Button btn = getHelloWorld();
-
+        GridPane gridPane = getGridPaneLogin();
         StackPane root = new StackPane();
-        root.getChildren().add(btn);
+        root.getChildren().add(gridPane);
         Scene scene = new Scene(root, 640, 480);
         scene.getStylesheets().add(MyApplication.class.getResource("/css/Login.css").toExternalForm());
         //设置舞台！

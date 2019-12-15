@@ -27,7 +27,7 @@ public class Where implements Serializable {
     public Expression builder() {
         StringBuilder nsql = new StringBuilder();
         if (conditions.size() == 0) {
-            if (null == logic){
+            if (null == logic) {
                 logic = SQLKey.AND;
             }
             nsql.append(logic).append(sql);
@@ -66,14 +66,17 @@ public class Where implements Serializable {
         this.sql = sql;
         this.parms = Arrays.asList(parms);
     }
+
     public Where(StringBuilder sql, Integer... parms) {
         this.sql = sql;
         this.parms = Arrays.asList(parms);
     }
+
     public Where(StringBuilder sql, Double... parms) {
         this.sql = sql;
         this.parms = Arrays.asList(parms);
     }
+
     public Where(StringBuilder sql, Float... parms) {
         this.sql = sql;
         this.parms = Arrays.asList(parms);

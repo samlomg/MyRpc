@@ -6,9 +6,11 @@ import com.dglbc.dbtools.declear.CrudOperate;
 import com.dglbc.dbtools.join.Join;
 import com.dglbc.dbtools.produce.ParameterMode;
 import com.dglbc.dbtools.produce.ProduceParameter;
+import com.dglbc.dbtools.run.TipsShow;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.unit.ClassGenSQL;
+import com.dglbc.dbtools.where.WK;
 import com.dglbc.dbtools.where.Where;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -139,8 +141,45 @@ public class SQLHelper implements Serializable {
         conditions.add(where);
         return this;
     }
+
     public SQLHelper where(List<Where> wheres) {
         conditions.addAll(wheres);
+        return this;
+    }
+
+    /**
+     * 只支持当个单数输入
+     * @param wk
+     * @param column
+     * @return
+     */
+    public SQLHelper where(String wk, Column column) {
+        Where where = new Where();
+        switch (wk) {
+            case WK.LIKE:
+                where.like(column);
+            case WK.NOTLIKE:
+                where.notLike(column);
+            case WK.GT:
+                where.gt(column);
+            case WK.GE:
+                where.ge(column);
+            case WK.LT:
+                where.lt(column);
+            case WK.LE:
+                where.le(column);
+            case WK.EQ:
+                where.eq(column);
+            case WK.NEQ:
+                where.neq(column);
+            case WK.ISNULL:
+                where.isNull(column);
+            case WK.ISNOTNULL:
+                where.isNotNull(column);
+            default:
+                TipsShow.alert("参数调用错误！");
+        }
+        conditions.add(where);
         return this;
     }
 
@@ -432,7 +471,7 @@ public class SQLHelper implements Serializable {
         return this;
     }
 
-    public SQLHelper merge(ClassGenSQL classGenSQL){
+    public SQLHelper merge(ClassGenSQL classGenSQL) {
         selectContent.addAll(classGenSQL.getSelectContent().values());
         return this;
     }

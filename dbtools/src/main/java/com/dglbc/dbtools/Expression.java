@@ -59,14 +59,6 @@ public class Expression {
         this.values = new ArrayList();
     }
 
-    //自定义 语句
-    public Expression(@NotNull  String sql, List values) {
-        this.sql = new StringBuilder().append(sql);
-        this.values = new ArrayList(){{
-            addAll(values);
-        }};
-    }
-
     //合并在一起
     public Expression merge(Expression expression){
         this.sql.append(expression.getSql());

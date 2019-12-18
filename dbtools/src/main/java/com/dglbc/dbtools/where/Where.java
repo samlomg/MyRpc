@@ -42,16 +42,15 @@ public class Where implements Serializable {
             }
             nsql.append(SQLKey.RIGHT);
         }
-
         return new Expression(nsql, parms);
-    }
-    public Where(String logic) {
-        this.logic = logic;
-        this.sql = new StringBuilder();
-        this.parms = new ArrayList();
     }
     public Where() {
         this.logic = SQLKey.AND;
+        this.sql = new StringBuilder();
+        this.parms = new ArrayList();
+    }
+    public Where(String logic) {
+        this.logic = logic;
         this.sql = new StringBuilder();
         this.parms = new ArrayList();
     }
@@ -68,21 +67,13 @@ public class Where implements Serializable {
         caulse(s.get());
         return this;
     }
-    // 运算
-    public Where caulse(Expression expression, String opt, Object value) {
-        sql.append(expression.getSql()).append(opt).append(" ? ");
-        parms.addAll(expression.getValues());
-        parms.add(value);
-        return this;
-    }
+
     // 运算
     public Where caulse(Expression expression) {
         sql.append(expression.getSql());
         parms.addAll(expression.getValues());
         return this;
     }
-
-
     //解决条件需要的多个组合or and
     public Where or(Where where) {
         conditions.add(where);

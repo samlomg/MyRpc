@@ -132,30 +132,6 @@ public class SQLHelper implements Serializable {
         return this;
     }
 
-    /**
-     * 只支持单个参数条件输入
-     *
-     * @param wk
-     * @param column
-     * @return
-     */
-    public SQLHelper where(String wk, Column column) {
-        Where where = new Where();
-        switch (wk) {
-            case WK.LIKE:
-                where.like(column);
-            case WK.GT:
-                where.gt(column);
-            case WK.LT:
-                where.lt(column);
-            case WK.EQ:
-                where.eq(column);
-            default:
-                TipsShow.alert("参数调用错误！");
-        }
-        conditions.add(where);
-        return this;
-    }
 
     //充分灵活性（灵活性max）潘多拉的盒子。正确与否全凭自己的能力察觉
     public SQLHelper where(String logic,String clause,List values){

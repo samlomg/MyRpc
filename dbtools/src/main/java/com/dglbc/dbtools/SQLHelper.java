@@ -20,6 +20,7 @@ import lombok.experimental.Accessors;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -32,39 +33,25 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class SQLHelper implements Serializable {
+    private boolean order = false;
+    private boolean group = false;
+    private boolean have = false;
+    private Table table;//主表
+    private String produceFuntion;
 
     private List<Expression> selectContent = new ArrayList<>();
     private List<String> specials = new ArrayList<>();
     private List<Column> insertContent = new ArrayList<>();
     private List<Column> updateContent = new ArrayList<>();
     private List<Where> conditions = new ArrayList<>();
-    private Table table;
     private List<Join> joins = new ArrayList<>();
-    private boolean order = false;
-    private boolean group = false;
-    private boolean have = false;
     private List<Column> groupContent = new ArrayList<>();
     private List<Column> orderContent = new ArrayList<>();
     private List<Where> havingConditions = new ArrayList<>();
     private List<ProduceParameter> produceParameters = new ArrayList<>();
-    private String produceFuntion;
 
     public SQLHelper(Table table) {
         this.table = table;
-    }
-
-    public SQLHelper(Class cl) {
-        this.table = new Table(cl.getSimpleName(), cl.getSimpleName() + "_l");
-        select(cl.getDeclaredFields());
-    }
-
-    public SQLHelper(Class cl, Object o, CrudOperate... crudOperates) throws IllegalAccessException {
-        this.table = new Table(cl.getSimpleName(), cl.getSimpleName() + "_b");
-        Field[] fields = cl.getDeclaredFields();
-        for (int i = 0; i < crudOperates.length; i++) {
-            if (crudOperates[i].equals(CrudOperate.INSERT)) insert(fields, o);
-            if (crudOperates[i].equals(CrudOperate.UPDATE)) update(fields, o);
-        }
     }
 
     public SQLHelper as(String special) {
@@ -99,22 +86,18 @@ public class SQLHelper implements Serializable {
         return sc(new Column(table, name));
     }
 
-    //查询语句,自定义
     public SQLHelper sc(Table table, String name) {
         return sc(new Column(table, name));
     }
 
-    //查询语句,自定义
     public SQLHelper sc(Table table, String name, String bind) {
         return sc(new Column(table, name, bind));
     }
 
-    //查询语句,自定义
     public SQLHelper sc(Column column) {
         return sc(new Expression(column));
     }
 
-    //查询语句
     public SQLHelper sc(Expression expression) {
         this.selectContent.add(expression);
         return this;
@@ -132,11 +115,13 @@ public class SQLHelper implements Serializable {
         return this;
     }
 
+    //joiin
     public SQLHelper join(Join join) {
         joins.add(join);
         return this;
     }
 
+    //where条件
     public SQLHelper where(Where where) {
         conditions.add(where);
         return this;
@@ -148,7 +133,8 @@ public class SQLHelper implements Serializable {
     }
 
     /**
-     * 只支持当个单数输入
+     * 只支持单个参数条件输入
+     *
      * @param wk
      * @param column
      * @return
@@ -158,24 +144,12 @@ public class SQLHelper implements Serializable {
         switch (wk) {
             case WK.LIKE:
                 where.like(column);
-            case WK.NOTLIKE:
-                where.notLike(column);
             case WK.GT:
                 where.gt(column);
-            case WK.GE:
-                where.ge(column);
             case WK.LT:
                 where.lt(column);
-            case WK.LE:
-                where.le(column);
             case WK.EQ:
                 where.eq(column);
-            case WK.NEQ:
-                where.neq(column);
-            case WK.ISNULL:
-                where.isNull(column);
-            case WK.ISNOTNULL:
-                where.isNotNull(column);
             default:
                 TipsShow.alert("参数调用错误！");
         }
@@ -183,6 +157,37 @@ public class SQLHelper implements Serializable {
         return this;
     }
 
+    //充分灵活性（灵活性max）潘多拉的盒子。正确与否全凭自己的能力察觉
+    public SQLHelper where(String logic,String clause,List values){
+        conditions.add(new Where(logic,() -> {return new Expression(clause,values);}));
+        return this;
+    }
+
+    public SQLHelper where(String clause,List values){
+        conditions.add(new Where(() -> {return new Expression(clause,values);}));
+        return this;
+    }
+
+    public SQLHelper where(String logic,String clause,Object value){
+        conditions.add(new Where(logic,() -> {return new Expression(clause,Arrays.asList(value));}));
+        return this;
+    }
+
+    public SQLHelper where(String clause,Object value){
+        conditions.add(new Where(() -> {return new Expression(clause,Arrays.asList(value));}));
+        return this;
+    }
+
+    public SQLHelper where(String logic,String clause){
+        conditions.add(new Where(logic,() -> {return new Expression(clause);}));
+        return this;
+    }
+    public SQLHelper where(String clause){
+        conditions.add(new Where(() -> {return new Expression(clause);}));
+        return this;
+    }
+
+    //常规having groupBy orderBy
     public SQLHelper having(Where where) {
         this.group = true;
         this.have = true;
@@ -205,6 +210,7 @@ public class SQLHelper implements Serializable {
         return this;
     }
 
+    //生成builder
     /*
         生成 查询语句 首先
         1：把selectContent里面的内容生成出来
@@ -216,7 +222,6 @@ public class SQLHelper implements Serializable {
     public Expression selectBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.SELECT);
-//        sql.append(selectContent.toString().replaceAll("[\\[\\]]", " "));
         for (String special : specials) sql.append(special).append(" ");
         StringBuilder tem1 = new StringBuilder();
         for (Expression expression : selectContent) {
@@ -336,80 +341,19 @@ public class SQLHelper implements Serializable {
         return new Expression(sql, params);
     }
 
-    /*
-            where条件
-     */
-
-    // like
-    public SQLHelper like(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).like(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
+    //自动化生成的辅助
+    public SQLHelper(Class cl) {
+        this.table = new Table(cl.getSimpleName(), cl.getSimpleName() + "_l");
+        select(cl.getDeclaredFields());
     }
 
-    // not like
-    public SQLHelper notLike(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).notLike(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
-    }
-
-    // 大于
-    public SQLHelper gt(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).gt(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
-    }
-
-    // 大于等于
-    public SQLHelper ge(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).ge(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
-    }
-
-    // 小于
-    public SQLHelper lt(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).lt(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
-    }
-
-    // 小于等于
-    public SQLHelper le(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).le(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
-    }
-
-    // 等于
-    public SQLHelper eq(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).eq(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
-    }
-
-    // 不等于
-    public SQLHelper neq(String name, Object values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).neq(new Column(tables.length > 0 ? tables[0] : this.table, name, values)));
-        return this;
-    }
-
-    // 为空
-    public SQLHelper isNull(String name, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).isNull(new Column(tables.length > 0 ? tables[0] : this.table, name)));
-        return this;
-    }
-
-    // 为空
-    public SQLHelper isNotNull(String name, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).isNotNull(new Column(tables.length > 0 ? tables[0] : this.table, name)));
-        return this;
-    }
-
-    //between
-    public SQLHelper between(String name, Object value, Object value1, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).between(new Column(tables.length > 0 ? tables[0] : this.table, name), value, value1));
-        return this;
-    }
-
-    //in
-    public SQLHelper in(String name, List values, Table... tables) {
-        conditions.add(new Where(SQLKey.AND).in(new Column(tables.length > 0 ? tables[0] : this.table, name), values));
-        return this;
+    public SQLHelper(Class cl, Object o, CrudOperate... crudOperates) throws IllegalAccessException {
+        this.table = new Table(cl.getSimpleName(), cl.getSimpleName() + "_b");
+        Field[] fields = cl.getDeclaredFields();
+        for (int i = 0; i < crudOperates.length; i++) {
+            if (crudOperates[i].equals(CrudOperate.INSERT)) insert(fields, o);
+            if (crudOperates[i].equals(CrudOperate.UPDATE)) update(fields, o);
+        }
     }
 
     /*
@@ -437,7 +381,7 @@ public class SQLHelper implements Serializable {
                 this.uc(new Column(table, field.getName(), field.get(o)));
             }
             if (field.isAnnotationPresent(FilterCondition.class)) {
-                this.eq(field.getName(), field.get(o));
+                this.where(field.getName(),new Column(table, field.getName(), field.get(o)));
             }
 
         }

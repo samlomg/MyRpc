@@ -1,1 +1,1 @@
-第一个小目标:SQL server sql语句（DDL,Constraint,ALTER TABLE除外）可以正确生成60%.
+第一个小目标:SQL server sql语句（DDL,Constraint,ALTER TABLE除外）可以正确生成80%.

@@ -42,5 +42,4 @@ public interface SQLKey {
     String SUM = " SUM ";
     String LTRIM = " LTRIM ";
     String RTRIM = " RTRIM ";
-
 }

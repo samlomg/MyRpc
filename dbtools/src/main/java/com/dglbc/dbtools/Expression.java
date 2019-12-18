@@ -2,6 +2,7 @@ package com.dglbc.dbtools;
 
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
+import com.sun.istack.internal.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
@@ -37,14 +38,14 @@ public class Expression {
     /*
      * 查询语句专用
      * */
-    public Expression(Column column) {
+    public Expression(@NotNull Column column) {
         this.sql = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").append(column.getName()).append(" ");
         if (StringUtils.isNoneEmpty(column.getBind())) this.sql.append(SQLKey.AS).append(column.getBind());
         this.values = new ArrayList();
     }
 
     //true 是语句生成的表，false是原生表
-    public Expression(Table table, boolean flag) {
+    public Expression(@NotNull Table table, @NotNull boolean flag) {
         List temp = new ArrayList();
         if (flag) temp.addAll(table.getValues());
         this.sql = flag ? new StringBuilder().append(SQLKey.LEFT).append(table.getSql()).append(SQLKey.RIGHT).append(table.getAlias()) :
@@ -53,11 +54,20 @@ public class Expression {
     }
 
     //自定义 语句
-    public Expression(String sql) {
+    public Expression(@NotNull String sql) {
         this.sql = new StringBuilder().append(sql);
         this.values = new ArrayList();
     }
 
+    //自定义 语句
+    public Expression(@NotNull  String sql, List values) {
+        this.sql = new StringBuilder().append(sql);
+        this.values = new ArrayList(){{
+            addAll(values);
+        }};
+    }
+
+    //合并在一起
     public Expression merge(Expression expression){
         this.sql.append(expression.getSql());
         this.values.addAll(expression.getValues());

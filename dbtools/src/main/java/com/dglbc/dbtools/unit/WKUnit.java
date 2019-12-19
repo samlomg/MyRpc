@@ -18,22 +18,16 @@ public class WKUnit {
         return new StringBuilder().append(" ").append(table.getAlias()).append(".").append(name).append(" ");
     }
 
-    //whereString
-    public static StringBuilder getWS(Table table, String name,String operation) {
-        return new StringBuilder().append(" ").append(table.getAlias()).append(".").append(name).append(" ").append(operation);
-    }
-
     //where operation 正常情况下
     public static String getOperation(String operation, List values){
         StringBuilder op = new StringBuilder();
         if (operation.indexOf("BETWEEN") > -1 && values.size() ==2){
             //between
-            op.append(operation).append(" ? AND ?");
+            op.append(String.format(operation, "?","?"));
         }else if (operation.indexOf("IN") > -1){
-            op.append(operation).append(" (");
             StringBuilder question = new StringBuilder();
             values.forEach(q -> {question.append(",?");});
-            op.append(question.substring(1)).append(" ) ");
+            op.append(String.format(operation, question.substring(1)));
         }else if (values.size() == 1){
             op.append(operation).append("?");
         }else {

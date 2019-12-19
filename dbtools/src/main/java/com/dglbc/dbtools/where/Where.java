@@ -81,9 +81,11 @@ public class Where implements Serializable {
         return this;
     }
 
-    public Where caulse(Table table, String name, String operation , List values){
+    public Where caulse(Table table, String name, String operation, List values) {
         //根据情况 例如between 和in是要提前知道参数个数。所以先处理operation语句
-
+        caulse(() -> {
+            return new Expression(WKUnit.getColumn(table, name).append(WKUnit.getOperation(operation, values)), values);
+        });
         return this;
     }
 
@@ -92,7 +94,7 @@ public class Where implements Serializable {
     //eq
     public Where eq(Table table, String name, Object object) {
         caulse(() -> {
-            return new Expression(WKUnit.getWS(table, name,"= ? "), Arrays.asList(object));
+            return new Expression(WKUnit.getColumn(table, name), Arrays.asList(object));
         });
         return this;
     }

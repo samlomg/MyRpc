@@ -18,7 +18,7 @@ public class DeleteTest {
     public void test1() {
         Table table = new Table("Test","A");
         SQLHelper SQLHelper = new SQLHelper(table);
-        SQLHelper.where(new Where(SQLKey.AND).eq(new Column(table,"testId",1)));
+//        SQLHelper.where(new Where(SQLKey.AND).eq(new Column(table,"testId",1)));
         Expression expression = SQLHelper.deleteBulider();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());

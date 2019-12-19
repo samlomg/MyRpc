@@ -37,8 +37,8 @@ public class SelectTest{
         sqlHelper.as(SQLKey.TOP + " 10")
                 .sc(as(isnull(column(f4211_t, "SDDOCO", 0)), "SDDOCO"))
                 .join(f4211)
-                .where(where(SQLKey.AND).eq(column(table, "SHMCU", "1110114")))
-                .where(where(SQLKey.AND).eq(convert("varchar(20)", expression(column(table, "SHDCTO"), false)), "SL"))
+//                .where(where(SQLKey.AND).eq(column(table, "SHMCU", "1110114")))
+//                .where(where(SQLKey.AND).eq(convert("varchar(20)", expression(column(table, "SHDCTO"), false)), "SL"))
                 .orderBy(column(table, "Sequence"));
         Expression expression = sqlHelper.selectBuilder();
         System.out.println(expression.getSql());
@@ -56,10 +56,10 @@ public class SelectTest{
         SQLHelper.sc(isnull(column(table, "SDDOCO", "1111")));
         Join f4211 = join(SQLKey.LEFTJOIN, f4211_t, column(table, "Sequence"), column(f4211_t, "Sequence"));
         SQLHelper.join(f4211);
-        SQLHelper.where(where().eq(column(table, "SHMCU", "1110114")))
-                .where(where().eq(column(f4211_t, "Sequence", 236536)));
-        SQLHelper.groupBy(column(table, "SDDOCO", "1111")).having(where("")
-                .gt(sum(expression(column(f4211_t, "SDDOCO"), false)), 100000));//"SUM(B.SDDOCO) > 100000"
+//        SQLHelper.where(where().eq(column(table, "SHMCU", "1110114")))
+//                .where(where().eq(column(f4211_t, "Sequence", 236536)));
+//        SQLHelper.groupBy(column(table, "SDDOCO", "1111")).having(where("")
+//                .gt(sum(expression(column(f4211_t, "SDDOCO"), false)), 100000));//"SUM(B.SDDOCO) > 100000"
         Expression expression = SQLHelper.selectBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
@@ -87,9 +87,9 @@ public class SelectTest{
         SQLHelper.join(f4211);
         SQLHelper.join(f0008);
         SQLHelper.where(new Where().eq(table, "SHMCU", "1110114"))
-                .where(new Where().eq(f4211t, "Sequence", 236536).and(new Where(SQLKey.OR).eq(table, "Sequence", 236536)))
+//                .where(new Where().eq(f4211t, "Sequence", 236536).and(new Where(SQLKey.OR).eq(table, "Sequence", 236536)))
         ;
-        SQLHelper.groupBy(new Column(f4211t, "SDDOCO")).having(new Where("").gt(sum(new Expression(new Column(f4211t, "SDDOCO"), false)), 100000));
+//        SQLHelper.groupBy(new Column(f4211t, "SDDOCO")).having(new Where("").gt(sum(new Expression(new Column(f4211t, "SDDOCO"), false)), 100000));
         Expression expression = SQLHelper.selectBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());
@@ -112,7 +112,7 @@ public class SelectTest{
         SQLHelper sqlHelper = new SQLHelper(f4201);
         sqlHelper.sc(f4201, "SHDOCO").sc(column(f4201, "SHMCU")).sc(f4201, "Sequence")
                 .join(join(SQLKey.LEFTJOIN, f4211).on(column(f4201, "Sequence"), column(f4211, "Sequence")))
-                .eq("SDMCU", "1110114", f4211)
+//                .eq("SDMCU", "1110114", f4211)
                 .as(SQLKey.TOP + "10");
         System.out.println(sqlHelper.selectBuilder().getSql());
         List<Integer> a = JDBC.list(sqlHelper.selectBuilder(), new IVo<Integer>() {

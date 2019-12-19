@@ -21,7 +21,7 @@ public class UpdateTest extends TestCase {
         Table table = new Table("TEST","A");
         SQLHelper SQLHelper = new SQLHelper(table);
         SQLHelper.uc(new Column(table, "testName", "SAMBC"));
-        SQLHelper.where(new Where(SQLKey.AND).eq(new Column(table,"testId",1)));
+//        SQLHelper.where(new Where(SQLKey.AND).eq(new Column(table,"testId",1)));
         Expression expression = SQLHelper.updateBuilder();
         System.out.println(expression.getSql());
         System.out.println(expression.getValues().toString());

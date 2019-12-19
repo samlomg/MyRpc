@@ -1,13 +1,24 @@
 package com.dglbc.dbtools.where;
 
-public interface WK {
-    String LIKE = "LIKE";
-    String NOT = "NOT";
-    String GT = ">";
-    String LT = "<";
-    String EQ = "=";
-    String IS = "IS";
-    String NULL = "NULL";
-    String BETWEEN = "BETWEEN";
-    String IN = "IN";
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+@Accessors(chain = true)
+@Getter
+@AllArgsConstructor
+public enum  WK {
+    IN("IN"," IN ( %s )"),
+    BETWEEN("BETWEEN"," BETWEEN %s AND %s"),
+    NULL("NULL"," NULL "),
+    IS("IS"," IS %s "),
+    EQ("="," = %s "),
+    LT("<"," < %s "),
+    GT(">"," > %s "),
+    NOT("NOT"," NOT %s "),
+    LIKE("LIKE"," LIKE %s ");
+
+    private String desc;
+    private String format;
 }

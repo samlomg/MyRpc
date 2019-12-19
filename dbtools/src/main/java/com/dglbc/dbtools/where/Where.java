@@ -4,6 +4,7 @@ import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
+import com.dglbc.dbtools.unit.WKUnit;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -44,24 +45,29 @@ public class Where implements Serializable {
         }
         return new Expression(nsql, parms);
     }
+
     public Where() {
         this.logic = SQLKey.AND;
         this.sql = new StringBuilder();
         this.parms = new ArrayList();
     }
+
     public Where(String logic) {
         this.logic = logic;
         this.sql = new StringBuilder();
         this.parms = new ArrayList();
     }
+
     public Where(Supplier<Expression> s) {
         this.logic = SQLKey.AND;
         caulse(s.get());
     }
-    public Where(String logic,Supplier<Expression> s) {
+
+    public Where(String logic, Supplier<Expression> s) {
         this.logic = logic;
         caulse(s.get());
     }
+
     //用java8的特性
     public Where caulse(Supplier<Expression> s) {
         caulse(s.get());
@@ -74,6 +80,24 @@ public class Where implements Serializable {
         parms.addAll(expression.getValues());
         return this;
     }
+
+    public Where caulse(Table table, String name, String operation , List values){
+        //根据情况 例如between 和in是要提前知道参数个数。所以先处理operation语句
+
+        return this;
+    }
+
+    //where 1=1 and name ='My'
+
+    //eq
+    public Where eq(Table table, String name, Object object) {
+        caulse(() -> {
+            return new Expression(WKUnit.getWS(table, name,"= ? "), Arrays.asList(object));
+        });
+        return this;
+    }
+
+
     //解决条件需要的多个组合or and
     public Where or(Where where) {
         conditions.add(where);

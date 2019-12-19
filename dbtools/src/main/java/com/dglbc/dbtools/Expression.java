@@ -59,6 +59,11 @@ public class Expression {
         this.values = new ArrayList();
     }
 
+    public Expression(String clause, List values) {
+        this.sql = new StringBuilder().append(sql);
+        this.values = values;
+    }
+
     //合并在一起
     public Expression merge(Expression expression){
         this.sql.append(expression.getSql());

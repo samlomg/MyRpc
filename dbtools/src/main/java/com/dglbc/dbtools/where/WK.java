@@ -2,7 +2,6 @@ package com.dglbc.dbtools.where;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
@@ -22,7 +21,7 @@ public enum WK {
     private String desc;
     private String format;
 
-    public String op(WK... wks) {
+    public static String op(WK... wks) {
         String re = wks[0].getFormat();
         for (int i = 0; i < wks.length; i++) {
             if (i != 0) re = String.format(re, wks[i].getFormat());

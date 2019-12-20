@@ -8,8 +8,9 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by LBC on 2017/12/28
@@ -26,7 +27,7 @@ public class Table implements Serializable {
     private String link;
     private String database;
     private String sec;//dbo
-    private List<Column> columns;
+    private Map<String,Column> columns;
 
     private StringBuilder sql;
     private List values;
@@ -34,7 +35,17 @@ public class Table implements Serializable {
     public Table(String name, String alias) {
         this.name = name;
         this.alias = alias;
-        this.columns = new ArrayList<>();
+        this.columns = new HashMap<>();
+        Expression expression = new Expression(this, false);
+        this.sql = expression.getSql();
+        this.values = expression.getValues();
+
+    }
+
+    public Table(String name) {
+        this.name = name;
+        this.alias = alias;
+        this.columns = new HashMap<>();
         Expression expression = new Expression(this, false);
         this.sql = expression.getSql();
         this.values = expression.getValues();
@@ -45,6 +56,6 @@ public class Table implements Serializable {
         this.sql = expression.getSql();
         this.values = expression.getValues();
         this.alias = alias;
-        this.columns = new ArrayList<>();
+        this.columns = new HashMap<>();
     }
 }

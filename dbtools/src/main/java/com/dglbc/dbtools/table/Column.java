@@ -26,7 +26,7 @@ public class Column implements Serializable{
     public Column(Table table, String name) {
         this.table = table;
         this.name = name;
-        table.getColumns().add(this);
+        table.getColumns().put(name,this);
     }
 
     public Column bind(Table table, String name, String bind) {
@@ -38,6 +38,6 @@ public class Column implements Serializable{
         this.table = table;
         this.name = name;
         this.value = value;
-        table.getColumns().add(this);
+        table.getColumns().put(name,this);
     }
 }

@@ -4,6 +4,7 @@ import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
+import com.dglbc.dbtools.unit.ColumnUnit;
 import com.dglbc.dbtools.unit.WKUnit;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,7 +14,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 @Accessors(chain = true)
@@ -84,18 +84,99 @@ public class Where implements Serializable {
     public Where caulse(Table table, String name, String operation, List values) {
         //根据情况 例如between 和in是要提前知道参数个数。所以先处理operation语句
         caulse(() -> {
-            return new Expression(WKUnit.getColumn(table, name).append(WKUnit.getOperation(operation, values)), values);
+            return new Expression(ColumnUnit.getColumn(table, name).append(WKUnit.getOperation(operation, values)), values);
         });
         return this;
     }
 
-    //where 1=1 and name ='My'
+    public Where caulse(Column column, String operation, List values) {
+        caulse(column.getTable(), column.getName(), operation, values);
+        return this;
+    }
 
+    //基础到此结束
+
+    //第一部分用table name 还有值
     //eq
     public Where eq(Table table, String name, Object object) {
-        caulse(() -> {
-            return new Expression(WKUnit.getColumn(table, name), Arrays.asList(object));
-        });
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.EQ),Arrays.asList(object)), Arrays.asList(object));
+        return this;
+    }
+
+    //GT
+    public Where gt(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.GT),Arrays.asList(object)), Arrays.asList(object));
+        return this;
+    }
+
+    //LT
+    public Where lt(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.LT),Arrays.asList(object)), Arrays.asList(object));
+        return this;
+    }
+
+    //GE
+    public Where ge(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.GT,WK.EQ),Arrays.asList(object)), Arrays.asList(object));
+        return this;
+    }
+
+    //LE
+    public Where le(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.LT,WK.EQ),Arrays.asList(object)), Arrays.asList(object));
+        return this;
+    }
+
+    //between
+    public Where between(Table table, String name, Object object,Object object1) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.BETWEEN),Arrays.asList(object,object1)), Arrays.asList(object,object1));
+        return this;
+    }
+
+    //in
+    public Where in(Table table, String name, List values) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.IN),values), values);
+        return this;
+    }
+
+    //like
+    public Where like(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.LIKE),Arrays.asList(object)), Arrays.asList(object));
+        return this;
+    }
+
+    //null
+    public Where isNull(Table table, String name) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.IS,WK.NULL),new ArrayList()), new ArrayList());
+        return this;
+    }
+
+    //isNotNull
+    public Where isNotNull(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.IS,WK.NOT,WK.NULL),new ArrayList()), new ArrayList());
+        return this;
+    }
+    //notLike
+    public Where notLike(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.NOT,WK.LIKE),Arrays.asList(object)), Arrays.asList(object));
+        return this;
+    }
+
+    //notIn
+    public Where notIn(Table table, String name, List values) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.NOT,WK.IN),values), values);
+        return this;
+    }
+
+    //notBetween
+    public Where notBetween(Table table, String name, Object object,Object object1) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.NOT,WK.BETWEEN),Arrays.asList(object,object1)), Arrays.asList(object,object1));
+        return this;
+    }
+
+    //neq
+    public Where neq(Table table, String name, Object object) {
+        caulse(table, name, WKUnit.getOperation(WK.op(WK.LT,WK.GT),Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 

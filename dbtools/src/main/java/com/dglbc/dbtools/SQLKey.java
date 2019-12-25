@@ -26,20 +26,24 @@ public interface SQLKey {
     String VALUES = " VALUES ";
     String SET = " SET ";
     String AS = " AS ";
-    String DATEADD = " DATEADD ";
+
     String LEFT = " ( ";
     String RIGHT = " ) ";
     String ISNULL = " ISNULL ";
+
+    String TOP = " TOP ";
+    String DISTINCT  = " DISTINCT ";
+
+    String SUM = " SUM ";
+    String LTRIM = " LTRIM ";
+    String RTRIM = " RTRIM ";
+    String DATEADD = " DATEADD ";
+    String DATEDIFF = " DATEDIFF ";
     String CONVERT = " CONVERT ";
+
     String CASE = " CASE ";
     String WHEN = " WHEN ";
     String THEN = " THEN ";
     String ELSE = " ELSE ";
     String END = " END ";
-    String DATEDIFF = " DATEDIFF ";
-    String TOP = " TOP ";
-    String DISTINCT  = " DISTINCT ";
-    String SUM = " SUM ";
-    String LTRIM = " LTRIM ";
-    String RTRIM = " RTRIM ";
 }

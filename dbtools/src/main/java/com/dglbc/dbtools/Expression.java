@@ -70,5 +70,11 @@ public class Expression {
         this.values.addAll(expression.getValues());
         return this;
     }
+    //合并在一起
+    public Expression merge(String sql,List<Object> objects){
+        this.sql.append(sql);
+        this.values.addAll(objects);
+        return this;
+    }
 
 }

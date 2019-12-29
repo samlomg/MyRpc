@@ -11,10 +11,6 @@ import com.dglbc.dbtools.where.Where;
 
 public class SQLBase {
 
-    //表达式
-    public static Expression expression(Column column, boolean flag) {
-        return new Expression(column, flag);
-    }
 
     //true 是语句生成的表，false是原生表
     public static Expression expression(Table table, boolean flag) {

@@ -2,7 +2,7 @@ package com.dglbc.dbtools.where;
 
 import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.SQLKey;
-import com.dglbc.dbtools.run.TipsShow;
+import com.dglbc.dbtools.exception.TipsShow;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.unit.ColumnUnit;
@@ -12,7 +12,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.nio.file.OpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.dglbc.dbtools.unit;
 
-import com.dglbc.dbtools.run.TipsShow;
+import com.dglbc.dbtools.exception.TipsShow;
 
 import java.util.List;
 

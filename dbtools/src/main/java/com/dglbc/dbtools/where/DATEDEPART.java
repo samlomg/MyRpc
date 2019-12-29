@@ -1,18 +1,30 @@
 package com.dglbc.dbtools.where;
 
-public interface DATEDEPART {
-    String year	="year";
-    String quarter	="quarter";
-    String month	= "month";
-    String dayofyear	="dayofyear";
-    String day	="day";
-    String week	="week";
-    String hour	="hour";
-    String minute	="minute";
-    String second	="second";
-    String millisecond	="millisecond";
-    String microsecond	="microsecond";
-    String nanosecond	="nanosecond";
-    String ISO_WEEK	="ISO_WEEK";
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
+import java.security.PrivateKey;
+@Accessors(chain = true)
+@Getter
+public enum DATEDEPART {
+    year("year"),
+    quarter("quarter"),
+    month("month"),
+    dayofyear("dayofyear"),
+    day("day"),
+    week("week"),
+    hour("hour"),
+    minute("minute"),
+    second("second"),
+    millisecond("millisecond"),
+    microsecond("microsecond"),
+    nanosecond("nanosecond"),
+    ISO_WEEK("ISO_WEEK");
+
+    private String c;
+
+    DATEDEPART(String string) {
+        this.c = string;
+    }
 }

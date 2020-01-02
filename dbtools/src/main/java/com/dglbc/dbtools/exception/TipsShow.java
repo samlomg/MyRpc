@@ -1,4 +1,4 @@
-package com.dglbc.dbtools.run;
+package com.dglbc.dbtools.exception;
 
 public class TipsShow extends RuntimeException {
     public TipsShow(String msg) {

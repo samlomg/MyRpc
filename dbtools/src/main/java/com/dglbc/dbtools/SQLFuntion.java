@@ -29,9 +29,6 @@ public class SQLFuntion {
                 append(expression.getSql()).append(",?").append(SQLKey.RIGHT), templist);
     }
 
-    public static Expression isnull(Column column) {
-        return isnull(new Expression(column, false), column.getValue());
-    }
 
     public static Expression as(Expression expression, String name) {
         return new Expression(expression.getSql().append(SQLKey.AS).append(name), expression.getValues());

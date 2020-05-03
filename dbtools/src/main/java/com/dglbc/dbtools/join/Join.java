@@ -76,14 +76,14 @@ public class Join implements Serializable {
     }
 
     public Join on(Expression expression, Column column) {
-        Expression expression1 = new Expression(column, false);
+        Expression expression1 = new Expression().on(column);
         condition.add(new Expression(expression.getSql().append(" = ").append(expression1.getSql()), expression.getValues()));
         return this;
     }
 
     public Join on(Column column, Column column2) {
-        Expression expression = new Expression(column, false);
-        Expression expression1 = new Expression(column2, false);
+        Expression expression = new Expression().on(column);
+        Expression expression1 = new Expression().on(column2);
         List templist = new ArrayList();
         templist.addAll(expression.getValues());
         templist.addAll(expression1.getValues());

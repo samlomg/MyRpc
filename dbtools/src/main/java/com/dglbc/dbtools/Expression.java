@@ -33,6 +33,12 @@ public class Expression {
         this.values = new ArrayList();
     }
 
+    public Expression on(@NotNull Column column){
+        this.sql = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").append(column.getName()).append(" ");
+        this.values = new ArrayList();
+        return this;
+    }
+
     //true 是语句生成的表，false是原生表
     public Expression(@NotNull Table table, @NotNull boolean flag) {
         List temp = new ArrayList();

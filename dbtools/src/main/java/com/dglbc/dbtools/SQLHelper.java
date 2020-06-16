@@ -37,7 +37,7 @@ public class SQLHelper implements Serializable {
     private Table table;//主表
     private String produceFuntion;
 
-    private List<Expression> selectContent = new ArrayList<>();
+    private List<Express> selectContent = new ArrayList<>();
     private List<String> specials = new ArrayList<>();
     private List<Column> insertContent = new ArrayList<>();
     private List<Column> updateContent = new ArrayList<>();
@@ -93,11 +93,11 @@ public class SQLHelper implements Serializable {
     }
 
     public SQLHelper sc(Column column) {
-        return sc(new Expression(column));
+        return sc(new Express(column));
     }
 
-    public SQLHelper sc(Expression expression) {
-        this.selectContent.add(expression);
+    public SQLHelper sc(Express express) {
+        this.selectContent.add(express);
         return this;
     }
 
@@ -133,31 +133,31 @@ public class SQLHelper implements Serializable {
 
     //充分灵活性（灵活性max）潘多拉的盒子。正确与否全凭自己的能力察觉
     public SQLHelper where(String logic,String clause,List values){
-        conditions.add(new Where(logic,() -> {return new Expression(clause,values);}));
+        conditions.add(new Where(logic,() -> {return new Express(clause,values);}));
         return this;
     }
 
     public SQLHelper where(String clause,List values){
-        conditions.add(new Where(() -> {return new Expression(clause,values);}));
+        conditions.add(new Where(() -> {return new Express(clause,values);}));
         return this;
     }
 
     public SQLHelper where(String logic,String clause,Object value){
-        conditions.add(new Where(logic,() -> {return new Expression(clause,Arrays.asList(value));}));
+        conditions.add(new Where(logic,() -> {return new Express(clause,Arrays.asList(value));}));
         return this;
     }
 
     public SQLHelper where(String clause,Object value){
-        conditions.add(new Where(() -> {return new Expression(clause,Arrays.asList(value));}));
+        conditions.add(new Where(() -> {return new Express(clause,Arrays.asList(value));}));
         return this;
     }
 
     public SQLHelper where(String logic,String clause){
-        conditions.add(new Where(logic,() -> {return new Expression(clause);}));
+        conditions.add(new Where(logic,() -> {return new Express(clause);}));
         return this;
     }
     public SQLHelper where(String clause){
-        conditions.add(new Where(() -> {return new Expression(clause);}));
+        conditions.add(new Where(() -> {return new Express(clause);}));
         return this;
     }
 
@@ -193,19 +193,19 @@ public class SQLHelper implements Serializable {
         4：生成where的信息
         5：生成group by order by 信息
      */
-    public Expression selectBuilder() {
+    public Express selectBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.SELECT);
         for (String special : specials) sql.append(special).append(" ");
         StringBuilder tem1 = new StringBuilder();
-        for (Expression expression : selectContent) {
-            tem1.append(",").append(expression.getSql());
-            params.addAll(expression.getValues());
+        for (Express express : selectContent) {
+            tem1.append(",").append(express.getSql());
+            params.addAll(express.getValues());
         }
         sql.append(tem1.delete(0, 1)).append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(SQLKey.WITH);
         if (joins.size() > 0) {
             for (Join join : joins) {
-                Expression tempsql = join.builder();
+                Express tempsql = join.builder();
                 sql.append(tempsql.getSql());
                 params.addAll(tempsql.getValues());
             }
@@ -214,7 +214,7 @@ public class SQLHelper implements Serializable {
 
         if (conditions.size() > 0) {
             for (Where where : conditions) {
-                Expression tempsql = where.builder();
+                Express tempsql = where.builder();
                 sql.append(tempsql.getSql());
                 params.addAll(tempsql.getValues());
             }
@@ -230,7 +230,7 @@ public class SQLHelper implements Serializable {
                 sql.append(SQLKey.HAVING);
                 if (havingConditions.size() > 0) {
                     for (Where where : havingConditions) {
-                        Expression tempsql = where.builder();
+                        Express tempsql = where.builder();
                         sql.append(tempsql.getSql());
                         params.addAll(tempsql.getValues());
                     }
@@ -244,13 +244,13 @@ public class SQLHelper implements Serializable {
             for (Column column : orderContent) temp1 += "," + column.getTable().getAlias() + "." + column.getName();
             sql.append(temp1.replaceFirst(",", ""));
         }
-        return new Expression(sql, params);
+        return new Express(sql, params);
     }
 
     /*
        插入语句生成器
      */
-    public Expression insertBuilder() {
+    public Express insertBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.INSERT).append(table.getName()).append(" ( ");
         StringBuilder sql1 = new StringBuilder();
@@ -261,13 +261,13 @@ public class SQLHelper implements Serializable {
             params.add(column.getValue());
         }
         sql.append(sql2.delete(0, 1)).append(" ) ").append(SQLKey.VALUES).append(" ( ").append(sql1.delete(0, 1)).append(" ) ");
-        return new Expression(sql, params);
+        return new Express(sql, params);
     }
 
     /*
         更新语句生成器
     */
-    public Expression updateBuilder() {
+    public Express updateBuilder() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.UPDATE).append(table.getName()).append(SQLKey.SET);
         StringBuilder sql1 = new StringBuilder();
@@ -277,33 +277,33 @@ public class SQLHelper implements Serializable {
         }
         sql.append(sql1.delete(0, 1)).append(SQLKey.WHERE);
         for (Where where : conditions) {
-            Expression tempsql = where.builder();
+            Express tempsql = where.builder();
             sql.append(tempsql.getSql());
             params.addAll(tempsql.getValues());
         }
-        return new Expression(sql, params);
+        return new Express(sql, params);
     }
 
     /*
         删除语句生成器
     */
-    public Expression deleteBulider() {
+    public Express deleteBulider() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder(SQLKey.DELETE).append(" ").append(table.getAlias()).append(" ")
                 .append(SQLKey.FROM).append(table.getName()).append(" ").append(table.getAlias()).append(" ")
                 .append(SQLKey.WHERE);
         for (Where where : conditions) {
-            Expression tempsql = where.builder();
+            Express tempsql = where.builder();
             sql.append(tempsql.getSql());
             params.addAll(tempsql.getValues());
         }
-        return new Expression(sql, params);
+        return new Express(sql, params);
     }
 
     /*
         过程语句生成器
      */
-    public Expression callBulider() {
+    public Express callBulider() {
         List<Object> params = new ArrayList<>();
         StringBuilder sql = new StringBuilder().append(" { ").append(produceFuntion).append(SQLKey.LEFT);
         StringBuilder tem1 = new StringBuilder();
@@ -312,7 +312,7 @@ public class SQLHelper implements Serializable {
             params.add(produceParameter);
         }
         sql.append(tem1.delete(0, 1)).append(SQLKey.RIGHT).append(" } ");
-        return new Expression(sql, params);
+        return new Express(sql, params);
     }
 
     //自动化生成的辅助

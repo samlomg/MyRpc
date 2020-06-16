@@ -1,6 +1,6 @@
 package com.dglbc.jdbc;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.produce.ProduceParameter;
 import com.dglbc.jdbc.exception.MultiRowExp;
 import com.dglbc.jdbc.exception.SqlExp;
@@ -63,8 +63,8 @@ public class JDBC {
         return row;
     }
 
-    public static <T> List<T> list(Expression expression, IVo<T> iQuery) throws Exception {
-        return list(getConnection(), expression.getSql().toString(), iQuery, expression.getValues().toArray());
+    public static <T> List<T> list(Express express, IVo<T> iQuery) throws Exception {
+        return list(getConnection(), express.getSql().toString(), iQuery, express.getValues().toArray());
     }
 
     public static <T> List<T> list(Connection con, String sql, IVo<T> iQuery, Object... params) throws Exception {

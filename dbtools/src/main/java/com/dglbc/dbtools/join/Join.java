@@ -1,6 +1,6 @@
 package com.dglbc.dbtools.join;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
@@ -23,28 +23,28 @@ import java.util.List;
 public class Join implements Serializable {
 
     private String join;//key world 1:left join,right join ...
-    private Expression table; //
-    private List<Expression> condition;
+    private Express table; //
+    private List<Express> condition;
 
     private List parms;
     private StringBuilder sql;
 
-    public Expression builder() {
+    public Express builder() {
         StringBuilder sql = new StringBuilder().append(join).append(table.getSql()).append(SQLKey.ON);
         parms.addAll(table.getValues());
         boolean init = false;
-        for (Expression expression : condition) {
+        for (Express express : condition) {
             if (init) {
                 sql.append(SQLKey.AND);
             }
-            sql.append(expression.getSql());
-            parms.addAll(expression.getValues());
+            sql.append(express.getSql());
+            parms.addAll(express.getValues());
             init = true;
         }
-        return new Expression(sql, parms);
+        return new Express(sql, parms);
     }
 
-    public Join(String join, Expression table) {
+    public Join(String join, Express table) {
         this.join = join;
         this.table = table;
         this.condition = new ArrayList();
@@ -53,55 +53,58 @@ public class Join implements Serializable {
 
     public Join(String join, Table table) {
         this.join = join;
-        this.table = StringUtils.isEmpty(table.getName()) ? new Expression(table, true) : new Expression(table, false);
+        this.table = StringUtils.isEmpty(table.getName()) ? new Express(table, true) : new Express(table, false);
         this.condition = new ArrayList<>();
         this.parms = new ArrayList();
     }
 
     public Join(String join, Table table, final Column column, final Column column2) {
         this.join = join;
-        this.table = StringUtils.isEmpty(table.getName()) ? new Expression(table, true) : new Expression(table, false);
-        this.condition = new ArrayList<Expression>() {{
-            add(new Expression(column.getTable().getAlias() + "." + column.getName() + " = " + column2.getTable().getAlias() + "." + column2.getName()));
+        this.table = StringUtils.isEmpty(table.getName()) ? new Express(table, true) : new Express(table, false);
+        this.condition = new ArrayList<Express>() {{
+            add(new Express(column.getTable().getAlias() + "." + column.getName() + " = " + column2.getTable().getAlias() + "." + column2.getName()));
         }};
         this.parms = new ArrayList();
     }
 
-    public Join on(Expression expression, Expression expression2) {
+    public Join on(Express express, Express express2) {
         List temp = new ArrayList();
-        temp.addAll(expression.getValues());
-        temp.addAll(expression2.getValues());
-        condition.add(new Expression(expression.getSql().append(" = ").append(expression2.getSql()), temp));
+        temp.addAll(express.getValues());
+        temp.addAll(express2.getValues());
+        condition.add(new Express(express.getSql().append(" = ").append(express2.getSql()), temp));
         return this;
     }
 
-    public Join on(Expression expression, Column column) {
-        Expression expression1 = new Expression().on(column);
-        condition.add(new Expression(expression.getSql().append(" = ").append(expression1.getSql()), expression.getValues()));
+
+
+    public Join on(Express express, Column column) {
+        Express express1 = new Express(column);
+        condition.add(new Express(express.getSql().append(" = ").append(express1.getSql()), express.getValues()));
         return this;
     }
 
     public Join on(Column column, Column column2) {
-        Expression expression = new Expression().on(column);
-        Expression expression1 = new Expression().on(column2);
+        Express express = new Express(column);
+        Express express1 = new Express(column2);
+
         List templist = new ArrayList();
-        templist.addAll(expression.getValues());
-        templist.addAll(expression1.getValues());
-        condition.add(new Expression(expression.getSql().append(" = ").append(expression1.getSql()), templist));
+        templist.addAll(express.getValues());
+        templist.addAll(express1.getValues());
+        condition.add(new Express(express.getSql().append(" = ").append(express1.getSql()), templist));
         return this;
     }
 
     public Join on(final Column column) {
         StringBuilder temsb = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").
                 append(column.getName()).append(" =? ");
-        condition.add(new Expression().setSql(temsb).setValues(new ArrayList() {{
+        condition.add(new Express().setSql(temsb).setValues(new ArrayList() {{
             add(column.getValue());
         }}));
         return this;
     }
 
-    public Join on(Expression expression) {
-        condition.add(expression);
+    public Join on(Express express) {
+        condition.add(express);
         return this;
     }
 }

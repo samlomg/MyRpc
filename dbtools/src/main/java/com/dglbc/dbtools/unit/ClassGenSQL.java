@@ -1,6 +1,6 @@
 package com.dglbc.dbtools.unit;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
 import lombok.*;
@@ -17,7 +17,7 @@ import java.util.Map;
 @NoArgsConstructor
 @Accessors(chain = true)
 public class ClassGenSQL {
-    Map<String, Expression> selectContent = new HashMap<>();
+    Map<String, Express> selectContent = new HashMap<>();
     Table table;
 
     public ClassGenSQL(Class cl) {
@@ -29,7 +29,7 @@ public class ClassGenSQL {
     public ClassGenSQL select(Field[] fields) {
         //首先获取class的属性 来生成sql语句
         for (Field field : fields) {
-            this.selectContent.put(table.getName()+"-"+field.getName(), new Expression(new Column(table,field.getName())));
+            this.selectContent.put(table.getName()+"-"+field.getName(), new Express(new Column(table,field.getName())));
         }
         return this;
     }

@@ -40,4 +40,5 @@ public class Column implements Serializable{
         this.value = value;
         table.getColumns().put(name,this);
     }
+
 }

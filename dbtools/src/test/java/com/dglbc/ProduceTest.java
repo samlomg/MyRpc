@@ -1,6 +1,6 @@
 package com.dglbc;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.SQLHelper;
 import com.dglbc.dbtools.produce.ParameterMode;
 import org.junit.Test;
@@ -19,7 +19,7 @@ public class ProduceTest {
         sqlHelper.cc(ParameterMode.IN, 1, "lbc").cc(ParameterMode.IN,2,"备注")
                 .cc(ParameterMode.OUT,3, Types.VARCHAR).cc(ParameterMode.INOUT,4,Types.INTEGER);
 
-        Expression expression=sqlHelper.callBulider();
-        System.out.println(expression.getSql());
+        Express express =sqlHelper.callBulider();
+        System.out.println(express.getSql());
     }
 }

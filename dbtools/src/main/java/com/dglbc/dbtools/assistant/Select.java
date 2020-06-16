@@ -1,6 +1,10 @@
 package com.dglbc.dbtools.assistant;
 
-import com.dglbc.dbtools.Expression;
+
+import com.dglbc.dbtools.Express;
+import com.dglbc.dbtools.join.Join;
+import com.dglbc.dbtools.table.Column;
+import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.where.Where;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,6 +13,7 @@ import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /*
     退一万步来说，直接生成就好，不需要残留，不需要这么复杂的生成过程。
@@ -21,7 +26,6 @@ import java.util.List;
 public class Select {
     private List<String> content = new ArrayList<>();//查询的名称 外联的
     private String special = null;
-    private List<Expression> conditions = new ArrayList<>();
     private List<String> joins = null;
     private String groupContent = null;
     private String orderContent = null;
@@ -61,6 +65,8 @@ public class Select {
     public Select op(String sql,String operation, List values){
         return this;
     }
+
+
 
 
 }

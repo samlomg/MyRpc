@@ -13,12 +13,12 @@ public class SQLBase {
 
 
     //true 是语句生成的表，false是原生表
-    public static Expression expression(Table table, boolean flag) {
-        return new Expression(table, flag);
+    public static Express expression(Table table, boolean flag) {
+        return new Express(table, flag);
     }
 
-    public static Expression expression(String sql) {
-        return new Expression(sql);
+    public static Express expression(String sql) {
+        return new Express(sql);
     }
 
     //Column
@@ -39,8 +39,8 @@ public class SQLBase {
         return new Table(name, alias);
     }
 
-    public static Table table(Expression expression, String alias) {
-        return new Table(expression, alias);
+    public static Table table(Express express, String alias) {
+        return new Table(express, alias);
     }
 
     public static Table table() {
@@ -57,7 +57,7 @@ public class SQLBase {
     }
 
     //JOIN
-    public static Join join(String join, Expression table) {
+    public static Join join(String join, Express table) {
         return new Join(join, table);
     }
 

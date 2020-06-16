@@ -1,6 +1,6 @@
 package com.dglbc.dbtools.where;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.exception.TipsShow;
 import com.dglbc.dbtools.table.Column;
@@ -28,7 +28,7 @@ public class Where implements Serializable {
     private List parms;
     private List<Where> conditions = new ArrayList<>();
 
-    public Expression builder() {
+    public Express builder() {
         StringBuilder nsql = new StringBuilder();
         if (conditions.size() == 0) {
             if (null == logic) {
@@ -38,13 +38,13 @@ public class Where implements Serializable {
         } else {
             nsql.append(logic).append(SQLKey.LEFT).append(sql);
             for (Where where : conditions) {
-                Expression temp = where.builder();
+                Express temp = where.builder();
                 nsql.append(temp.getSql());
                 parms.addAll(temp.getValues());
             }
             nsql.append(SQLKey.RIGHT);
         }
-        return new Expression(nsql, parms);
+        return new Express(nsql, parms);
     }
 
     public Where() {
@@ -59,33 +59,33 @@ public class Where implements Serializable {
         this.parms = new ArrayList();
     }
 
-    public Where(Supplier<Expression> s) {
+    public Where(Supplier<Express> s) {
         this.logic = SQLKey.AND;
         caulse(s.get());
     }
 
-    public Where(String logic, Supplier<Expression> s) {
+    public Where(String logic, Supplier<Express> s) {
         this.logic = logic;
         caulse(s.get());
     }
 
     //用java8的特性
-    public Where caulse(Supplier<Expression> s) {
+    public Where caulse(Supplier<Express> s) {
         caulse(s.get());
         return this;
     }
 
     // 运算
-    public Where caulse(Expression expression) {
-        sql.append(expression.getSql());
-        parms.addAll(expression.getValues());
+    public Where caulse(Express express) {
+        sql.append(express.getSql());
+        parms.addAll(express.getValues());
         return this;
     }
 
     public Where caulse(Table table, String name, String operation, List values) {
         //根据情况 例如between 和in是要提前知道参数个数。所以先处理operation语句
         caulse(() -> {
-            return new Expression(ColumnUnit.getColumn(table, name).append(WKUnit.getOperation(operation, values)), values);
+            return new Express(ColumnUnit.getColumn(table, name).append(WKUnit.getOperation(operation, values)), values);
         });
         return this;
     }
@@ -96,34 +96,34 @@ public class Where implements Serializable {
     }
 
     //expression 作为参数有两种第一是查询条件 第二查询参数
-    public Where caulse(Expression expression, String operation, List values) {
-        if (values != null && values.size() > 0 && values.get(0) instanceof Expression) {
+    public Where caulse(Express express, String operation, List values) {
+        if (values != null && values.size() > 0 && values.get(0) instanceof Express) {
             caulse(() -> {
                 StringBuilder op = new StringBuilder();
                 List parms = new ArrayList();
                 if (operation.toUpperCase().indexOf("BETWEEN") > -1 && values.size() == 2) {
                     //between
                     op.append(String.format(operation,
-                            SQLKey.LEFT + ((Expression) values.get(0)).getSql().toString() + SQLKey.RIGHT,
-                            SQLKey.LEFT + ((Expression) values.get(1)).getSql().toString() + SQLKey.RIGHT));
-                    parms.addAll(((Expression) values.get(0)).getValues());
-                    parms.addAll(((Expression) values.get(1)).getValues());
+                            SQLKey.LEFT + ((Express) values.get(0)).getSql().toString() + SQLKey.RIGHT,
+                            SQLKey.LEFT + ((Express) values.get(1)).getSql().toString() + SQLKey.RIGHT));
+                    parms.addAll(((Express) values.get(0)).getValues());
+                    parms.addAll(((Express) values.get(1)).getValues());
                 } else if (operation.toUpperCase().indexOf("IN") > -1) {
-                    parms.addAll(((Expression) values.get(0)).getValues());
-                    op.append(String.format(operation, SQLKey.LEFT + ((Expression) values.get(0)).getSql().toString() + SQLKey.RIGHT));
+                    parms.addAll(((Express) values.get(0)).getValues());
+                    op.append(String.format(operation, SQLKey.LEFT + ((Express) values.get(0)).getSql().toString() + SQLKey.RIGHT));
                 } else if (operation.toUpperCase().indexOf("NULL") > -1) {
                     op.append(operation);
                 } else if (values.size() == 1) {
-                    parms.addAll(((Expression) values.get(0)).getValues());
-                    op.append(String.format(operation, SQLKey.LEFT + ((Expression) values.get(0)).getSql().toString() + SQLKey.RIGHT));
+                    parms.addAll(((Express) values.get(0)).getValues());
+                    op.append(String.format(operation, SQLKey.LEFT + ((Express) values.get(0)).getSql().toString() + SQLKey.RIGHT));
                 } else {
                     TipsShow.alert("操作符号请按标准的输入");
                 }
-                return expression.merge(SQLKey.LEFT + op + SQLKey.RIGHT, values);
+                return express.merge(SQLKey.LEFT + op + SQLKey.RIGHT, values);
             });
         } else {
             caulse(() -> {
-                return expression.merge(WKUnit.getOperation(operation, values), values);
+                return express.merge(WKUnit.getOperation(operation, values), values);
             });
         }
 
@@ -307,86 +307,86 @@ public class Where implements Serializable {
 
     //第三部分用Column
     //eq
-    public Where eq(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.EQ), Arrays.asList(object)), Arrays.asList(object));
+    public Where eq(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.EQ), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 
     //GT
-    public Where gt(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.GT), Arrays.asList(object)), Arrays.asList(object));
+    public Where gt(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.GT), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 
     //LT
-    public Where lt(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.LT), Arrays.asList(object)), Arrays.asList(object));
+    public Where lt(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.LT), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 
     //GE
-    public Where ge(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.GT, WK.EQ), Arrays.asList(object)), Arrays.asList(object));
+    public Where ge(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.GT, WK.EQ), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 
     //LE
-    public Where le(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.LT, WK.EQ), Arrays.asList(object)), Arrays.asList(object));
+    public Where le(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.LT, WK.EQ), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 
     //between
-    public Where between(Expression expression, Object object, Object object1) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.BETWEEN), Arrays.asList(object, object1)), Arrays.asList(object, object1));
+    public Where between(Express express, Object object, Object object1) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.BETWEEN), Arrays.asList(object, object1)), Arrays.asList(object, object1));
         return this;
     }
 
     //in
-    public Where in(Expression expression, List values) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.IN), values), values);
+    public Where in(Express express, List values) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.IN), values), values);
         return this;
     }
 
     //like
-    public Where like(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.LIKE), Arrays.asList(object)), Arrays.asList(object));
+    public Where like(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.LIKE), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 
     //null
-    public Where isNull(Expression expression) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.IS, WK.NULL), new ArrayList()), new ArrayList());
+    public Where isNull(Express express) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.IS, WK.NULL), new ArrayList()), new ArrayList());
         return this;
     }
 
     //isNotNull
-    public Where isNotNull(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.IS, WK.NOT, WK.NULL), new ArrayList()), new ArrayList());
+    public Where isNotNull(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.IS, WK.NOT, WK.NULL), new ArrayList()), new ArrayList());
         return this;
     }
 
     //notLike
-    public Where notLike(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.NOT, WK.LIKE), Arrays.asList(object)), Arrays.asList(object));
+    public Where notLike(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.NOT, WK.LIKE), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 
     //notIn
-    public Where notIn(Expression expression, List values) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), values), values);
+    public Where notIn(Express express, List values) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), values), values);
         return this;
     }
 
     //notBetween
-    public Where notBetween(Expression expression, Object object, Object object1) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), Arrays.asList(object, object1)), Arrays.asList(object, object1));
+    public Where notBetween(Express express, Object object, Object object1) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), Arrays.asList(object, object1)), Arrays.asList(object, object1));
         return this;
     }
 
     //neq
-    public Where neq(Expression expression, Object object) {
-        caulse(expression, WKUnit.getOperation(WK.op(WK.LT, WK.GT), Arrays.asList(object)), Arrays.asList(object));
+    public Where neq(Express express, Object object) {
+        caulse(express, WKUnit.getOperation(WK.op(WK.LT, WK.GT), Arrays.asList(object)), Arrays.asList(object));
         return this;
     }
 

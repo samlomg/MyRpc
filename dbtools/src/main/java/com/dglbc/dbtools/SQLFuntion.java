@@ -1,7 +1,5 @@
 package com.dglbc.dbtools;
 
-import com.dglbc.dbtools.table.Column;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,43 +10,43 @@ SQLFuntion
 public class SQLFuntion {
 
     //datepart, number, expression
-    public static Expression dateAdd(String datepart, String number, Expression expression) {
-        return new Expression(new StringBuilder().append(SQLKey.DATEADD).append(SQLKey.LEFT).append(datepart).
-                append(",").append(number).append(",").append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
+    public static Express dateAdd(String datepart, String number, Express express) {
+        return new Express(new StringBuilder().append(SQLKey.DATEADD).append(SQLKey.LEFT).append(datepart).
+                append(",").append(number).append(",").append(express.getSql()).append(SQLKey.RIGHT), express.getValues());
     }
 
-    public static Expression dateAdd(String time, String datepart, String number) {
-        return dateAdd(datepart, number, new Expression(time));
+    public static Express dateAdd(String time, String datepart, String number) {
+        return dateAdd(datepart, number, new Express(time));
     }
 
-    public static Expression isnull(Expression expression, Object value) {
+    public static Express isnull(Express express, Object value) {
         List templist = new ArrayList();
-        templist.addAll(expression.getValues());
+        templist.addAll(express.getValues());
         templist.add(value);
-        return new Expression(new StringBuilder().append(SQLKey.ISNULL).append(SQLKey.LEFT).
-                append(expression.getSql()).append(",?").append(SQLKey.RIGHT), templist);
+        return new Express(new StringBuilder().append(SQLKey.ISNULL).append(SQLKey.LEFT).
+                append(express.getSql()).append(",?").append(SQLKey.RIGHT), templist);
     }
 
 
-    public static Expression as(Expression expression, String name) {
-        return new Expression(expression.getSql().append(SQLKey.AS).append(name), expression.getValues());
+    public static Express as(Express express, String name) {
+        return new Express(express.getSql().append(SQLKey.AS).append(name), express.getValues());
     }
 
-    public static Expression dateDiff(String datepart, Expression expression, Expression expression1, String opt, int values) {
+    public static Express dateDiff(String datepart, Express express, Express express1, String opt, int values) {
         List<Object> temp = new ArrayList<>();
-        temp.addAll(expression.getValues());
-        temp.addAll(expression1.getValues());
+        temp.addAll(express.getValues());
+        temp.addAll(express1.getValues());
         temp.add(values);
-        return new Expression(new StringBuilder().append(SQLKey.DATEDIFF).append(SQLKey.LEFT).append(datepart).append(",")
-                .append(expression).append(",").append(expression1).append(SQLKey.RIGHT).append(opt).append(" ? "), temp);
+        return new Express(new StringBuilder().append(SQLKey.DATEDIFF).append(SQLKey.LEFT).append(datepart).append(",")
+                .append(express).append(",").append(express1).append(SQLKey.RIGHT).append(opt).append(" ? "), temp);
     }
 
-    public static Expression convert(String dataType, Expression expression) {
-        return new Expression(new StringBuilder().append(SQLKey.CONVERT).append(SQLKey.LEFT).append(dataType).append(",")
-                .append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
+    public static Express convert(String dataType, Express express) {
+        return new Express(new StringBuilder().append(SQLKey.CONVERT).append(SQLKey.LEFT).append(dataType).append(",")
+                .append(express.getSql()).append(SQLKey.RIGHT), express.getValues());
     }
 
-    public static Expression caseWhen(Expression cas, Map<Expression, Expression> when, Expression els) {
+    public static Express caseWhen(Express cas, Map<Express, Express> when, Express els) {
         StringBuilder sql = new StringBuilder();
         List<Object> values = new ArrayList<Object>();
         //先处理case
@@ -56,7 +54,7 @@ public class SQLFuntion {
         values.addAll(cas.getValues());
 
         //处理when
-        for (Map.Entry<Expression, Expression> entry : when.entrySet()) {
+        for (Map.Entry<Express, Express> entry : when.entrySet()) {
             sql.append(SQLKey.WHEN).append(entry.getKey().getSql()).append(SQLKey.THEN).append(entry.getValue().getSql()).append(" ");
             values.addAll(entry.getKey().getValues());
             values.addAll(entry.getValue().getValues());
@@ -69,18 +67,18 @@ public class SQLFuntion {
         //end
         sql.append(SQLKey.END);
 
-        return new Expression(sql, values);
+        return new Express(sql, values);
     }
 
-    public static Expression sum(Expression expression) {
-        return new Expression(new StringBuilder().append(SQLKey.SUM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
+    public static Express sum(Express express) {
+        return new Express(new StringBuilder().append(SQLKey.SUM).append(SQLKey.LEFT).append(express.getSql()).append(SQLKey.RIGHT), express.getValues());
     }
 
-    public static Expression ltrim(Expression expression) {
-        return new Expression(new StringBuilder().append(SQLKey.LTRIM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
+    public static Express ltrim(Express express) {
+        return new Express(new StringBuilder().append(SQLKey.LTRIM).append(SQLKey.LEFT).append(express.getSql()).append(SQLKey.RIGHT), express.getValues());
     }
 
-    public static Expression rtrim(Expression expression) {
-        return new Expression(new StringBuilder().append(SQLKey.RTRIM).append(SQLKey.LEFT).append(expression.getSql()).append(SQLKey.RIGHT), expression.getValues());
+    public static Express rtrim(Express express) {
+        return new Express(new StringBuilder().append(SQLKey.RTRIM).append(SQLKey.LEFT).append(express.getSql()).append(SQLKey.RIGHT), express.getValues());
     }
 }

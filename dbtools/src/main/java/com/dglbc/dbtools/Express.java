@@ -5,13 +5,13 @@ import com.dglbc.dbtools.table.Table;
 import com.dglbc.dbtools.unit.ColumnUnit;
 import com.dglbc.dbtools.where.DATEDEPART;
 import com.dglbc.dbtools.where.WK;
+
 import com.sun.istack.internal.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,11 +23,18 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-public class Expression {
+public class Express {
     private StringBuilder sql;
     private List values;
 
-    public Expression(@NotNull Column column) {
+    private boolean sc;//是否是查询语句
+
+    public Express(StringBuilder sql, List values) {
+        this.sql = sql;
+        this.values = values;
+    }
+
+    public Express(@NotNull Column column) {
         this.sql = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").append(column.getName()).append(" ");
         if (StringUtils.isNoneEmpty(column.getBind())) this.sql.append(SQLKey.AS).append(column.getBind());
         this.values = new ArrayList();
@@ -40,7 +47,7 @@ public class Expression {
     }
 
     //true 是语句生成的表，false是原生表
-    public Expression(@NotNull Table table, @NotNull boolean flag) {
+    public Express(@NotNull Table table, @NotNull boolean flag) {
         List temp = new ArrayList();
         if (flag) temp.addAll(table.getValues());
         this.sql = flag ? new StringBuilder().append(SQLKey.LEFT).append(table.getSql()).append(SQLKey.RIGHT).append(table.getAlias()) :
@@ -49,25 +56,25 @@ public class Expression {
     }
 
     //自定义 语句
-    public Expression(@NotNull String sql) {
+    public Express(@NotNull String sql) {
         this.sql = new StringBuilder().append(sql);
         this.values = new ArrayList();
     }
 
-    public Expression(String clause, List values) {
+    public Express(String clause, List values) {
         this.sql = new StringBuilder().append(sql);
         this.values = values;
     }
 
     //合并在一起
-    public Expression merge(Expression expression) {
-        this.sql.append(expression.getSql());
-        this.values.addAll(expression.getValues());
+    public Express merge(Express express) {
+        this.sql.append(express.getSql());
+        this.values.addAll(express.getValues());
         return this;
     }
 
     //合并在一起
-    public Expression merge(String sql, List<Object> objects) {
+    public Express merge(String sql, List<Object> objects) {
         this.sql.append(sql);
         this.values.addAll(objects);
         return this;
@@ -75,47 +82,47 @@ public class Expression {
 
     //各种函数function获取自身的express 返回的是express
     //首先是叠function 返回的时候expression的情况 叠function 参数数量限制在1
-    public Expression op(Expression expression, WK... wks) {
+    public Express op(Express express, WK... wks) {
         String opString = WK.op(wks);
-        return new Expression(String.format(opString, expression.getSql().toString()), expression.getValues());
+        return new Express(String.format(opString, express.getSql().toString()), express.getValues());
     }
 
-    public Expression op(Column column, WK... wks) {
+    public Express op(Column column, WK... wks) {
         String opString = WK.op(wks);
-        return new Expression(String.format(opString, ColumnUnit.getColumn(column)));
+        return new Express(String.format(opString, ColumnUnit.getColumn(column)));
     }
 
-    public Expression op(Table table, String name, WK... wks) {
+    public Express op(Table table, String name, WK... wks) {
         String opString = WK.op(wks);
-        return new Expression(String.format(opString, table.getAlias() + "." + name));
+        return new Express(String.format(opString, table.getAlias() + "." + name));
     }
 
     //留灵活的方法还是潘多拉盒子系列
-    public Expression op(String name, WK... wks) {
+    public Express op(String name, WK... wks) {
         String opString = WK.op(wks);
-        return new Expression(String.format(name));
+        return new Express(String.format(name));
     }
 
     //时间方面
-    public Expression dateAdd(DATEDEPART datepart, int number, Expression expression) {
-        return new Expression(String.format(WK.DATEADD.getFormat(), datepart.getC(), number, expression.getSql().toString()), expression.getValues());
+    public Express dateAdd(DATEDEPART datepart, int number, Express express) {
+        return new Express(String.format(WK.DATEADD.getFormat(), datepart.getC(), number, express.getSql().toString()), express.getValues());
     }
 
-    public Expression dateDiff(Expression expression, Expression expression2) {
-        expression.getValues().addAll(expression2.getValues());
-        return new Expression(
+    public Express dateDiff(Express express, Express express2) {
+        express.getValues().addAll(express2.getValues());
+        return new Express(
                 String.format(WK.DATEDIFF.getFormat(),
-                        expression.getSql().toString(),
-                        expression2.getSql().toString()
-                ), expression.getValues()
+                        express.getSql().toString(),
+                        express2.getSql().toString()
+                ), express.getValues()
         );
     }
 
-    public Expression datePart(DATEDEPART datepart, Expression expression) {
-        return new Expression(
+    public Express datePart(DATEDEPART datepart, Express express) {
+        return new Express(
                 String.format(WK.DATEPART.getFormat(),
-                        expression.getSql().toString()
-                ), expression.getValues()
+                        express.getSql().toString()
+                ), express.getValues()
         );
     }
 }

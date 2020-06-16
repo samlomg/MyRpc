@@ -1,6 +1,6 @@
 package com.dglbc;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.SQLHelper;
 import com.dglbc.dbtools.declear.CrudOperate;
 import com.dglbc.dbtools.table.Column;
@@ -23,9 +23,9 @@ public class InsertTest extends TestCase {
         SQLHelper.ic(new Column(table,"testName","sam"));
         SQLHelper.ic(new Column(table,"testp",100));
         SQLHelper.ic(new Column(table,"XLSZ","111"));
-        Expression expression = SQLHelper.insertBuilder();
-        System.out.println(expression.getSql());
-        System.out.println(expression.getValues().toString());
+        Express express = SQLHelper.insertBuilder();
+        System.out.println(express.getSql());
+        System.out.println(express.getValues().toString());
 
     }
 

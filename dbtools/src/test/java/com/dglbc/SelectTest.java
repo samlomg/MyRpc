@@ -1,6 +1,6 @@
 package com.dglbc;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.SQLHelper;
 import com.dglbc.dbtools.SQLKey;
 import com.dglbc.dbtools.join.Join;
@@ -40,9 +40,9 @@ public class SelectTest{
 //                .where(where(SQLKey.AND).eq(column(table, "SHMCU", "1110114")))
 //                .where(where(SQLKey.AND).eq(convert("varchar(20)", expression(column(table, "SHDCTO"), false)), "SL"))
                 .orderBy(column(table, "Sequence"));
-        Expression expression = sqlHelper.selectBuilder();
-        System.out.println(expression.getSql());
-        System.out.println(expression.getValues().toString());
+        Express express = sqlHelper.selectBuilder();
+        System.out.println(express.getSql());
+        System.out.println(express.getValues().toString());
     }
 
 
@@ -60,9 +60,9 @@ public class SelectTest{
 //                .where(where().eq(column(f4211_t, "Sequence", 236536)));
 //        SQLHelper.groupBy(column(table, "SDDOCO", "1111")).having(where("")
 //                .gt(sum(expression(column(f4211_t, "SDDOCO"), false)), 100000));//"SUM(B.SDDOCO) > 100000"
-        Expression expression = SQLHelper.selectBuilder();
-        System.out.println(expression.getSql());
-        System.out.println(expression.getValues().toString());
+        Express express = SQLHelper.selectBuilder();
+        System.out.println(express.getSql());
+        System.out.println(express.getValues().toString());
     }
 
     //留着test3对比
@@ -90,9 +90,9 @@ public class SelectTest{
 //                .where(new Where().eq(f4211t, "Sequence", 236536).and(new Where(SQLKey.OR).eq(table, "Sequence", 236536)))
         ;
 //        SQLHelper.groupBy(new Column(f4211t, "SDDOCO")).having(new Where("").gt(sum(new Expression(new Column(f4211t, "SDDOCO"), false)), 100000));
-        Expression expression = SQLHelper.selectBuilder();
-        System.out.println(expression.getSql());
-        System.out.println(expression.getValues().toString());
+        Express express = SQLHelper.selectBuilder();
+        System.out.println(express.getSql());
+        System.out.println(express.getValues().toString());
 
 //        List<String> a= JDBC.list(JDBC.getConnection(), statement.getSql(), new IVo<String>() {
 //            @Override

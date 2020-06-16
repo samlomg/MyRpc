@@ -1,6 +1,6 @@
 package com.dglbc.dbtools.table;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,9 +36,9 @@ public class Table implements Serializable {
         this.name = name;
         this.alias = alias;
         this.columns = new HashMap<>();
-        Expression expression = new Expression(this, false);
-        this.sql = expression.getSql();
-        this.values = expression.getValues();
+        Express express = new Express(this, false);
+        this.sql = express.getSql();
+        this.values = express.getValues();
 
     }
 
@@ -46,15 +46,14 @@ public class Table implements Serializable {
         this.name = name;
         this.alias = alias;
         this.columns = new HashMap<>();
-        Expression expression = new Expression(this, false);
-        this.sql = expression.getSql();
-        this.values = expression.getValues();
-
+        Express express = new Express(this, false);
+        this.sql = express.getSql();
+        this.values = express.getValues();
     }
 
-    public Table(Expression expression, String alias) {
-        this.sql = expression.getSql();
-        this.values = expression.getValues();
+    public Table(Express express, String alias) {
+        this.sql = express.getSql();
+        this.values = express.getValues();
         this.alias = alias;
         this.columns = new HashMap<>();
     }

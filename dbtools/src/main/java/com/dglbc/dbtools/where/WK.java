@@ -1,6 +1,5 @@
 package com.dglbc.dbtools.where;
 
-import com.dglbc.dbtools.Expression;
 import com.dglbc.dbtools.exception.TipsShow;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

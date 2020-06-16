@@ -1,6 +1,6 @@
 package com.dglbc.jdbc.sql;
 
-import com.dglbc.dbtools.Expression;
+import com.dglbc.dbtools.Express;
 import com.dglbc.dbtools.SQLHelper;
 import com.dglbc.dbtools.table.Column;
 import com.dglbc.dbtools.table.Table;
@@ -31,7 +31,7 @@ public abstract class SQLAssistant<T> {
         }
     }
 
-    public Expression insert(T o) throws IllegalAccessException {
+    public Express insert(T o) throws IllegalAccessException {
         //首先获取class的属性 来生成sql语句
         Field[] fields = clazz.getDeclaredFields();
         Table table = new Table(clazz.getSimpleName(), "A");
@@ -44,11 +44,11 @@ public abstract class SQLAssistant<T> {
         return sqlHelper.insertBuilder();
     }
 
-    public Expression update(T o, Where... wheres) throws  IllegalAccessException {
+    public Express update(T o, Where... wheres) throws  IllegalAccessException {
         return update(o,null, wheres);
     }
 
-    public Expression update(T o,String key, Where... wheres) throws IllegalAccessException {
+    public Express update(T o, String key, Where... wheres) throws IllegalAccessException {
         //首先获取class的属性 来生成sql语句
         Field[] fields = clazz.getDeclaredFields();
         Table table = new Table(clazz.getSimpleName(), "A");
@@ -73,7 +73,7 @@ public abstract class SQLAssistant<T> {
         return sqlHelper.updateBuilder();
     }
 
-    public Expression select(Where... wheres)  {
+    public Express select(Where... wheres)  {
         //首先获取class的属性 来生成sql语句
         Field[] fields = clazz.getDeclaredFields();
         Table table = new Table(clazz.getSimpleName(), "A");

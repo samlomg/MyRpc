@@ -1,5 +1,4 @@
-package com.dglbc.fx;
-
+package com.dglbc;
 import com.jfoenix.controls.JFXAlert;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -29,36 +28,15 @@ import java.io.IOException;
 public class MyApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Button btn = getHelloWorld();
         GridPane gridPane = getGridPaneLogin();
         StackPane root = new StackPane();
         root.getChildren().add(gridPane);
-        Scene scene = new Scene(root, 640, 480);
+        Scene scene = new Scene(root, 1024, 768);
         scene.getStylesheets().add(MyApplication.class.getResource("/css/Login.css").toExternalForm());
         //设置舞台！
         primaryStage.setTitle("Hello,World!");
         primaryStage.setScene(scene);
         primaryStage.show();
-    }
-
-    public static Button getHelloWorld(){
-        Button btn = new Button();
-        btn.setText("Say,Hello!");
-        btn.setOnAction(event -> {
-            JFXAlert alert = new JFXAlert((Stage) btn.getScene().getWindow());
-            alert.initModality(Modality.APPLICATION_MODAL);
-            alert.setOverlayClose(false);
-            JFXDialogLayout layout = new JFXDialogLayout();
-            layout.setHeading(new Label("Modal Dialog using JFXAlert"));
-            layout.setBody(new Label("Hello"));
-            JFXButton closeButton = new JFXButton("ACCEPT");
-            closeButton.getStyleClass().add("dialog-accept");
-            closeButton.setOnAction(event1 -> alert.hideWithAnimation());
-            layout.setActions(closeButton);
-            alert.setContent(layout);
-            alert.show();
-        });
-        return btn;
     }
 
     public static GridPane getGridPaneLogin(){
@@ -99,13 +77,13 @@ public class MyApplication extends Application {
         btn.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                if (userTextField.getText().equals("lbc") && pwBox.getText().equals("123456")){
+                if (userTextField.getText().equals("") && pwBox.getText().equals("")){
                     message.setText("Your password has been confirmed");
                     message.setTextFill(Color.rgb(21, 117, 84));
                     ObservableList<Stage> stage = FXRobotHelper.getStages();
                     Scene scene = null;
                     try {
-                        scene = new Scene(FXMLLoader.load(getClass().getResource("/fxml/sample/fxml_tableview.fxml")));
+                        scene = new Scene(FXMLLoader.load(getClass().getResource("/sample/fxml_tableview.fxml")));
                         stage.get(0).setScene(scene);
                     } catch (IOException e) {
                         e.printStackTrace();

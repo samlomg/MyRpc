@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonBar?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.MenuItem?>
+<GridPane alignment="CENTER" hgap="10.0" prefHeight="768.0" prefWidth="1024.0" vgap="10.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.dglbc.FXMLTableViewController">
+    <padding>
+        <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+    </padding>
+    <Label style="-fx-font: NORMAL 20 Tahoma;" text="Address Book" GridPane.columnIndex="0" GridPane.rowIndex="0">
+    </Label>
+    <TableView fx:id="tableView" prefHeight="601.0" prefWidth="988.0" GridPane.columnIndex="0" GridPane.rowIndex="2">
+        <columns>
+            <TableColumn fx:id="firstNameColumn" maxWidth="1.7976931348623157E308" minWidth="-Infinity" prefWidth="211.0" text="First Name">
+                <cellValueFactory>
+                    <PropertyValueFactory property="firstName" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn minWidth="4.0" prefWidth="158.0" text="Last Name">
+                <cellValueFactory>
+                    <PropertyValueFactory property="lastName" />
+                </cellValueFactory>
+            </TableColumn>
+            <TableColumn minWidth="3.0" prefWidth="294.0" text="Email Address">
+                <cellValueFactory>
+                    <PropertyValueFactory property="email" />
+                </cellValueFactory>
+            </TableColumn>
+         <TableColumn minWidth="3.0" prefWidth="100.0" text="operator">
+         </TableColumn>
+        </columns>
+        <items>
+            <FXCollections fx:factory="observableArrayList">
+            </FXCollections>
+        </items>
+        <sortOrder>
+            <fx:reference source="firstNameColumn" />
+        </sortOrder>
+        <contextMenu>
+            <ContextMenu>
+                <items>
+                    <MenuItem mnemonicParsing="false" onAction="#handleBookEditOption" text="Edit" />
+                    <MenuItem mnemonicParsing="false" onAction="#handleBookDeleteOption" text="Delete" />
+                </items>
+            </ContextMenu>
+        </contextMenu>
+    </TableView>
+   <ButtonBar prefHeight="40.0" prefWidth="200.0" GridPane.rowIndex="1">
+      <buttons>
+         <JFXButton text="ADD" />
+      </buttons>
+   </ButtonBar>
+   <columnConstraints>
+      <ColumnConstraints fillWidth="false" maxWidth="1.7976931348623157E308" />
+   </columnConstraints>
+   <rowConstraints>
+      <RowConstraints />
+      <RowConstraints minHeight="10.0" prefHeight="30.0" />
+      <RowConstraints />
+   </rowConstraints>
+</GridPane>

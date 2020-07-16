@@ -13,6 +13,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -30,7 +31,7 @@ public class DownloadImage {
         // 获得Http客户端(可以理解为:你得先有一个浏览器;注意:实际上HttpClient与浏览器是不一样的)
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建Get请求
-        HttpGet httpGet = new HttpGet("https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&nc=1476787230289&pid=hp&video=1");
+        HttpGet httpGet = new HttpGet("https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&nc="+new Date().getTime()+"&pid=hp&video=1");
 
         // 响应模型
         CloseableHttpResponse response = null;

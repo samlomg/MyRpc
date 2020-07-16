@@ -6,50 +6,54 @@ import com.dglbc.dbassistant.unitils.Unitls;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @version 1.0
- * @Author LBC
- * @date 2020/1/31 22:58
- */
 @Accessors(fluent = true)
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode
-public class Join extends Express implements AbstractExpress {
+public class Column extends Express implements AbstractExpress {
 
-    private List<ExpressWithTable> joins;
+    private List<Express> columns = new ArrayList<>();
+
+    public Column(Express column) {
+        this.columns.add(column);
+    }
 
     @Override
     public Express toExpress() throws Exception {
+        if (columns == null || columns.size() == 0) {
+            TipsShow.alert("SQL查询语句必须有查询的项");
+        }
 
-        this.mergeJoins(joins);
+        mergeColumns(columns);
         return this;
     }
-
     @Override
     public Response isCheck() {
         Response re = new Response(200, "success");
 
-        if (Unitls.isNull(joins)){
-            re.code(10001).status("Join check Fail!");
+        if (Unitls.isNull(columns)){
+            re.code(10001).status("Column check Fail!");
         }
         return re;
     }
 
-    Express mergeJoins(List<ExpressWithTable> columns) {
+    Express mergeColumns(List<Express> columns) {
         boolean isFirst = true;
         columns.forEach(express -> {
-            try {
-                this.merge(express.toExpress());
-            } catch (Exception e) {
-                e.printStackTrace();
-                TipsShow.alert("合并错误！");
+            if (isFirst) {
+
+            } else {
+                this.sql().append(",");
             }
+            this.merge(express);
         });
         return this;
     }
+
+
 }

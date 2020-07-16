@@ -1,6 +1,7 @@
 package com.dglbc.dbassistant.base;
 
 
+import com.dglbc.dbassistant.declare.Response;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,4 +15,6 @@ import java.util.List;
 
 public interface AbstractExpress {
     public Express toExpress() throws Exception;
+
+    public Response isCheck();
 }

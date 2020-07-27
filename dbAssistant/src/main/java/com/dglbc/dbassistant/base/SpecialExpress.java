@@ -30,4 +30,5 @@ public class SpecialExpress extends Express {
         super(sql, values);
         this.cateNate = cateNate;
     }
+
 }

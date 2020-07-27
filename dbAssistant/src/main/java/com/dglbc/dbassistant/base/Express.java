@@ -59,14 +59,6 @@ public class Express {
         return this;
     }
 
-    public Express merge(SpecialExpress express) {
-        this.sql.append(" ").append(express.cateNate() == null || express.cateNate().trim().equals("") ?
-        K.AND: express.cateNate());
-        this.sql.append(" ").append(express.sql());
-        this.values.addAll(express.values());
-        return this;
-    }
-
     //合并在一起
     public <T> Express merge(List<T> expresss) {
         if (expresss != null && expresss.size() > 0) {

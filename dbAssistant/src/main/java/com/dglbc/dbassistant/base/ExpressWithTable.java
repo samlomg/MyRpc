@@ -5,6 +5,7 @@ import com.dglbc.dbassistant.unitils.Unitls;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -24,7 +25,7 @@ public class ExpressWithTable extends Express implements AbstractExpress {
 
     private String join;
     private Table table;
-    private List<SpecialExpress> ons;
+    private List<SpecialExpress> ons = new ArrayList<>();
 
     @Override
     public Express toExpress() throws Exception {
@@ -44,11 +45,21 @@ public class ExpressWithTable extends Express implements AbstractExpress {
     public Response isCheck() {
         Response re = new Response(200, "success");
 
-        if (Unitls.isNull(table) || Unitls.isNull(ons)){
+        if (Unitls.isNull(table) || Unitls.isNull(ons)) {
             re.code(10001).status("ExpressWithTable check Fail!");
         }
         return re;
     }
 
+    public ExpressWithTable( String table, String ons) {
+        this.join = K.LEFTJOIN;
+        this.table=new Table(table);
+        this.ons.add(new SpecialExpress(ons));
+    }
 
+    public ExpressWithTable(String join, String table, String ons) {
+        this.join = join ;
+        this.table=new Table(table);
+        this.ons.add(new SpecialExpress(ons));
+    }
 }

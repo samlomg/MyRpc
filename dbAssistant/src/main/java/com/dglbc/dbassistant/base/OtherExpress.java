@@ -7,26 +7,34 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Accessors(fluent = true)
 @Setter
 @Getter
 @EqualsAndHashCode
 public class OtherExpress extends Express implements AbstractExpress {
 
-    private Express other;
+    private List<Express> others = new ArrayList<>();
 
     @Override
     public Express toExpress() throws Exception {
-        return this.merge(other);
+        this.merge(others);
+        this.sql().append(" ");
+        return this;
     }
 
     @Override
     public Response isCheck() {
         Response re = new Response(200, "success");
 
-        if (Unitls.isNull(other)){
-            re.code(10001).status("Other check Fail!");
+        if (Unitls.isNull(others)){
+            re.code(10001).status("Others check Fail!");
         }
         return re;
     }
+
+
+
 }

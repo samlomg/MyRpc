@@ -30,7 +30,8 @@ public class Where extends Express implements AbstractExpress {
     @Override
     public Express toExpress() throws Exception {
         this.sql().append(K.WHERE);
-        this.merge(wheres);
+        mergeWhere(wheres);
+        this.sql().append(" ");
         return this;
     }
 
@@ -44,4 +45,13 @@ public class Where extends Express implements AbstractExpress {
         return re;
     }
 
+    Express mergeWhere(List<SpecialExpress> wheres){
+        wheres.forEach(specialExpress -> {
+            this.sql().append(" ").append(specialExpress.cateNate() == null || specialExpress.cateNate().trim().equals("") ?
+                    K.AND: specialExpress.cateNate());
+            this.sql().append(" ").append(specialExpress.sql());
+            this.values().addAll(specialExpress.values());
+        });
+        return this;
+    }
 }

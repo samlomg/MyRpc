@@ -118,9 +118,9 @@ public class Select extends Express {
      * ==================================
      */
 
-    public Select sc(String columns,Object... values) {
-        if (this.columns() == null ) this.columns = new Column();
-        this.columns.columns().add(values.length == 0 ? new Express(columns): new Express(columns,Arrays.asList(values)));
+    public Select sc(String columns, Object... values) {
+        if (this.columns() == null) this.columns = new Column();
+        this.columns.columns().add(values.length == 0 ? new Express(columns) : new Express(columns, Arrays.asList(values)));
         return this;
     }
 
@@ -156,9 +156,34 @@ public class Select extends Express {
     }
 
 
-    public Select join(String tab,String ons){
+    public Select join(String tab, String on) {
         //todo 20200716待完善
+        if (joins == null) {
+            joins = new Join();
+        }
+        this.joins.joins().add(new ExpressWithTable(tab, on));
+
         return this;
     }
 
+    public Select leftJoin(String tab, String on) {
+        join(tab, on);
+        return this;
+    }
+
+    public Select innerJoin(String tab, String on) {
+        if (joins == null) {
+            joins = new Join();
+        }
+        this.joins.joins().add(new ExpressWithTable(K.INNERJOIN, tab, on));
+        return this;
+    }
+
+    public Select last(String by){
+        if (this.others == null){
+            this.others = new OtherExpress();
+        }
+        others.others().add(new Express(by));
+        return this;
+    }
 }

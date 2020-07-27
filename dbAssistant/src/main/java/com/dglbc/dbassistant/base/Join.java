@@ -6,6 +6,7 @@ import com.dglbc.dbassistant.unitils.Unitls;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ import java.util.List;
 @EqualsAndHashCode
 public class Join extends Express implements AbstractExpress {
 
-    private List<ExpressWithTable> joins;
+    private List<ExpressWithTable> joins = new ArrayList<>();
 
     @Override
     public Express toExpress() throws Exception {
@@ -45,6 +46,7 @@ public class Join extends Express implements AbstractExpress {
         columns.forEach(express -> {
             try {
                 this.merge(express.toExpress());
+                this.sql().append(" ");
             } catch (Exception e) {
                 e.printStackTrace();
                 TipsShow.alert("合并错误！");

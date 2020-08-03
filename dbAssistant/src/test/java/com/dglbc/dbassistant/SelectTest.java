@@ -22,7 +22,7 @@ public class SelectTest extends TestCase {
     public void test3() throws Exception {
         Select select = new Select("A.name,A.tel from Mytable a");
         select.leftJoin("Address addr", " a.addr=addr.seq");
-        select.where("name=?", 2).or("name=?", 1);
+        select.where("name=?", 2).or("name=?", 1).eq("A.id",1);
         select.last(" order by a.id desc ");
         System.out.println(select.build().sql());
     }

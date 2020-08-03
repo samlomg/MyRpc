@@ -3,7 +3,9 @@ package com.dglbc.dbassistant.dml;
 
 import com.dglbc.dbassistant.base.*;
 import com.dglbc.dbassistant.declare.Response;
+import com.dglbc.dbassistant.in.WK;
 import com.dglbc.dbassistant.tips.TipsShow;
+import com.dglbc.dbassistant.unitils.WKUnit;
 import com.sun.xml.internal.ws.client.sei.ValueSetter;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -186,4 +188,14 @@ public class Select extends Express {
         others.others().add(new Express(by));
         return this;
     }
+
+    /**
+     * where 的小case
+     */
+
+    public Select eq(String column,Object value) {
+        wheres().caulse(column, WKUnit.getOperation(WK.op(WK.EQ),Arrays.asList(value)), value);
+        return this;
+    }
+
 }

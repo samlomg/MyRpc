@@ -21,6 +21,11 @@ public class SpecialExpress extends Express {
         this.merge(express);
     }
 
+    public SpecialExpress(String cateNate,Express express) {
+        this.merge(express);
+        this.cateNate = cateNate;
+    }
+
     public SpecialExpress(String sql) {
         super(sql);
     }

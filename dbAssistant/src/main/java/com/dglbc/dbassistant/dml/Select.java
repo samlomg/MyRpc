@@ -181,8 +181,8 @@ public class Select extends Express {
         return this;
     }
 
-    public Select last(String by){
-        if (this.others == null){
+    public Select last(String by) {
+        if (this.others == null) {
             this.others = new OtherExpress();
         }
         others.others().add(new Express(by));
@@ -190,12 +190,52 @@ public class Select extends Express {
     }
 
     /**
-     * where 的小case
+     * where case
      */
 
-    public Select eq(String column,Object value) {
-        wheres().caulse(column, WKUnit.getOperation(WK.op(WK.EQ),Arrays.asList(value)), value);
+    /**
+     * commond
+     */
+
+    public Select where(String cateNate, String column,WK wk, Object... value) {
+        wheres().caulse(cateNate,column, WKUnit.getOperation(WK.op(wk), value), value);
         return this;
     }
+
+
+    public Select where(String cateNate, Express express,WK wk, Object... value) {
+        wheres().caulse(express, WKUnit.getOperation(WK.op(wk), value), value);
+        return this;
+    }
+
+    /**
+     * 等于
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select eq(String column, Object value) {
+        where(K.AND,column,WK.EQ,value);
+        return this;
+    }
+
+    /**
+     * 等于
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select eq(String cateNate, String column, Object value) {
+        where(cateNate,column,WK.EQ,value);
+        return this;
+    }
+
+    public Select eq(String cateNate, Express express, Object value) {
+        where(cateNate,express,WK.EQ,value);
+        return this;
+    }
+
+
 
 }

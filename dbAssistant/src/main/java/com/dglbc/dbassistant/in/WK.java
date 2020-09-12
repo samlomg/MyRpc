@@ -50,10 +50,11 @@ public enum WK {
     //使用这个方法的前提是只有惟一一个%s 潘多拉盒子系列的函数(祸福难析)
     //叠function
     public static String op(WK... wks) {
-        if (wks[0].getVa() !=1) TipsShow.alert("参数大于1");
+        //最后一个不应该检查
+        if (wks.length != 1 && wks[0].getVa() !=1)  TipsShow.alert("参数大于1");
         String re = wks[0].getFormat();
         for (int i = 1; i < wks.length; i++) {
-            if (i != wks.length && wks[i].getVa() !=1) TipsShow.alert("参数大于1");
+            if (i != (wks.length-1)  && wks[i].getVa() !=1) TipsShow.alert("参数大于1");
             re = String.format(re, wks[i].getFormat());
         }
         return re;

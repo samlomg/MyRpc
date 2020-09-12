@@ -68,18 +68,19 @@ public class Select extends Express {
         //初始化
 
         //build
+        if (!sec()){
+            this.sql().append(K.SELECT);
+            checkParts(first);
+            checkParts(columns);
+            checkParts(table);
+            checkParts(joins);
+            checkParts(wheres);
+            checkParts(others);
+            //重要一点如果是已经构建生成的express必须有标志
+            this.sec(true);
+        }
 
-        this.sql().append(K.SELECT);
-        checkParts(first);
-        checkParts(columns);
-        checkParts(table);
-        checkParts(joins);
-        checkParts(wheres);
-        checkParts(others);
 
-
-        //重要一点如果是已经构建生成的express必须有标志
-        this.sec(true);
         return this;
     }
 
@@ -109,6 +110,12 @@ public class Select extends Express {
         //todo 目前没想到什么好的办法只能先new然后赋值
         SpecialExpress specialExpress = new SpecialExpress(where);
         this.wheres = new Where(specialExpress);
+    }
+
+    //补充情况
+    public Select(String col, String tab) {
+        this.columns = new Column(new Express(col));
+        this.table = new Table(tab);
     }
 
     public Select(String sqlAll) {
@@ -197,45 +204,454 @@ public class Select extends Express {
      * commond
      */
 
-    public Select where(String cateNate, String column,WK wk, Object... value) {
-        wheres().caulse(cateNate,column, WKUnit.getOperation(WK.op(wk), value), value);
+    public Select where(String cateNate, String column, WK wk, Object... value) {
+        wheres().caulse(cateNate, column, WKUnit.getOperation(WK.op(wk), value), value);
+        return this;
+    }
+
+    public Select where(String cateNate, String column, String wks, Object... value) {
+        wheres().caulse(cateNate, column, WKUnit.getOperation(wks, value), value);
         return this;
     }
 
 
-    public Select where(String cateNate, Express express,WK wk, Object... value) {
-        wheres().caulse(express, WKUnit.getOperation(WK.op(wk), value), value);
+    public Select where(String cateNate, Express express, WK wk, Object... value) {
+        wheres().caulse(cateNate, express, WKUnit.getOperation(WK.op(wk), value), value);
+        return this;
+    }
+
+    public Select where(String cateNate, Express express, String wks, Object... value) {
+        wheres().caulse(cateNate, express, WKUnit.getOperation(wks, value), value);
         return this;
     }
 
     /**
      * 等于
+     *
      * @param column
      * @param value
      * @return
      */
     public Select eq(String column, Object value) {
-        where(K.AND,column,WK.EQ,value);
+        where(K.AND, column, WK.EQ, value);
         return this;
     }
 
     /**
      * 等于
+     *
      * @param cateNate
      * @param column
      * @param value
      * @return
      */
     public Select eq(String cateNate, String column, Object value) {
-        where(cateNate,column,WK.EQ,value);
+        where(cateNate, column, WK.EQ, value);
         return this;
     }
 
     public Select eq(String cateNate, Express express, Object value) {
-        where(cateNate,express,WK.EQ,value);
+        where(cateNate, express, WK.EQ, value);
+        return this;
+    }
+
+    /**
+     * >
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select gt(String column, Object value) {
+        where(K.AND, column, WK.GT, value);
+        return this;
+    }
+
+    /**
+     * >
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select gt(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.GT, value);
+        return this;
+    }
+
+    public Select gt(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.GT, value);
         return this;
     }
 
 
+    /**
+     * <
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select lt(String column, Object value) {
+        where(K.AND, column, WK.LT, value);
+        return this;
+    }
+
+    /**
+     * <
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select lt(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.LT, value);
+        return this;
+    }
+
+    public Select lt(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.LT, value);
+        return this;
+    }
+
+
+    /**
+     * >=
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select ge(String column, Object value) {
+        where(K.AND, column, WK.op(WK.GT, WK.EQ), value);
+        return this;
+    }
+
+    /**
+     * >=
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select ge(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.GT, WK.EQ), value);
+        return this;
+    }
+
+    public Select ge(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.GT, WK.EQ), value);
+        return this;
+    }
+
+
+    /**
+     * <=
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select le(String column, Object value) {
+        where(K.AND, column, WK.op(WK.LT, WK.EQ), value);
+        return this;
+    }
+
+    /**
+     * <=
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select le(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.LT, WK.EQ), value);
+        return this;
+    }
+
+    public Select le(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.LT, WK.EQ), value);
+        return this;
+    }
+
+
+    /**
+     * between
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select between(String column, Object value, Object value2) {
+        where(K.AND, column, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
+        return this;
+    }
+
+    /**
+     * between
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select between(String cateNate, String column, Object value, Object value2) {
+        where(cateNate, column, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
+        return this;
+    }
+
+    public Select between(String cateNate, Express express, Object value, Object value2) {
+        where(cateNate, express, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
+        return this;
+    }
+
+    /**
+     * in
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select in(String column, Object... value) {
+        where(K.AND, column, WKUnit.getOperation(WK.op(WK.IN), value), value);
+        return this;
+    }
+
+    /**
+     * in
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select in(String cateNate, String column, Object... value) {
+        where(cateNate, column, WKUnit.getOperation(WK.op(WK.IN), value), value);
+        return this;
+    }
+
+    public Select in(String cateNate, Express express, Object... value) {
+        where(cateNate, express, WKUnit.getOperation(WK.op(WK.IN), value), value);
+        return this;
+    }
+
+
+    /**
+     * like
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select like(String column, Object value) {
+        where(K.AND, column, WK.LIKE, value);
+        return this;
+    }
+
+    /**
+     * like
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select like(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.LIKE, value);
+        return this;
+    }
+
+    public Select like(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.LIKE, value);
+        return this;
+    }
+
+
+    /**
+     * isNull
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select isNull(String column, Object value) {
+        where(K.AND, column, WK.op(WK.IS, WK.NULL), value);
+        return this;
+    }
+
+    /**
+     * isNull
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select isNull(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.IS, WK.NULL), value);
+        return this;
+    }
+
+    public Select isNull(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.IS, WK.NULL), value);
+        return this;
+    }
+
+
+    /**
+     * notBetween
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select notBetween(String column, Object value, Object value2) {
+        where(K.AND, column, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
+        return this;
+    }
+
+    /**
+     * between
+     * notBetween
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select notBetween(String cateNate, String column, Object value, Object value2) {
+        where(cateNate, column, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
+        return this;
+    }
+
+    public Select notBetween(String cateNate, Express express, Object value, Object value2) {
+        where(cateNate, express, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
+        return this;
+    }
+
+    /**
+     * notIn
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select notIn(String column, Object... value) {
+        where(K.AND, column, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
+        return this;
+    }
+
+    /**
+     * notIn
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select notIn(String cateNate, String column, Object... value) {
+        where(cateNate, column, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
+        return this;
+    }
+
+    public Select notIn(String cateNate, Express express, Object... value) {
+        where(cateNate, express, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
+        return this;
+    }
+
+
+    /**
+     * notLike
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select notLike(String column, Object value) {
+        where(K.AND, column, WK.op(WK.NOT, WK.LIKE), value);
+        return this;
+    }
+
+    /**
+     * notLike
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select notLike(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.NOT, WK.LIKE), value);
+        return this;
+    }
+
+    public Select notLike(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.NOT, WK.LIKE), value);
+        return this;
+    }
+
+
+    /**
+     * isNotNull
+     *
+     * @param column
+     * @return
+     */
+    public Select isNotNull(String column) {
+        where(K.AND, column, WK.op(WK.IS, WK.NOT, WK.NULL));
+        return this;
+    }
+
+    /**
+     * isNotNull
+     *
+     * @param cateNate
+     * @param column
+     * @return
+     */
+    public Select isNotNull(String cateNate, String column) {
+        where(cateNate, column, WK.op(WK.IS, WK.NOT, WK.NULL));
+        return this;
+    }
+
+    public Select isNotNull(String cateNate, Express express) {
+        where(cateNate, express, WK.op(WK.IS, WK.NOT, WK.NULL));
+        return this;
+    }
+
+
+    /**
+     * 不等于
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select neq(String column, Object value) {
+        where(K.AND, column, WK.op(WK.LT, WK.GT), value);
+        return this;
+    }
+
+    /**
+     * 不等于
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public Select neq(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.LT, WK.GT), value);
+        return this;
+    }
+
+    public Select neq(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.LT, WK.GT), value);
+        return this;
+    }
 
 }

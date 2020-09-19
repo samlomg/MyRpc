@@ -6,13 +6,10 @@ import com.dglbc.dbassistant.declare.Response;
 import com.dglbc.dbassistant.in.WK;
 import com.dglbc.dbassistant.tips.TipsShow;
 import com.dglbc.dbassistant.unitils.WKUnit;
-import com.sun.xml.internal.ws.client.sei.ValueSetter;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * select 列名 from 表名 A  xxx join xxx B on xxxx
@@ -127,9 +124,19 @@ public class Select extends Express {
      * ==================================
      */
 
-    public Select sc(String columns, Object... values) {
+    public Select select(String columns, Object... values) {
         if (this.columns() == null) this.columns = new Column();
         this.columns.columns().add(values.length == 0 ? new Express(columns) : new Express(columns, Arrays.asList(values)));
+        return this;
+    }
+
+    public Select select(Express columns) {
+        if (columns == null){
+            //todo 建立日志系统
+        }else {
+            if (this.columns() == null) this.columns = new Column();
+            this.columns.columns().add(columns);
+        }
         return this;
     }
 

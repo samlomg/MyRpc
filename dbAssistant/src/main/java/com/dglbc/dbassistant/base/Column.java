@@ -44,14 +44,14 @@ public class Column extends Express implements AbstractExpress {
 
     Express mergeColumns(List<Express> columns) {
         boolean isFirst = true;
-        columns.forEach(express -> {
+        for (Express express:columns){
             if (isFirst) {
-
+                isFirst = false;
             } else {
                 this.sql().append(",");
             }
             this.merge(express);
-        });
+        }
         return this;
     }
 

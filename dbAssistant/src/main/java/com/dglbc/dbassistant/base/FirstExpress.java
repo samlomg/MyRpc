@@ -19,6 +19,25 @@ public class FirstExpress extends Express implements AbstractExpress {
         this.first = new Express(sql);
     }
 
+    public FirstExpress() {
+    }
+
+    public void af(String sql) {
+        if (null == first) {
+            first = new Express(sql);
+        } else {
+            first.sql().append(" ").append(sql).append(" ");
+        }
+    }
+
+    public void af(Express sql) {
+        if (null == first) {
+            first = sql;
+        } else {
+            first.merge(sql);
+        }
+    }
+
     @Override
     public Express toExpress() throws Exception {
         return this.merge(first);

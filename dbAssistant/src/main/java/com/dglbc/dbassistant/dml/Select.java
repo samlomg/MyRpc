@@ -98,6 +98,17 @@ public class Select extends Express {
 
     }
 
+    //补充first
+    public Select af(String sql){
+        this.first.af(sql);
+        return this;
+    }
+
+    public Select af(Express sql){
+        this.first.af(sql);
+        return this;
+    }
+
 
     //先来最多的情况
     public Select(String col, String tab, String where) {

@@ -1,6 +1,8 @@
 package com.dglbc.dbassistant.base;
 
 import com.dglbc.dbassistant.declare.Response;
+import com.dglbc.dbassistant.dml.Select;
+import com.dglbc.dbassistant.in.WK;
 import com.dglbc.dbassistant.tips.TipsShow;
 import com.dglbc.dbassistant.unitils.Unitls;
 import com.dglbc.dbassistant.unitils.WKUnit;
@@ -130,5 +132,454 @@ public class Where extends Express implements AbstractExpress {
     public Where caulse(String cateNate, Express express, String operation, Object... values) {
         return caulse(cateNate, express, operation, Arrays.asList(values));
     }
+
+    public void where(String cateNate, String column, WK wk, Object... value) {
+        caulse(cateNate, column, WKUnit.getOperation(WK.op(wk), value), value);
+    }
+
+    public void where(String cateNate, String column, String wks, Object... value) {
+        caulse(cateNate, column, WKUnit.getOperation(wks, value), value);
+    }
+
+
+    public void where(String cateNate, Express express, WK wk, Object... value) {
+        caulse(cateNate, express, WKUnit.getOperation(WK.op(wk), value), value);
+    }
+
+    public void where(String cateNate, Express express, String wks, Object... value) {
+        caulse(cateNate, express, WKUnit.getOperation(wks, value), value);
+    }
+
+
+
+    /**
+     * 等于
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void eq(String column, Object value) {
+        where(K.AND, column, WK.EQ, value);
+
+    }
+
+    /**
+     * 等于
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void eq(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.EQ, value);
+
+    }
+
+    public void eq(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.EQ, value);
+
+    }
+
+    /**
+     * >
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void gt(String column, Object value) {
+        where(K.AND, column, WK.GT, value);
+
+    }
+
+    /**
+     * >
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void gt(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.GT, value);
+
+    }
+
+    public void gt(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.GT, value);
+
+    }
+
+
+    /**
+     * <
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void lt(String column, Object value) {
+        where(K.AND, column, WK.LT, value);
+
+    }
+
+    /**
+     * <
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void lt(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.LT, value);
+
+    }
+
+    public void lt(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.LT, value);
+
+    }
+
+
+    /**
+     * >=
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void ge(String column, Object value) {
+        where(K.AND, column, WK.op(WK.GT, WK.EQ), value);
+
+    }
+
+    /**
+     * >=
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void ge(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.GT, WK.EQ), value);
+
+    }
+
+    public void ge(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.GT, WK.EQ), value);
+
+    }
+
+
+    /**
+     * <=
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void le(String column, Object value) {
+        where(K.AND, column, WK.op(WK.LT, WK.EQ), value);
+
+    }
+
+    /**
+     * <=
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void le(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.LT, WK.EQ), value);
+
+    }
+
+    public void le(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.LT, WK.EQ), value);
+
+    }
+
+
+    /**
+     * between
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void between(String column, Object value, Object value2) {
+        where(K.AND, column, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
+
+    }
+
+    /**
+     * between
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void between(String cateNate, String column, Object value, Object value2) {
+        where(cateNate, column, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
+
+    }
+
+    public void between(String cateNate, Express express, Object value, Object value2) {
+        where(cateNate, express, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
+
+    }
+
+    /**
+     * in
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void in(String column, Object... value) {
+        where(K.AND, column, WKUnit.getOperation(WK.op(WK.IN), value), value);
+
+    }
+
+    /**
+     * in
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void in(String cateNate, String column, Object... value) {
+        where(cateNate, column, WKUnit.getOperation(WK.op(WK.IN), value), value);
+
+    }
+
+    public void in(String cateNate, Express express, Object... value) {
+        where(cateNate, express, WKUnit.getOperation(WK.op(WK.IN), value), value);
+
+    }
+
+
+    /**
+     * like
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void like(String column, Object value) {
+        where(K.AND, column, WK.LIKE, value);
+
+    }
+
+    /**
+     * like
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void like(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.LIKE, value);
+
+    }
+
+    public void like(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.LIKE, value);
+
+    }
+
+
+    /**
+     * isNull
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void isNull(String column, Object value) {
+        where(K.AND, column, WK.op(WK.IS, WK.NULL), value);
+
+    }
+
+    /**
+     * isNull
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void isNull(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.IS, WK.NULL), value);
+
+    }
+
+    public void isNull(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.IS, WK.NULL), value);
+
+    }
+
+
+    /**
+     * notBetween
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void notBetween(String column, Object value, Object value2) {
+        where(K.AND, column, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
+
+    }
+
+    /**
+     * between
+     * notBetween
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void notBetween(String cateNate, String column, Object value, Object value2) {
+        where(cateNate, column, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
+
+    }
+
+    public void notBetween(String cateNate, Express express, Object value, Object value2) {
+        where(cateNate, express, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
+
+    }
+
+    /**
+     * notIn
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void notIn(String column, Object... value) {
+        where(K.AND, column, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
+
+    }
+
+    /**
+     * notIn
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void notIn(String cateNate, String column, Object... value) {
+        where(cateNate, column, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
+
+    }
+
+    public void notIn(String cateNate, Express express, Object... value) {
+        where(cateNate, express, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
+
+    }
+
+
+    /**
+     * notLike
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void notLike(String column, Object value) {
+        where(K.AND, column, WK.op(WK.NOT, WK.LIKE), value);
+
+    }
+
+    /**
+     * notLike
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void notLike(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.NOT, WK.LIKE), value);
+
+    }
+
+    public void notLike(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.NOT, WK.LIKE), value);
+
+    }
+
+
+    /**
+     * isNotNull
+     *
+     * @param column
+     * @return
+     */
+    public void isNotNull(String column) {
+        where(K.AND, column, WK.op(WK.IS, WK.NOT, WK.NULL));
+
+    }
+
+    /**
+     * isNotNull
+     *
+     * @param cateNate
+     * @param column
+     * @return
+     */
+    public void isNotNull(String cateNate, String column) {
+        where(cateNate, column, WK.op(WK.IS, WK.NOT, WK.NULL));
+
+    }
+
+    public void isNotNull(String cateNate, Express express) {
+        where(cateNate, express, WK.op(WK.IS, WK.NOT, WK.NULL));
+
+    }
+
+
+    /**
+     * 不等于
+     *
+     * @param column
+     * @param value
+     * @return
+     */
+    public void neq(String column, Object value) {
+        where(K.AND, column, WK.op(WK.LT, WK.GT), value);
+
+    }
+
+    /**
+     * 不等于
+     *
+     * @param cateNate
+     * @param column
+     * @param value
+     * @return
+     */
+    public void neq(String cateNate, String column, Object value) {
+        where(cateNate, column, WK.op(WK.LT, WK.GT), value);
+
+    }
+
+    public void neq(String cateNate, Express express, Object value) {
+        where(cateNate, express, WK.op(WK.LT, WK.GT), value);
+
+    }
+
 
 }

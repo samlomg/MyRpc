@@ -8,9 +8,9 @@ public class SelectTest extends TestCase {
 
     //简单的写一下sql
     public void  test1() throws Exception {
-        Select select = new Select("*","Mytable"," and a=2");
+        Select select = new Select("id,name","Mytable"," and a=2");
+        select.select("age");
         System.out.println(select.build().sql());
-
     }
 
     //简单

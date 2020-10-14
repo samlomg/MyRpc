@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import java.io.*;
+import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -32,7 +33,7 @@ public class DownloadImage {
         CloseableHttpClient httpClient = HttpClientBuilder.create().build();
         // 创建Get请求
         HttpGet httpGet = new HttpGet("https://bing.com/HPImageArchive.aspx?format=js&idx=0&n=8&nc="+new Date().getTime()+"&pid=hp&video=1");
-
+//        httpGet.setHeader("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:50.0) Gecko/20100101 Firefox/50.0");
         // 响应模型
         CloseableHttpResponse response = null;
         try {
@@ -48,7 +49,7 @@ public class DownloadImage {
                 BingImages images = JSON.parseObject(re, BingImages.class);
 
                 images.getImages().forEach(image -> {
-                    String url = bing + image.getUrl();
+                    String url = bing + image.getUrl();//.split("&")[0];
                     System.out.println(url);
                     String fileName = getParam(image.getUrl(), "id");
                     try {
@@ -89,14 +90,14 @@ public class DownloadImage {
         InputStream is = null;
         OutputStream os = null;
         try {
-            // 构造URL
-            URL url = new URL(urlString);
-            // 打开连接
-            URLConnection con = url.openConnection();
-            //设置请求超时为5s
-            con.setConnectTimeout(5 * 1000);
+//            // 构造URL
+//            URL url = new URL(urlString);
+//            // 打开连接
+//            URLConnection con = url.openConnection();
+//            //设置请求超时为5s
+//            con.setConnectTimeout(10 * 1000);
             // 输入流
-            is = con.getInputStream();
+            is = getInputStream(urlString);
 
             // 1K的数据缓冲
             byte[] bs = new byte[1024];
@@ -130,5 +131,25 @@ public class DownloadImage {
 
 
     }
+
+
+    public static InputStream getInputStream(String imgUrl) {
+        InputStream inputStream = null;
+        try{
+            HttpURLConnection httpURLConnection = (HttpURLConnection) new URL(imgUrl).openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36");
+            httpURLConnection.setRequestProperty("Accept-Encoding", "gzip");
+            httpURLConnection.setRequestProperty("Referer","no-referrer");
+            httpURLConnection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
+            httpURLConnection.setConnectTimeout(15000);
+            httpURLConnection.setReadTimeout(20000);
+            inputStream = httpURLConnection.getInputStream();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+        return inputStream;
+    }
+
 
 }

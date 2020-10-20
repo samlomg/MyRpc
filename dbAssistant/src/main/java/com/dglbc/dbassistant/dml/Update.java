@@ -4,6 +4,8 @@ import com.dglbc.dbassistant.base.*;
 import com.dglbc.dbassistant.declare.Response;
 import com.dglbc.dbassistant.tips.TipsShow;
 
+import java.util.List;
+
 /**
  * 20201014决定只做单表更新
  * update A set ab=? where id =1
@@ -62,7 +64,6 @@ public class Update extends Express {
 
     }
 
-
     //先来最多的情况
     public Update(String table, String col, String where) {
         this.isNormal = true;
@@ -84,9 +85,12 @@ public class Update extends Express {
         this.table = sqlAll;
     }
 
-    public Update set(){
+    public Update set() {
         this.isNormal = true;
         return this;
     }
 
+    public static Update TABLE(String table){
+        return new Update(table);
+    }
 }

@@ -32,10 +32,15 @@ public class Table extends Express implements AbstractExpress {
 
     @Override
     public Express toExpress() throws Exception {
-        if (super.sec()) {
+
+        //todo 这里如果表名就含有select 就会发生bug。如果要彻底清理必须另外想办法。
+        if (super.sec() && (sql().toString().toUpperCase().indexOf("SELECT") > -1 && sql().toString().toUpperCase().indexOf("FROM") > -1)) {
+            //检查是否是多次build的情况
+            if (sql().indexOf(" (") != 0)
             //处理用查询语句做表的情况
             super.sql().insert(0, " ( ").append(" ) ").append(alias).append(" ");
         } else {
+            clear();
             //提供一种默认的方式输入express（直接返回一个table的）
             if (table == null || table.isEmpty() || table.trim().length() <= 0) {
                 TipsShow.alert("请把表名填写完整");
@@ -50,6 +55,7 @@ public class Table extends Express implements AbstractExpress {
             }
             super.sql().append(K.WITH);
         }
+        this.sec(true);
         return this;
     }
 

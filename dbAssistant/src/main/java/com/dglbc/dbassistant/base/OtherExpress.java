@@ -20,8 +20,10 @@ public class OtherExpress extends Express implements AbstractExpress {
 
     @Override
     public Express toExpress() throws Exception {
+        if (sec()) clear();
         this.merge(others);
         this.sql().append(" ");
+        this.sec(true);
         return this;
     }
 

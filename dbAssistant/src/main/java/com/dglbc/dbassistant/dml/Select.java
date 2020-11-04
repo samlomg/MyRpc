@@ -9,7 +9,9 @@ import com.dglbc.dbassistant.unitils.WKUnit;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * select 列名 from 表名 A  xxx join xxx B on xxxx
@@ -29,6 +31,9 @@ import java.util.Arrays;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Select extends Express {
+
+
+    //todo 把直接赋值sql的函数清除
 
     //特殊的字 top distinct 等
     private FirstExpress first;
@@ -65,19 +70,34 @@ public class Select extends Express {
         //初始化
 
         //build
-        if (!sec()){
-            this.sql().append(K.SELECT);
-            checkParts(first);
-            checkParts(columns);
-            checkParts(table);
-            checkParts(joins);
-            checkParts(wheres);
-            checkParts(others);
-            //重要一点如果是已经构建生成的express必须有标志
-            this.sec(true);
-        }
+        if (sec()) clear();
 
 
+        this.sql().append(K.SELECT);
+        checkParts(first);
+        checkParts(columns);
+        checkParts(table);
+        checkParts(joins);
+        checkParts(wheres);
+        checkParts(others);
+        //重要一点如果是已经构建生成的express必须有标志
+        this.sec(true);
+
+        return this;
+    }
+
+    public Express pageSQLServerOld(int size, int page, String key) {
+        if (sec()) clear();
+        sql().append("SELECT Top ? *  FROM ( SELECT ROW_NUMBER() OVER(Order by ").append(key).append(") AS RowId,");
+        values().add(size);
+        checkParts(columns);
+        checkParts(table);
+        checkParts(joins);
+        checkParts(wheres);
+        checkParts(others);
+        sql().append(") A  WHERE RowId between ? and ? ");
+        values().add((page - 1) * size + 1);
+        values().add(page * size);
         return this;
     }
 
@@ -99,12 +119,12 @@ public class Select extends Express {
     }
 
     //补充first
-    public Select af(String sql){
+    public Select af(String sql) {
         this.first.af(sql);
         return this;
     }
 
-    public Select af(Express sql){
+    public Select af(Express sql) {
         this.first.af(sql);
         return this;
     }
@@ -142,9 +162,9 @@ public class Select extends Express {
     }
 
     public Select select(Express columns) {
-        if (columns == null){
+        if (columns == null) {
             //todo 建立日志系统
-        }else {
+        } else {
             if (this.columns() == null) this.columns = new Column();
             this.columns.columns().add(columns);
         }

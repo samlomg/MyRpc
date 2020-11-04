@@ -40,7 +40,10 @@ public class FirstExpress extends Express implements AbstractExpress {
 
     @Override
     public Express toExpress() throws Exception {
-        return this.merge(first);
+        if (sec()) clear();
+        this.sec(true);
+        this.merge(first);
+        return this;
     }
 
     @Override

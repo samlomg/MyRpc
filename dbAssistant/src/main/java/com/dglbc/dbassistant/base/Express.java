@@ -102,4 +102,10 @@ public class Express {
         return this;
     }
 
+    //清空
+    public Express clear() {
+        sql().delete(0, sql().length());
+        values().clear();
+        return this;
+    }
 }

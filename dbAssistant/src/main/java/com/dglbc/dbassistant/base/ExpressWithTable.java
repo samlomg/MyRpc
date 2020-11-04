@@ -29,6 +29,7 @@ public class ExpressWithTable extends Express implements AbstractExpress {
 
     @Override
     public Express toExpress() throws Exception {
+        if (sec()) clear();
         if (null == join) {
             this.sql().append(K.LEFTJOIN);
         } else {
@@ -38,6 +39,7 @@ public class ExpressWithTable extends Express implements AbstractExpress {
         this.merge(table.toExpress());
         this.sql().append(K.ON);
         this.merge(ons);
+        this.sec(true);
         return this;
     }
 

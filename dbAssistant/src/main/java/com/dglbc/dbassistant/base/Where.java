@@ -35,9 +35,11 @@ public class Where extends Express implements AbstractExpress {
 
     @Override
     public Express toExpress() throws Exception {
+        if (sec()) clear();
         this.sql().append(K.WHERE);
         mergeWhere(wheres);
         this.sql().append(" ");
+        this.sec(true);
         return this;
     }
 

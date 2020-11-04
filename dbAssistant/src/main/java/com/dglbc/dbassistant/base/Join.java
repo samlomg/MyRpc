@@ -26,8 +26,9 @@ public class Join extends Express implements AbstractExpress {
 
     @Override
     public Express toExpress() throws Exception {
-
+        if (sec()) clear();
         this.mergeJoins(joins);
+        this.sec(true);
         return this;
     }
 

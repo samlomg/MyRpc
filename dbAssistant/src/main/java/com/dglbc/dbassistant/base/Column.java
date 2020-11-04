@@ -25,11 +25,13 @@ public class Column extends Express implements AbstractExpress {
 
     @Override
     public Express toExpress() throws Exception {
+        if (sec()) clear();
         if (columns == null || columns.size() == 0) {
             TipsShow.alert("SQL查询语句必须有查询的项");
         }
 
         mergeColumns(columns);
+        this.sec(true);
         return this;
     }
     @Override

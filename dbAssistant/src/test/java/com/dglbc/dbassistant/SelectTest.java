@@ -11,6 +11,7 @@ public class SelectTest extends TestCase {
         Select select = new Select("id,name","Mytable"," and a=2");
         select.select("age");
         System.out.println(select.build().sql());
+        System.out.println(select.pageSQLServerOld(10,2,"sequence").sql());
     }
 
     //简单

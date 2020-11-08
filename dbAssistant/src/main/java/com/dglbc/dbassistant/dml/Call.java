@@ -43,6 +43,9 @@ public class Call extends Express {
     }
 
     public Express build(){
+        if (sec()){
+            clear();
+        }
         this.sql().append(" { ").append(produceFuntion).append(K.LEFT);
         StringBuilder tem1 = new StringBuilder();
         for (ProduceParameter produceParameter : produceParameters) {
@@ -50,6 +53,7 @@ public class Call extends Express {
             this.values().add(produceParameter);
         }
         this.sql().append(tem1.delete(0, 1)).append(K.RIGHT).append(" } ");
+        sec(true);
         return this;
     }
 

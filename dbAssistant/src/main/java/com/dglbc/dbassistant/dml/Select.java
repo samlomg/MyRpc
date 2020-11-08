@@ -171,6 +171,10 @@ public class Select extends Express {
         return this;
     }
 
+    public Select where(){
+        return this;
+    }
+
     public Select where(String where, Object... values) {
         if (null == this.wheres()) {
             this.wheres = new Where();

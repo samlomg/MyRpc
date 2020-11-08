@@ -11,7 +11,9 @@ public class SelectTest extends TestCase {
         Select select = new Select("id,name","Mytable"," and a=2");
         select.select("age");
         System.out.println(select.build().sql());
+        System.err.println(select.values().toString());
         System.out.println(select.pageSQLServerOld(10,2,"sequence").sql());
+        System.err.println(select.values().toString());
     }
 
     //简单
@@ -19,6 +21,9 @@ public class SelectTest extends TestCase {
         Select select = new Select("* from Mytable");
         select.where("a=?", 2).or("a=?", 1);
         System.out.println(select.build().sql());
+        System.out.println(select.values().toString());
+        System.out.println(select.pageSQLServerOld(10,2,"sequence desc").sql());
+        System.out.println(select.values().toString());
     }
 
     //简单
@@ -28,6 +33,9 @@ public class SelectTest extends TestCase {
         select.where("name=?", 2).or("name=?", 1).eq("A.id",1);
         select.last(" order by a.id desc ");
         System.out.println(select.build().sql());
+        System.out.println(select.values().toString());
+        System.out.println(select.pageSQLServerOld(10,2,"sequence desc").sql());
+        System.out.println(select.values().toString());
     }
 
     //between

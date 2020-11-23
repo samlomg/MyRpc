@@ -1,19 +1,39 @@
 package com.dglbc.dbassistant;
 
+import com.alibaba.druid.sql.SQLUtils;
+import com.alibaba.druid.sql.ast.SQLStatement;
+import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.dglbc.dbassistant.base.Express;
 import com.dglbc.dbassistant.dml.Select;
 import junit.framework.TestCase;
+
+import java.util.List;
 
 public class SelectTest extends TestCase {
 
     //简单的写一下sql
     public void  test1() throws Exception {
-        Select select = new Select("id,name","Mytable"," and a=2");
-        select.select("age");
-        System.out.println(select.build().sql());
-        System.err.println(select.values().toString());
-        System.out.println(select.pageSQLServerOld(10,2,"sequence").sql());
-        System.err.println(select.values().toString());
+        Select select = new Select("id,name","Mytable"," a=2");
+        select.column("age");
+        String sql = select.build().sql().toString();
+        SQLServerStatementParser parser = new SQLServerStatementParser(sql);
+        boolean flag = false;
+        try {
+            List<SQLStatement> stmtList = parser.parseStatementList();
+            System.out.println(SQLUtils.formatSQLServer(sql));
+            System.out.println(select.values().toString());
+            sql = select.pageSQLServerOld(10, 2, "sequence").sql().toString();
+            parser = new SQLServerStatementParser(sql);
+            stmtList = parser.parseStatementList();
+            System.out.println(SQLUtils.formatSQLServer(sql));
+            System.out.println(select.values().toString());
+            flag = true;
+        }catch (Exception e){
+            e.printStackTrace();
+            System.err.println("包含语法查错误");
+        }
+        assertTrue(flag);
+
     }
 
     //简单
@@ -120,6 +140,15 @@ public class SelectTest extends TestCase {
         System.out.println(express.values().toString());
     }
 
+    //test complicated case
+    public void test12(){
+        //left Join  F4103_92650901 a with(nolock) on s.KCLITM=A.PCLITM
+        Select select = Select.create().column("s1.cxid as 促销活动编码")
+                .column("s1.cxnm as 促销活动描述").from("F41021_92650901","s").leftJoin("F4103_92650901","s.KCLITM=A.PCLITM");
+        Express express=select.build();
+        System.out.println(express.sql());
+        System.out.println(express.values().toString());
 
+    }
 
 }

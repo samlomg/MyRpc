@@ -86,6 +86,13 @@ public class Select extends Express {
         return this;
     }
 
+    /**
+     * sqlServer 2005 以后能用的分页
+     * @param size
+     * @param page
+     * @param key
+     * @return
+     */
     public Express pageSQLServerOld(int size, int page, String key) {
         if (sec()) clear();
         sql().append("SELECT Top ? *  FROM ( SELECT ROW_NUMBER() OVER(Order by ").append(key).append(") AS RowId,");
@@ -134,7 +141,7 @@ public class Select extends Express {
     public Select(String col, String tab, String where) {
 
         this.columns = new Column(new Express(col));
-        this.table = new Table(tab);
+        this.table = new Table(tab,true);
         //todo 目前没想到什么好的办法只能先new然后赋值
         SpecialExpress specialExpress = new SpecialExpress(where);
         this.wheres = new Where(specialExpress);
@@ -143,30 +150,44 @@ public class Select extends Express {
     //补充情况
     public Select(String col, String tab) {
         this.columns = new Column(new Express(col));
-        this.table = new Table(tab);
+        this.table = new Table(tab,true);
     }
 
     public Select(String sqlAll) {
         this.first = new FirstExpress(sqlAll);
     }
 
+
     /**
      * 分割线下面是为了方便增加的工具方法不是core
      * ==================================
      */
 
-    public Select select(String columns, Object... values) {
+    public static Select create(){
+        return new Select();
+    }
+
+    public Select column(String columns, Object... values) {
         if (this.columns() == null) this.columns = new Column();
         this.columns.columns().add(values.length == 0 ? new Express(columns) : new Express(columns, Arrays.asList(values)));
         return this;
     }
 
-    public Select select(Express columns) {
+    public Select column(Express column) {
         if (columns == null) {
             //todo 建立日志系统
         } else {
             if (this.columns() == null) this.columns = new Column();
-            this.columns.columns().add(columns);
+            this.columns.columns().add(column);
+        }
+        return this;
+    }
+
+    public Select from(String table,String alias){
+        if (table() == null){
+            this.table = new Table(table,alias,true);
+        }else {
+            this.table = this.table.tableName(table).alias(alias);
         }
         return this;
     }

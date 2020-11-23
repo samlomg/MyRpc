@@ -143,7 +143,7 @@ public class DownloadImage {
             httpURLConnection.setRequestProperty("Referer","no-referrer");
             httpURLConnection.setRequestProperty("Content-Type","application/x-www-form-urlencoded");
             httpURLConnection.setConnectTimeout(15000);
-            httpURLConnection.setReadTimeout(20000);
+            httpURLConnection.setReadTimeout(40000);
             inputStream = httpURLConnection.getInputStream();
         }catch (IOException e){
             e.printStackTrace();

@@ -88,6 +88,7 @@ public class Select extends Express {
 
     /**
      * sqlServer 2005 以后能用的分页
+     *
      * @param size
      * @param page
      * @param key
@@ -141,7 +142,7 @@ public class Select extends Express {
     public Select(String col, String tab, String where) {
 
         this.columns = new Column(new Express(col));
-        this.table = new Table(tab,true);
+        this.table = new Table(tab, true);
         //todo 目前没想到什么好的办法只能先new然后赋值
         SpecialExpress specialExpress = new SpecialExpress(where);
         this.wheres = new Where(specialExpress);
@@ -150,7 +151,7 @@ public class Select extends Express {
     //补充情况
     public Select(String col, String tab) {
         this.columns = new Column(new Express(col));
-        this.table = new Table(tab,true);
+        this.table = new Table(tab, true);
     }
 
     public Select(String sqlAll) {
@@ -163,7 +164,7 @@ public class Select extends Express {
      * ==================================
      */
 
-    public static Select create(){
+    public static Select create() {
         return new Select();
     }
 
@@ -183,16 +184,16 @@ public class Select extends Express {
         return this;
     }
 
-    public Select from(String table,String alias){
-        if (table() == null){
-            this.table = new Table(table,alias,true);
-        }else {
+    public Select from(String table, String alias) {
+        if (table() == null) {
+            this.table = new Table(table, alias, true);
+        } else {
             this.table = this.table.tableName(table).alias(alias);
         }
         return this;
     }
 
-    public Select where(){
+    public Select where() {
         return this;
     }
 
@@ -238,6 +239,26 @@ public class Select extends Express {
         return this;
     }
 
+    public Select join(String tab, String alias, String on) {
+        if (joins == null) joins = new Join();
+
+        this.joins.joins().add(new ExpressWithTable(tab + " " + alias, on));
+
+        return this;
+    }
+
+    public Select leftJoin(String tab, String alias, String on) {
+        join(tab, alias, on);
+        return this;
+    }
+
+    public Select leftJoin(Express table, String alias, String on) {
+//        join(tab, alias, on);
+        if (joins == null) joins = new Join();
+        this.joins.joins().add(new ExpressWithTable(table, alias, on));
+        return this;
+    }
+
     public Select leftJoin(String tab, String on) {
         join(tab, on);
         return this;
@@ -248,6 +269,19 @@ public class Select extends Express {
             joins = new Join();
         }
         this.joins.joins().add(new ExpressWithTable(K.INNERJOIN, tab, on));
+        return this;
+    }
+
+    public Select innerJoin(String tab, String alias, String on) {
+        if (joins == null) {
+            joins = new Join();
+        }
+        this.joins.joins().add(new ExpressWithTable(K.INNERJOIN, tab + " " + alias, on));
+        return this;
+    }
+    public Select innerJoin(Express table, String alias, String on) {
+        if (joins == null) joins = new Join();
+        this.joins.joins().add(new ExpressWithTable(K.INNERJOIN,table, alias, on));
         return this;
     }
 

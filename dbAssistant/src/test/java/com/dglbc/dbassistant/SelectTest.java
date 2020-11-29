@@ -144,7 +144,12 @@ public class SelectTest extends TestCase {
     public void test12(){
         //left Join  F4103_92650901 a with(nolock) on s.KCLITM=A.PCLITM
         Select select = Select.create().column("s1.cxid as 促销活动编码")
-                .column("s1.cxnm as 促销活动描述").from("F41021_92650901","s").leftJoin("F4103_92650901","s.KCLITM=A.PCLITM");
+                .column("s1.cxnm as 促销活动描述")
+                .from("F41021_92650901","s")
+                .leftJoin("F4103_92650901 ","A","s.KCLITM=A.PCLITM")
+                .leftJoin("F4105_92650901 cost","A.pclitm=cost.pclitm and  A.pcmcu=cost.pcmcu")
+                .leftJoin("( SELECT DISTINCT DHCODE,DHCCDSC  FROM F4001 WITH(NOLOCK)) ","E","A.PCSIZE=E.DHCODE")
+                .leftJoin(Select.create().column("DHCODE").column("DHDESC").from("F4002","A").build(),"F"," A.PCGG=F.DHCODE");
         Express express=select.build();
         System.out.println(express.sql());
         System.out.println(express.values().toString());

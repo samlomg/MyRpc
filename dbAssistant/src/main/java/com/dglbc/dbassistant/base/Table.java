@@ -41,6 +41,13 @@ public class Table extends Express implements AbstractExpress {
         this.alias = alias;
     }
 
+    public Table(Express tableExpress, String alias) {
+        this.sql().append(tableExpress.sql()) ;
+        this.values().addAll(tableExpress.values()) ;
+        this.sec(tableExpress.sec());
+        this.alias = alias;
+    }
+
     @Override
     public Express toExpress() throws Exception {
         //todo 这里如果表名就含有select 就会发生bug。如果要彻底清理必须另外想办法。

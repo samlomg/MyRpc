@@ -53,6 +53,18 @@ public class ExpressWithTable extends Express implements AbstractExpress {
         return re;
     }
 
+    public ExpressWithTable( Express table, String alias, String ons) {
+        this.join = K.LEFTJOIN;
+        this.table=new Table(table,alias);
+        this.ons.add(new SpecialExpress(ons));
+    }
+
+    public ExpressWithTable(String join, Express table, String alias, String ons) {
+        this.join = K.LEFTJOIN;
+        this.table=new Table(table,alias);
+        this.ons.add(new SpecialExpress(ons));
+    }
+
     public ExpressWithTable( String table, String ons) {
         this.join = K.LEFTJOIN;
         this.table=new Table(table);

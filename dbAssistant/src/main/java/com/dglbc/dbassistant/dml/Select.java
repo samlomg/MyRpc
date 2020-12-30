@@ -194,6 +194,9 @@ public class Select extends Express {
     }
 
     public Select where() {
+        if (null == this.wheres()) {
+            this.wheres = new Where();
+        }
         return this;
     }
 

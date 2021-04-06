@@ -5,7 +5,7 @@ import lombok.experimental.Accessors;
 
 @Accessors(chain = true)
 @Getter
-public enum DATEDEPART {
+public enum DateDepart {
     year("year"),
     quarter("quarter"),
     month("month"),
@@ -22,7 +22,7 @@ public enum DATEDEPART {
 
     private String c;
 
-    DATEDEPART(String string) {
+    DateDepart(String string) {
         this.c = string;
     }
 }

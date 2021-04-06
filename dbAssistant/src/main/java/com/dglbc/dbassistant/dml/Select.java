@@ -9,9 +9,7 @@ import com.dglbc.dbassistant.unitils.WKUnit;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * select 列名 from 表名 A  xxx join xxx B on xxxx
@@ -171,6 +169,12 @@ public class Select extends Express {
     public Select column(String columns, Object... values) {
         if (this.columns() == null) this.columns = new Column();
         this.columns.columns().add(values.length == 0 ? new Express(columns) : new Express(columns, Arrays.asList(values)));
+        return this;
+    }
+
+    public Select column(String columns, String as, Object... values) {
+        if (this.columns() == null) this.columns = new Column();
+        this.columns.columns().add(values.length == 0 ? new Express(columns + K.AS + as) : new Express(columns + K.AS + as, Arrays.asList(values)));
         return this;
     }
 

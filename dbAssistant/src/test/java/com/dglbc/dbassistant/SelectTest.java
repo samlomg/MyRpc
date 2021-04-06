@@ -144,7 +144,10 @@ public class SelectTest extends TestCase {
     public void test12(){
         //left Join  F4103_92650901 a with(nolock) on s.KCLITM=A.PCLITM
         Select select = Select.create().column("s1.cxid as 促销活动编码")
+                //接下来是试一下case when
+//                .column()
                 .column("s1.cxnm as 促销活动描述")
+                .column("s1.cxstart","促销开始日期")
                 .from("F41021_92650901","s")
                 .leftJoin("F4103_92650901 ","A","s.KCLITM=A.PCLITM")
                 .leftJoin("F4105_92650901 cost","A.pclitm=cost.pclitm and  A.pcmcu=cost.pcmcu")
@@ -152,6 +155,7 @@ public class SelectTest extends TestCase {
                 .leftJoin(Select.create().column("DHCODE").column("DHDESC").from("F4002","A").build(),"F"," A.PCGG=F.DHCODE");
         Express express=select.build();
         System.out.println(express.sql());
+        //System.out.println(SQLUtils.formatSQLServer(express.sql().toString()));
         System.out.println(express.values().toString());
 
     }

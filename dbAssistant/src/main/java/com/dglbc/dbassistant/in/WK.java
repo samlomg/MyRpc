@@ -15,6 +15,7 @@ public enum WK {
     NULL("NULL", " NULL ",0),
     IS("IS", " IS %s ",1),
     EQ("=", " = %s ",1),
+    NEQ("<>", " <> %s ",1),
     LT("<", " < %s ",1),
     GT(">", " > %s ",1),
     NOT("NOT", " NOT %s ",1),

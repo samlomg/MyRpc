@@ -1,6 +1,9 @@
 package com.dglbc.dbassistant.dml;
 
 
+import com.dglbc.dbassistant.annotation.Ignore;
+import com.dglbc.dbassistant.annotation.MyColumn;
+import com.dglbc.dbassistant.annotation.MyTable;
 import com.dglbc.dbassistant.base.*;
 import com.dglbc.dbassistant.declare.Response;
 import com.dglbc.dbassistant.in.WK;
@@ -9,9 +12,11 @@ import com.dglbc.dbassistant.unitils.WKUnit;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
+ * warning : 致喜欢jdbc的志同道合之人
  * select 列名 from 表名 A  xxx join xxx B on xxxx
  * where xxxx
  * group by xxxx having xxxx order by xxxx
@@ -28,7 +33,7 @@ import java.util.Arrays;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Select extends Express {
+public class Select extends Express  implements DML {
 
 
     //todo 把直接赋值sql的函数清除
@@ -96,6 +101,7 @@ public class Select extends Express {
         if (sec()) clear();
         sql().append("SELECT Top ? *  FROM ( SELECT ROW_NUMBER() OVER(Order by ").append(key).append(") AS RowId,");
         values().add(size);
+        checkParts(first);
         checkParts(columns);
         checkParts(table);
         checkParts(joins);
@@ -157,6 +163,40 @@ public class Select extends Express {
     }
 
 
+    /*
+    * 210613 需要达到的效果
+    * 1:放入class 自动生成column
+    * 2：自动生成的column排除部分数据库没有的
+    *
+    * */
+    public Select(Class  cl){
+
+        //table
+        if (cl.isAnnotationPresent(MyTable.class)){
+            MyTable myTable= (MyTable) cl.getAnnotation(MyTable.class);
+            this.table = new Table(myTable.tableName(), myTable.alias(),true);
+        }else {
+            this.table = new Table(cl.getSimpleName(), "t_"+cl.getSimpleName().toLowerCase(),true);
+        }
+
+        this.columns = new Column();
+        Field[] fields = cl.getDeclaredFields();
+        for (Field field:fields){
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Ignore.class)){
+                continue;
+            }
+
+            if (field.isAnnotationPresent(MyColumn.class)){
+                MyColumn myColumn= field.getAnnotation(MyColumn.class);
+                column(myColumn.columnName(),myColumn.as());
+            }else {
+                column(field.getName());
+            }
+        }
+
+    }
+
     /**
      * 分割线下面是为了方便增加的工具方法不是core
      * ==================================
@@ -167,6 +207,7 @@ public class Select extends Express {
     }
 
     public Select column(String columns, Object... values) {
+        if (columns == null || columns.trim().equals("")) return this;
         if (this.columns() == null) this.columns = new Column();
         this.columns.columns().add(values.length == 0 ? new Express(columns) : new Express(columns, Arrays.asList(values)));
         return this;
@@ -286,9 +327,10 @@ public class Select extends Express {
         this.joins.joins().add(new ExpressWithTable(K.INNERJOIN, tab + " " + alias, on));
         return this;
     }
+
     public Select innerJoin(Express table, String alias, String on) {
         if (joins == null) joins = new Join();
-        this.joins.joins().add(new ExpressWithTable(K.INNERJOIN,table, alias, on));
+        this.joins.joins().add(new ExpressWithTable(K.INNERJOIN, table, alias, on));
         return this;
     }
 
@@ -736,7 +778,7 @@ public class Select extends Express {
      * @return
      */
     public Select neq(String column, Object value) {
-        where(K.AND, column, WK.op(WK.LT, WK.GT), value);
+        where(K.AND, column, WK.op(WK.NEQ), value);
         return this;
     }
 
@@ -749,12 +791,12 @@ public class Select extends Express {
      * @return
      */
     public Select neq(String cateNate, String column, Object value) {
-        where(cateNate, column, WK.op(WK.LT, WK.GT), value);
+        where(cateNate, column, WK.op(WK.NEQ), value);
         return this;
     }
 
     public Select neq(String cateNate, Express express, Object value) {
-        where(cateNate, express, WK.op(WK.LT, WK.GT), value);
+        where(cateNate, express, WK.op(WK.NEQ), value);
         return this;
     }
 

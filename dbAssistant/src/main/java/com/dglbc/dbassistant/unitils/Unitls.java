@@ -1,7 +1,5 @@
 package com.dglbc.dbassistant.unitils;
 
-import com.dglbc.dbassistant.base.Express;
-
 import java.util.List;
 
 /**

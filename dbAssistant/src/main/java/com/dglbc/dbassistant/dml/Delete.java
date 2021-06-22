@@ -22,7 +22,7 @@ import java.util.Arrays;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Delete extends Express {
+public class Delete extends Express  implements DML {
 
     private String table;//主表有查询语句必有主表查询的
 

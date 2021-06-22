@@ -1,9 +1,6 @@
 package com.dglbc.dbassistant.dml;
 
-import com.dglbc.dbassistant.base.Express;
-import com.dglbc.dbassistant.base.K;
-import com.dglbc.dbassistant.base.ParameterMode;
-import com.dglbc.dbassistant.base.ProduceParameter;
+import com.dglbc.dbassistant.base.*;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -16,7 +13,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Call extends Express {
+public class Call extends Express implements DML {
     private List<ProduceParameter> produceParameters = new ArrayList<>();
     private String produceFuntion;
 

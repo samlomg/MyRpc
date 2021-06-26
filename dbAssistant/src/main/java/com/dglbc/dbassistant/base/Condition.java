@@ -1,10 +1,16 @@
 package com.dglbc.dbassistant.base;
 
 
+import com.dglbc.dbassistant.declare.Response;
+import com.dglbc.dbassistant.dml.Delete;
+import com.dglbc.dbassistant.dml.Select;
 import com.dglbc.dbassistant.in.WK;
+import com.dglbc.dbassistant.tips.TipsShow;
 import com.dglbc.dbassistant.unitils.WKUnit;
 import lombok.*;
 import lombok.experimental.Accessors;
+
+import java.util.Arrays;
 
 @Accessors(fluent = true)
 @Setter
@@ -22,6 +28,20 @@ public abstract class Condition<T> extends Express {
 
     public abstract T me();
 
+    public void checkParts(AbstractExpress abstractExpress) {
+        if (abstractExpress != null) {
+            Response response = abstractExpress.isCheck();
+            if (response.code() == 200 || response.code() == 10001) {
+                try {
+                    this.merge(abstractExpress.toExpress());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    TipsShow.alert("merge fail");
+                }
+            }
+        }
+
+    }
 
     /**
      * where case
@@ -30,6 +50,45 @@ public abstract class Condition<T> extends Express {
     /**
      * commond
      */
+
+    public T and(String where, Object... values) {
+        where(where, values);
+        return me();
+    }
+
+    public T or(String where, Object... values) {
+        where(K.OR, where, values);
+        return me();
+    }
+
+    public T where() {
+        if (null == this.wheres()) {
+            this.wheres = new Where();
+        }
+        return me();
+    }
+
+    public T where(String where, Object... values) {
+        if (null == this.wheres()) {
+            this.wheres = new Where();
+        }
+        this.wheres.wheres().add(values.length == 0 ? new SpecialExpress(where) : new SpecialExpress(where, Arrays.asList(values)));
+        return me();
+    }
+
+    public T where(String cateNate, String where, Object... values) {
+        if (cateNate == null || cateNate.trim() == "") {
+            where(where, values);
+        } else {
+
+            if (null == this.wheres()) {
+                this.wheres = new Where();
+            }
+            this.wheres.wheres().add(values.length == 0 ? new SpecialExpress(where, cateNate) : new SpecialExpress(where, Arrays.asList(values), cateNate));
+        }
+        return me();
+    }
+
 
     public T where(String cateNate, String column, WK wk, Object... value) {
         wheres().caulse(cateNate, column, WKUnit.getOperation(WK.op(wk), value), value);

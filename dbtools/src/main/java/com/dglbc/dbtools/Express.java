@@ -6,7 +6,6 @@ import com.dglbc.dbtools.unit.ColumnUnit;
 import com.dglbc.dbtools.where.DATEDEPART;
 import com.dglbc.dbtools.where.WK;
 
-import com.sun.istack.internal.NotNull;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
@@ -34,20 +33,20 @@ public class Express {
         this.values = values;
     }
 
-    public Express(@NotNull Column column) {
+    public Express( Column column) {
         this.sql = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").append(column.getName()).append(" ");
         if (StringUtils.isNoneEmpty(column.getBind())) this.sql.append(SQLKey.AS).append(column.getBind());
         this.values = new ArrayList();
     }
 
-    public Expression on(@NotNull Column column){
+    public Express on( Column column){
         this.sql = new StringBuilder().append(" ").append(column.getTable().getAlias()).append(".").append(column.getName()).append(" ");
         this.values = new ArrayList();
         return this;
     }
 
     //true 是语句生成的表，false是原生表
-    public Express(@NotNull Table table, @NotNull boolean flag) {
+    public Express( Table table,  boolean flag) {
         List temp = new ArrayList();
         if (flag) temp.addAll(table.getValues());
         this.sql = flag ? new StringBuilder().append(SQLKey.LEFT).append(table.getSql()).append(SQLKey.RIGHT).append(table.getAlias()) :
@@ -56,7 +55,7 @@ public class Express {
     }
 
     //自定义 语句
-    public Express(@NotNull String sql) {
+    public Express( String sql) {
         this.sql = new StringBuilder().append(sql);
         this.values = new ArrayList();
     }

@@ -35,7 +35,7 @@ public class SelectTest{
         Join f4211 = join(SQLKey.LEFTJOIN, f4211_t, column(table, "Sequence"), column(f4211_t, "Sequence"));
 //        sqlHelper.sc(new Column(f4211_t,"SDDOCO"));
         sqlHelper.as(SQLKey.TOP + " 10")
-                .sc(as(isnull(column(f4211_t, "SDDOCO", 0)), "SDDOCO"))
+                .sc(as(isnull(new Express(column(f4211_t, "SDDOCO")), 0), "SDDOCO"))
                 .join(f4211)
 //                .where(where(SQLKey.AND).eq(column(table, "SHMCU", "1110114")))
 //                .where(where(SQLKey.AND).eq(convert("varchar(20)", expression(column(table, "SHDCTO"), false)), "SL"))
@@ -53,7 +53,7 @@ public class SelectTest{
         Table table = table("F4201", "A");
         Table f4211_t = table("F4211", "B");
         SQLHelper SQLHelper = new SQLHelper(table);
-        SQLHelper.sc(isnull(column(table, "SDDOCO", "1111")));
+        SQLHelper.sc(isnull(new Express(column(table, "SDDOCO")), "1111"));
         Join f4211 = join(SQLKey.LEFTJOIN, f4211_t, column(table, "Sequence"), column(f4211_t, "Sequence"));
         SQLHelper.join(f4211);
 //        SQLHelper.where(where().eq(column(table, "SHMCU", "1110114")))

@@ -34,10 +34,7 @@ import java.util.Arrays;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Select extends Condition<Select>  implements DML {
-
-
     //todo 把直接赋值sql的函数清除
-
     //特殊的字 top distinct 等
     private FirstExpress first;
 
@@ -54,8 +51,6 @@ public class Select extends Condition<Select>  implements DML {
      * 这里我吧join也类似where的设计，等以后有需要的时候更方便处理
      */
     private Join joins;
-
-
 
     /**
      * 简化group by 和having的操作，直接自己写。这样的好处是不用
@@ -117,7 +112,6 @@ public class Select extends Condition<Select>  implements DML {
         return this;
     }
 
-
     //先来最多的情况
     public Select(String col, String tab, String where) {
 
@@ -137,7 +131,6 @@ public class Select extends Condition<Select>  implements DML {
     public Select(String sqlAll) {
         this.first = new FirstExpress(sqlAll);
     }
-
 
     /*
     * 210613 需要达到的效果
@@ -162,7 +155,6 @@ public class Select extends Condition<Select>  implements DML {
             if (field.isAnnotationPresent(Ignore.class)){
                 continue;
             }
-
             if (field.isAnnotationPresent(MyColumn.class)){
                 MyColumn myColumn= field.getAnnotation(MyColumn.class);
                 column(myColumn.columnName(),myColumn.as());

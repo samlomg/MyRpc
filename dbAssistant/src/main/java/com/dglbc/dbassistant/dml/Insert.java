@@ -1,6 +1,7 @@
 package com.dglbc.dbassistant.dml;
 
 
+import com.dglbc.dbassistant.base.DML;
 import com.dglbc.dbassistant.base.Express;
 import com.dglbc.dbassistant.base.K;
 import com.dglbc.dbassistant.declare.Er;
@@ -21,7 +22,7 @@ import java.util.List;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Insert extends Express {
+public class Insert extends Express implements DML {
 
     private String table;
 

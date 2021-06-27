@@ -2,6 +2,7 @@ package com.dglbc.dbassistant;
 
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
+import com.dglbc.dbassistant.base.DML;
 import com.dglbc.dbassistant.dml.Delete;
 import com.dglbc.dbassistant.dml.Insert;
 import com.dglbc.dbassistant.dml.Select;
@@ -29,14 +30,7 @@ public class TestUntils {
         return isRight(isPage ? select.pageSQLServerOld(10, 2, key[0]).sql().toString() : select.build().sql().toString());
     }
 
-    public static boolean isRight(Delete delete) {
-        return isRight(delete.build().sql().toString());
-    }
-
-    public static boolean isRight(Insert insert) {
-        return isRight(insert.build().sql().toString());
-    }
-    public static boolean isRight(Update update) {
-        return isRight(update.build().sql().toString());
+    public static  boolean isRight(DML dml){
+        return isRight(dml.build().sql().toString());
     }
 }

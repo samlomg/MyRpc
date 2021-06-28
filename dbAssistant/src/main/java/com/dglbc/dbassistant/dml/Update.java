@@ -20,7 +20,7 @@ import java.util.Arrays;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Update extends Condition<Update> {
+public class Update extends Condition<Update> implements  DML {
 
     private boolean isNormal = false;
 

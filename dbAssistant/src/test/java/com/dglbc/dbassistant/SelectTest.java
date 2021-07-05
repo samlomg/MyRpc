@@ -1,5 +1,6 @@
 package com.dglbc.dbassistant;
 
+import com.dglbc.dbassistant.base.Where;
 import com.dglbc.dbassistant.check.T0027;
 import com.dglbc.dbassistant.dml.Select;
 import junit.framework.TestCase;

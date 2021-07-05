@@ -63,10 +63,16 @@ public abstract class Condition<T> extends Express {
 
     public T where() {
         if (null == this.wheres()) {
-            this.wheres = new Where();
+            this.wheres = Where.me();
         }
         return me();
     }
+
+    public T where(Where where) {
+        this.wheres = where == null ? Where.me() : where;
+        return me();
+    }
+
 
     public T where(String where, Object... values) {
         if (null == this.wheres()) {

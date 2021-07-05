@@ -3,10 +3,7 @@ package com.dglbc.dbassistant;
 import com.alibaba.druid.sql.ast.SQLStatement;
 import com.alibaba.druid.sql.dialect.sqlserver.parser.SQLServerStatementParser;
 import com.dglbc.dbassistant.base.DML;
-import com.dglbc.dbassistant.dml.Delete;
-import com.dglbc.dbassistant.dml.Insert;
 import com.dglbc.dbassistant.dml.Select;
-import com.dglbc.dbassistant.dml.Update;
 
 import java.util.List;
 

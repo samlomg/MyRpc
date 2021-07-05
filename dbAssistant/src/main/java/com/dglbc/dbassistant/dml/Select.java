@@ -174,6 +174,10 @@ public class Select extends Condition<Select>  implements DML {
         return new Select();
     }
 
+    public static Select create(Class  cl) {
+        return new Select(cl);
+    }
+
     public Select column(String columns, Object... values) {
         if (columns == null || columns.trim().equals("")) return this;
         if (this.columns() == null) this.columns = new Column();

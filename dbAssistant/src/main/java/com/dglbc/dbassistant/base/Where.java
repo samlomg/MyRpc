@@ -33,6 +33,10 @@ public class Where extends Express implements AbstractExpress {
         wheres.add(where);
     }
 
+    public static Where me(){
+        return new Where();
+    }
+
     @Override
     public Express toExpress() throws Exception {
         if (sec()) clear();

@@ -26,8 +26,8 @@ public class TestUntils {
     public static boolean isRight(Select select, boolean isPage, String... key) {
         return isRight(isPage ? select.pageSQLServerOld(10, 2, key[0]).sql().toString() : select.build().sql().toString());
     }
-
-    public static  boolean isRight(DML dml){
+    public static boolean isRight(DML dml) {
         return isRight(dml.build().sql().toString());
     }
+
 }

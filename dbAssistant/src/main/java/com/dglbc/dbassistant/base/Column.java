@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Accessors(fluent = true)
@@ -23,6 +24,33 @@ public class Column extends Express implements AbstractExpress {
         this.columns.add(column);
     }
 
+    public static Column create() {
+        return new Column();
+    }
+
+    /**
+     * 这是update 专用
+     * @param column
+     * @param value
+     * @return
+     */
+    public Column set(String column, Object... value) {
+        if (column == null || column.trim().length() == 0) return this;
+        columns.add(new Express(column + " = ? ", value == null || value.length == 0 ? null : Arrays.asList(value)));
+        return this;
+    }
+
+    /**
+     * 这是update 专用
+     * @param column
+     * @return
+     */
+    public Column set(Column column) {
+        if (column == null) return this;
+        columns.addAll(column.columns());
+        return this;
+    }
+
     @Override
     public Express toExpress() throws Exception {
         if (sec()) clear();
@@ -34,11 +62,12 @@ public class Column extends Express implements AbstractExpress {
         this.sec(true);
         return this;
     }
+
     @Override
     public Response isCheck() {
         Response re = new Response(200, "success");
 
-        if (Unitls.isNull(columns)){
+        if (Unitls.isNull(columns)) {
             re.code(10001).status("Column check Fail!");
         }
         return re;
@@ -46,7 +75,7 @@ public class Column extends Express implements AbstractExpress {
 
     Express mergeColumns(List<Express> columns) {
         boolean isFirst = true;
-        for (Express express:columns){
+        for (Express express : columns) {
             if (isFirst) {
                 isFirst = false;
             } else {

@@ -32,7 +32,6 @@ public class Update extends Condition<Update> implements  DML {
 
     private String table;//主表有查询语句必有主表查询的
 
-
     public Express build() {
         //初始化
         if (sec()) clear();
@@ -74,18 +73,20 @@ public class Update extends Condition<Update> implements  DML {
         return this;
     }
 
+    public Update set(Column column) {
+        if (this.columns == null) this.columns = Column.create();
+        this.columns.set(column);
+        return set();
+    }
+
     public Update set(Express column) {
-        if (this.columns == null) this.columns = new Column();
-        this.isNormal = true;
+        if (this.columns == null) this.columns = Column.create();
         this.columns.columns().add(column);
-        return this;
+        return set();
     }
 
     public Update set(String column, Object... value) {
-        if (this.columns == null) this.columns = new Column();
-        this.isNormal = true;
-        this.columns.columns().add(new Express(column + " = ? ", value == null || value.length == 0 ? null : Arrays.asList(value)));
-        return this;
+        return set(new Express(column + " = ? ", value == null || value.length == 0 ? null : Arrays.asList(value)));
     }
 
     public static Update TABLE(String table) {

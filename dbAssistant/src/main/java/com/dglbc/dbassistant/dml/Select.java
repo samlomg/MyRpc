@@ -33,7 +33,7 @@ import java.util.Arrays;
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
-public class Select extends Condition<Select>  implements DML {
+public class Select extends Condition<Select> implements DML {
     //todo 把直接赋值sql的函数清除
     //特殊的字 top distinct 等
     private FirstExpress first;
@@ -103,12 +103,20 @@ public class Select extends Condition<Select>  implements DML {
 
     //补充first
     public Select af(String sql) {
-        this.first.af(sql);
+        if (first == null) {
+            first(new FirstExpress(sql));
+        } else {
+            first().af(sql);
+        }
         return this;
     }
 
     public Select af(Express sql) {
-        this.first.af(sql);
+        if (first == null) {
+            first(new FirstExpress(sql));
+        } else {
+            first().af(sql);
+        }
         return this;
     }
 
@@ -119,7 +127,7 @@ public class Select extends Condition<Select>  implements DML {
         this.table = new Table(tab, true);
         //todo 目前没想到什么好的办法只能先new然后赋值
         SpecialExpress specialExpress = new SpecialExpress(where);
-        this.wheres(new Where(specialExpress)) ;
+        this.wheres(new Where(specialExpress));
     }
 
     //补充情况
@@ -133,32 +141,32 @@ public class Select extends Condition<Select>  implements DML {
     }
 
     /*
-    * 210613 需要达到的效果
-    * 1:放入class 自动生成column
-    * 2：自动生成的column排除部分数据库没有的
-    *
-    * */
-    public Select(Class  cl){
+     * 210613 需要达到的效果
+     * 1:放入class 自动生成column
+     * 2：自动生成的column排除部分数据库没有的
+     *
+     * */
+    public Select(Class cl) {
 
         //table
-        if (cl.isAnnotationPresent(MyTable.class)){
-            MyTable myTable= (MyTable) cl.getAnnotation(MyTable.class);
-            this.table = new Table(myTable.tableName(), myTable.alias(),true);
-        }else {
-            this.table = new Table(cl.getSimpleName(), "t_"+cl.getSimpleName().toLowerCase(),true);
+        if (cl.isAnnotationPresent(MyTable.class)) {
+            MyTable myTable = (MyTable) cl.getAnnotation(MyTable.class);
+            this.table = new Table(myTable.tableName(), myTable.alias(), true);
+        } else {
+            this.table = new Table(cl.getSimpleName(), "t_" + cl.getSimpleName().toLowerCase(), true);
         }
 
         this.columns = new Column();
         Field[] fields = cl.getDeclaredFields();
-        for (Field field:fields){
+        for (Field field : fields) {
             field.setAccessible(true);
-            if (field.isAnnotationPresent(Ignore.class)){
+            if (field.isAnnotationPresent(Ignore.class)) {
                 continue;
             }
-            if (field.isAnnotationPresent(MyColumn.class)){
-                MyColumn myColumn= field.getAnnotation(MyColumn.class);
-                column(myColumn.columnName(),myColumn.as());
-            }else {
+            if (field.isAnnotationPresent(MyColumn.class)) {
+                MyColumn myColumn = field.getAnnotation(MyColumn.class);
+                column(myColumn.columnName(), myColumn.as());
+            } else {
                 column(field.getName());
             }
         }
@@ -174,7 +182,7 @@ public class Select extends Condition<Select>  implements DML {
         return new Select();
     }
 
-    public static Select create(Class  cl) {
+    public static Select create(Class cl) {
         return new Select(cl);
     }
 

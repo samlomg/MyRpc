@@ -2,10 +2,12 @@ package com.dglbc.dbassistant.check;
 
 
 import com.dglbc.dbassistant.annotation.MyColumn;
+import com.dglbc.dbassistant.annotation.MyId;
 import com.dglbc.dbassistant.annotation.MyTable;
 
 @MyTable(tableName = "T0027",alias = "t0027")
 public class T0027 {
+    @MyId
     private Integer sequence;
     @MyColumn(columnName = "begtime",as = "begTime")
     private String begTime;

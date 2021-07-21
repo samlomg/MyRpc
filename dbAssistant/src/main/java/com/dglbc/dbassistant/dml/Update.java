@@ -1,5 +1,9 @@
 package com.dglbc.dbassistant.dml;
 
+import com.dglbc.dbassistant.annotation.Ignore;
+import com.dglbc.dbassistant.annotation.MyColumn;
+import com.dglbc.dbassistant.annotation.MyId;
+import com.dglbc.dbassistant.annotation.MyTable;
 import com.dglbc.dbassistant.base.*;
 import com.dglbc.dbassistant.declare.Response;
 import com.dglbc.dbassistant.in.WK;
@@ -8,6 +12,7 @@ import com.dglbc.dbassistant.unitils.WKUnit;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
@@ -47,6 +52,37 @@ public class Update extends Condition<Update> implements  DML {
     public Update me() {
         return this;
     }
+
+    public Update(Class cl, Object o) {
+        //table
+        if (cl.isAnnotationPresent(MyTable.class)) {
+            MyTable myTable = (MyTable) cl.getAnnotation(MyTable.class);
+            this.table = myTable.tableName();
+        } else {
+            this.table = cl.getSimpleName();
+        }
+        Field[] fields = cl.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            if (field.isAnnotationPresent(Ignore.class)) {
+                continue;
+            }
+            if (field.isAnnotationPresent(MyId.class)) {
+                continue;
+            }
+            try {
+                if (field.isAnnotationPresent(MyColumn.class)) {
+                    MyColumn myColumn = field.getAnnotation(MyColumn.class);
+                    set(myColumn.columnName(), field.get(o));
+                } else {
+                    set(field.getName(), field.get(o));
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     //先来最多的情况
     public Update(String table, String col, String where) {
         this.isNormal = true;
@@ -91,6 +127,10 @@ public class Update extends Condition<Update> implements  DML {
 
     public static Update TABLE(String table) {
         return new Update(table);
+    }
+
+    public static <T> Update TABLE(T t){
+        return new Update(t.getClass(),t);
     }
 
 }

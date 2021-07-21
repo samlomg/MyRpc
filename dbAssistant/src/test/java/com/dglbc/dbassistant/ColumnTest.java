@@ -12,7 +12,7 @@ import junit.framework.TestCase;
 public class ColumnTest extends TestCase {
 
     public void test1(){
-        Column column = Column.create().set("name", "Lbc");
+        Column column = Column.create().set("name", "Lbc").set("age",12);
         Update update = Update.TABLE("T0027").set(column).where().eq("id",3);
         TestUntils.isRight(update);
     }

@@ -1,6 +1,5 @@
 package com.dglbc.dbassistant;
 
-import com.dglbc.dbassistant.base.Where;
 import com.dglbc.dbassistant.check.T0027;
 import com.dglbc.dbassistant.dml.Select;
 import junit.framework.TestCase;
@@ -11,14 +10,13 @@ public class SelectTest extends TestCase {
 
     public void testClass() {
         Select select = new Select(T0027.class);
-        String sql = select.build().sql().toString();
         System.out.println("============正常检查普通表查询=============");
-        assertTrue(isRight(sql));
+        assertTrue(isRight(select));
 
     }
 
     //简单的写一下sql
-    public void test1() throws Exception {
+    public void test1() {
         Select select = new Select("id,name", "Mytable", " a=2");
         select.column("age");
         System.out.println("============正常检查普通表查询=============");
@@ -28,7 +26,7 @@ public class SelectTest extends TestCase {
     }
 
     //简单
-    public void test2() throws Exception {
+    public void test2()  {
 
         Select select = new Select("* from Mytable");
         select.where("a=?", 2).or("a=?", 1);
@@ -40,7 +38,7 @@ public class SelectTest extends TestCase {
     }
 
     //简单
-    public void test3() throws Exception {
+    public void test3()  {
         Select select = new Select("A.name,A.tel from Mytable a");
         select.leftJoin("Address addr", " a.addr=addr.seq");
         select.where("name=?", 2).or("name=?", 1).eq("A.id", 1);
@@ -53,7 +51,7 @@ public class SelectTest extends TestCase {
     }
 
     //between
-    public void test4() throws Exception {
+    public void test4()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).between("age", 10, 20);
         select.last(" order by a.id desc ");
@@ -65,7 +63,7 @@ public class SelectTest extends TestCase {
     }
 
     // not between
-    public void test5() throws Exception {
+    public void test5()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).notBetween("age", 10, 20);
         select.last(" order by a.id desc ");
@@ -77,7 +75,7 @@ public class SelectTest extends TestCase {
     }
 
     // not null
-    public void test6() throws Exception {
+    public void test6()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).isNotNull("age");
         select.last(" order by a.id desc ");
@@ -89,7 +87,7 @@ public class SelectTest extends TestCase {
     }
 
     // in
-    public void test7() throws Exception {
+    public void test7()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).in("age", 10, 20, 30);
         select.last(" order by a.id desc ");
@@ -101,7 +99,7 @@ public class SelectTest extends TestCase {
     }
 
     // not in
-    public void test8() throws Exception {
+    public void test8()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).notIn("age", 10, 20, 30);
         select.last(" order by a.id desc ");
@@ -113,7 +111,7 @@ public class SelectTest extends TestCase {
     }
 
     // eq
-    public void test9() throws Exception {
+    public void test9()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).eq("age", 20);
         select.last(" order by a.id desc ");
@@ -125,7 +123,7 @@ public class SelectTest extends TestCase {
     }
 
     // neq
-    public void test10() throws Exception {
+    public void test10()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).neq("age", 20);
         select.last(" order by a.id desc ");
@@ -137,7 +135,7 @@ public class SelectTest extends TestCase {
     }
 
     // neq
-    public void test101() throws Exception {
+    public void test101()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).neq("isnull(age,0)", 20);
         select.last(" order by a.id desc ");
@@ -149,7 +147,7 @@ public class SelectTest extends TestCase {
     }
 
     // notLike
-    public void test11() throws Exception {
+    public void test11()  {
         Select select = new Select("*", "Mytable");
         select.where("name=?", 2).notLike("age", "%20%");
         select.last(" order by a.id desc ");
@@ -179,6 +177,11 @@ public class SelectTest extends TestCase {
         System.out.println("============正常检查普通表分页查询=============");
         assertTrue(isRight(select, true, key));
 
+    }
+
+    public void test13(){
+        Select select = Select.create() .af("count(*)").from("T0027","t");
+        isRight(select);
     }
 
 }

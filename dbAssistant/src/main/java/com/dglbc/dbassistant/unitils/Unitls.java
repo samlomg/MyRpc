@@ -13,12 +13,32 @@ public class Unitls {
         return source.isEmpty();
     }
 
-    public static boolean isNull(List source){
+    public static boolean isNull(List source) {
         return source == null || source.size() == 0;
     }
 
-    public static <T> boolean isNull(T source){
+    public static <T> boolean isNull(T source) {
         return source == null;
     }
 
+    public static boolean isEmpty(Object obj) {
+        if (obj == null) {
+            return true;
+        }
+        if ((obj instanceof List)) {
+            return ((List) obj).size() == 0;
+        }
+        if ((obj instanceof String)) {
+            return ((String) obj).trim().equals("");
+        }
+        return false;
+    }
+
+
+    public static boolean isEmpty(String source) {
+        if (source == null) {
+            return true;
+        }
+        return ((String) source).trim().equals("");
+    }
 }

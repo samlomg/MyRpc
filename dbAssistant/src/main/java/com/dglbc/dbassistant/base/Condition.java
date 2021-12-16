@@ -2,10 +2,9 @@ package com.dglbc.dbassistant.base;
 
 
 import com.dglbc.dbassistant.declare.Response;
-import com.dglbc.dbassistant.dml.Delete;
-import com.dglbc.dbassistant.dml.Select;
 import com.dglbc.dbassistant.in.WK;
 import com.dglbc.dbassistant.tips.TipsShow;
+import com.dglbc.dbassistant.unitils.Unitls;
 import com.dglbc.dbassistant.unitils.WKUnit;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -125,6 +124,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T eq(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.EQ, value);
         return me();
     }
@@ -138,11 +138,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T eq(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.EQ, value);
         return me();
     }
 
     public T eq(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.EQ, value);
         return me();
     }
@@ -155,6 +157,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T gt(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.GT, value);
         return me();
     }
@@ -168,11 +171,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T gt(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.GT, value);
         return me();
     }
 
     public T gt(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.GT, value);
         return me();
     }
@@ -186,6 +191,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T lt(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.LT, value);
         return me();
     }
@@ -199,11 +205,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T lt(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.LT, value);
         return me();
     }
 
     public T lt(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.LT, value);
         return me();
     }
@@ -217,6 +225,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T ge(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.op(WK.GT, WK.EQ), value);
         return me();
     }
@@ -230,11 +239,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T ge(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.op(WK.GT, WK.EQ), value);
         return me();
     }
 
     public T ge(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.op(WK.GT, WK.EQ), value);
         return me();
     }
@@ -248,6 +259,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T le(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.op(WK.LT, WK.EQ), value);
         return me();
     }
@@ -261,11 +273,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T le(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.op(WK.LT, WK.EQ), value);
         return me();
     }
 
     public T le(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.op(WK.LT, WK.EQ), value);
         return me();
     }
@@ -279,6 +293,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T between(String column, Object value, Object value2) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
         return me();
     }
@@ -292,11 +307,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T between(String cateNate, String column, Object value, Object value2) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
         return me();
     }
 
     public T between(String cateNate, Express express, Object value, Object value2) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WKUnit.getOperation(WK.BETWEEN.getFormat(), value, value2), value, value2);
         return me();
     }
@@ -309,6 +326,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T in(String column, Object... value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WKUnit.getOperation(WK.op(WK.IN), value), value);
         return me();
     }
@@ -322,11 +340,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T in(String cateNate, String column, Object... value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WKUnit.getOperation(WK.op(WK.IN), value), value);
         return me();
     }
 
     public T in(String cateNate, Express express, Object... value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WKUnit.getOperation(WK.op(WK.IN), value), value);
         return me();
     }
@@ -340,6 +360,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T like(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.LIKE, value);
         return me();
     }
@@ -353,11 +374,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T like(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.LIKE, value);
         return me();
     }
 
     public T like(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.LIKE, value);
         return me();
     }
@@ -371,6 +394,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T isNull(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.op(WK.IS, WK.NULL), value);
         return me();
     }
@@ -384,11 +408,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T isNull(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.op(WK.IS, WK.NULL), value);
         return me();
     }
 
     public T isNull(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.op(WK.IS, WK.NULL), value);
         return me();
     }
@@ -402,6 +428,8 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T notBetween(String column, Object value, Object value2) {
+        if (Unitls.isEmpty(value)) return me();
+        if (Unitls.isEmpty(value2)) return me();
         where(K.AND, column, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
         return me();
     }
@@ -416,11 +444,15 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T notBetween(String cateNate, String column, Object value, Object value2) {
+        if (Unitls.isEmpty(value)) return me();
+        if (Unitls.isEmpty(value2)) return me();
         where(cateNate, column, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
         return me();
     }
 
     public T notBetween(String cateNate, Express express, Object value, Object value2) {
+        if (Unitls.isEmpty(value)) return me();
+        if (Unitls.isEmpty(value2)) return me();
         where(cateNate, express, WKUnit.getOperation(WK.op(WK.NOT, WK.BETWEEN), value, value2), value, value2);
         return me();
     }
@@ -433,6 +465,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T notIn(String column, Object... value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
         return me();
     }
@@ -446,11 +479,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T notIn(String cateNate, String column, Object... value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
         return me();
     }
 
     public T notIn(String cateNate, Express express, Object... value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WKUnit.getOperation(WK.op(WK.NOT, WK.IN), value), value);
         return me();
     }
@@ -464,6 +499,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T notLike(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.op(WK.NOT, WK.LIKE), value);
         return me();
     }
@@ -477,11 +513,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T notLike(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.op(WK.NOT, WK.LIKE), value);
         return me();
     }
 
     public T notLike(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.op(WK.NOT, WK.LIKE), value);
         return me();
     }
@@ -494,6 +532,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T isNotNull(String column) {
+        if (Unitls.isEmpty(column)) return me();
         where(K.AND, column, WK.op(WK.IS, WK.NOT, WK.NULL));
         return me();
     }
@@ -506,6 +545,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T isNotNull(String cateNate, String column) {
+        if (Unitls.isEmpty(column)) return me();
         where(cateNate, column, WK.op(WK.IS, WK.NOT, WK.NULL));
         return me();
     }
@@ -524,6 +564,7 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T neq(String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(K.AND, column, WK.op(WK.NEQ), value);
         return me();
     }
@@ -537,11 +578,13 @@ public abstract class Condition<T> extends Express {
      * @return
      */
     public T neq(String cateNate, String column, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, column, WK.op(WK.NEQ), value);
         return me();
     }
 
     public T neq(String cateNate, Express express, Object value) {
+        if (Unitls.isEmpty(value)) return me();
         where(cateNate, express, WK.op(WK.NEQ), value);
         return me();
     }

@@ -16,12 +16,11 @@ public class FirstExpress extends Express implements AbstractExpress {
     private Express first;
 
     public FirstExpress(String sql) {
-        this.first = new Express(sql);
+        this.first = new Express(" "+sql+" ");
     }
 
     public FirstExpress(Express sql) {
         this.first = sql;
-        ;
     }
 
     public FirstExpress() {

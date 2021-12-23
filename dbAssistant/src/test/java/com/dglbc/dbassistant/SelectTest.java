@@ -12,7 +12,12 @@ public class SelectTest extends TestCase {
         Select select = new Select(T0027.class);
         System.out.println("============正常检查普通表查询=============");
         assertTrue(isRight(select));
+    }
 
+    public void testTopClass() {
+        Select select = new Select(T0027.class).af("TOP 10");
+        System.out.println("============正常检查普通表查询=============");
+        assertTrue(isRight(select));
     }
 
     //简单的写一下sql
